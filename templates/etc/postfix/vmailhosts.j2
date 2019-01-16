@@ -1,0 +1,15 @@
+# VIRTUAL MAILBOX DOMAINS
+# =============================================================================
+# virtual_mailbox_domains (default: $virtual_mailbox_maps)
+#   Postfix is final destination for the specified list of domains; mail is de-
+#   livered via the $virtual_transport mail delivery transport. By default this
+#   is the Postfix virtual(8) delivery agent. The SMTP server validates recipi-
+#   ent addresses with  $virtual_mailbox_maps and rejects mail for non-existent
+#   recipients.
+#
+#   See also the virtual mailbox domain class in the ADDRESS_CLASS_README file.
+#   This parameter expects  the same syntax  as the mydestination configuration
+#   parameter.
+# -----------------------------------------------------------------------------
+# example.jp
+# example.org

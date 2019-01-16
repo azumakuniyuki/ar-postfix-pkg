@@ -1,0 +1,76 @@
+# /etc/postfix/Makefile
+#  __  __       _         __ _ _
+# |  \/  | __ _| | _____ / _(_) | ___
+# | |\/| |/ _` | |/ / _ \ |_| | |/ _ \
+# | |  | | (_| |   <  __/  _| | |  __/
+# |_|  |_|\__,_|_|\_\___|_| |_|_|\___|
+# -----------------------------------------------------------------------------
+MAILOWNER  = postfix
+MAILGROUP  = postfix
+CONFIGROOT = /etc/postfix
+
+POSTFIX    = /usr/sbin/postfix
+POSTMAP    = /usr/sbin/postmap
+NEWALIASES = /usr/bin/newaliases
+MKDIR      = mkdir -p
+RM         = rm -f
+MV         = mv
+CP         = cp
+
+POSTFIXCTL = check reload
+SYSTEMDCTL = start stop restart
+
+MYHOSTNAME := $(shell grep '^myhostname' main.cf | awk '{ print $$3 }')
+MYDOMAIN   := $(shell grep '^mydomain'   main.cf | awk '{ print $$3 }')
+POSTMASTER := postmaster
+
+.DEFAULT_GOAL = status
+
+# -----------------------------------------------------------------------------
+.PHONY: clean
+all:
+	@for v in `grep -E '(hash|cidr|pcre):' main.cf | grep -v '#' | sed -e 's/^.*://g' -e 's/ .*//g' -e 's/,.*//g' | sort | uniq`; do \
+		test -f $$v && printf "%s " `basename $$v`; \
+		test -f $$v && $(MAKE) `basename $$v`.db > /dev/null 2>&1; \
+	done
+	@echo
+
+aliases.db: aliases
+	test -f $< && $(NEWALIASES)
+
+smtpauth.db: smtpauth.in
+	test -f $< && $(POSTMAP) $< && $(MV) $<.db $@ && $(RM) $<
+	chown root.$(MAILGROUP) $@
+
+%.db: %.in
+	test -f $<
+	$(POSTMAP) $< && $(MV) $<.db $@ && $(RM) $<
+
+%.in: %
+	test -f $< && $(CP) $< $<.in
+
+$(POSTFIXCTL):
+	$(POSTFIX) $@
+
+$(SYSTEMDCTL): check
+	/usr/bin/systemctl $@ postfix
+
+status:
+	/usr/bin/systemctl $@ postfix
+
+smtp-auth-password:
+	test -n "$(U)" || echo 'Specify "U" macro like: make U=sasl-user@example.jp'
+	test -n "$(P)" || echo 'Specify "P" macro like: make P=sasl-user-password'
+	printf "%s\0%s\0%s" $(U) $(U) $(P) | openssl base64 -e | tr -d '\n'; echo
+
+new-cert-by-dns:
+	certbot certonly --manual --preferred-challenges dns -d $(MYHOSTNAME) -m $(POSTMASTER)@$(MYDOMAIN) --agree-tos
+
+new-cert-by-web:
+	certbot certonly --standalone -d $(MYHOSTNAME) -m $(POSTMASTER)@$(MYDOMAIN) --agree-tos
+
+clean:
+	$(RM) *.in *.db.db
+	$(MKDIR) -p $(CONFIGROOT)/backup
+	$(MV) ./*~ ./backup/
+
