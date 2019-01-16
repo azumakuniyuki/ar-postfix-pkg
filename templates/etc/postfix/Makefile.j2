@@ -58,10 +58,10 @@ $(SYSTEMDCTL): check
 status:
 	/usr/bin/systemctl $@ postfix
 
-smtp-auth-password:
-	test -n "$(U)" || echo 'Specify "U" macro like: make U=sasl-user@example.jp'
-	test -n "$(P)" || echo 'Specify "P" macro like: make P=sasl-user-password'
-	printf "%s\0%s\0%s" $(U) $(U) $(P) | openssl base64 -e | tr -d '\n'; echo
+auth-plain-password:
+	@test -n "$(U)" || (echo 'Specify "U" macro like: make U=sasl-user@example.jp' && false)
+	@test -n "$(P)" || (echo 'Specify "P" macro like: make P=sasl-user-password'   && false)
+	@printf "%s\0%s\0%s" $(U) $(U) $(P) | openssl base64 -e | tr -d '\n'; echo
 
 new-cert-by-dns:
 	certbot certonly --manual --preferred-challenges dns -d $(MYHOSTNAME) -m $(POSTMASTER)@$(MYDOMAIN) --agree-tos
