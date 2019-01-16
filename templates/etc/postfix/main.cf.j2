@@ -1549,6 +1549,12 @@ smtpd_command_filter = pcre:/etc/postfix/re_smtpcommand
 #   seconds.
 smtpd_soft_error_limit = 8
 
+# smtpd_error_sleep_time (default: 1s)
+#   With Postfix version 2.1 and later:  the SMTP server response delay after a
+#   client has made more than  "$smtpd_soft_error_limit" errors, and fewer than
+#   $smtpd_hard_error_limit errors, without delivering mail.
+smtpd_error_sleep_time = 1s
+
 # smtpd_forbidden_commands (default: CONNECT, GET, POST)
 #   List of commands  that cause the Postfix SMTP server  to immediately termi-
 #   nate the session with a "221" code.  This can be used to disconnect clients
@@ -2153,6 +2159,11 @@ hopcount_limit = 50
 #   This limit must not be smaller than the message size limit.
 mailbox_size_limit = 2147483647
 
+# default_process_limit (default: 100)
+#   The default maximal number of  Postfix child processes that provide a given
+#   service. This limit can be overruled for specific services in the master.cf
+#   file.
+default_process_limit = 100
 
 # SASL: SIMPLE AUTHENTICATION AND SECURITY LAYER
 # -----------------------------------------------------------------------------
