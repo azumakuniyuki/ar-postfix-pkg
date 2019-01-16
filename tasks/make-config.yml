@@ -35,12 +35,11 @@
     backup: "yes"
 
 - name: make-config | aliases.db file should be updated
-  when: aliases.changed == true
+  when: aliases.changed
   shell: >
     /usr/bin/newaliases
   args:
     chdir:   "{{ postfix.configroot }}"
-    creates: "{{ postfix.configroot }}/aliases.db"
 
 - name: make-config | Deploy each map file in /etc/postfix
   register: mapfile
@@ -52,12 +51,11 @@
   with_items: "{{ postfix.dbmapfiles }}"
 
 - name: make-config | Each map file should be converted to db
-  when: mapfile.changed == true
+  when: mapfile.changed
   shell: >
     /usr/sbin/postmap {{ item }}
   args:
     chdir:   "{{ postfix.configroot }}"
-    creates: "{{ postfix.configroot }}/{{ item }}.db"
   with_items: "{{ postfix.dbmapfiles }}"
 
 - name: make-config | Deploy credential map file in /etc/postfix
@@ -72,12 +70,11 @@
   with_items: "{{ postfix.credential }}"
 
 - name: make-config | Each credential map should be converted to db
-  when: credential.changed == true
+  when: credential.changed
   shell: >
     /usr/sbin/postmap {{ item }}
   args:
     chdir:   "{{ postfix.configroot }}"
-    creates: "{{ postfix.configroot }}/{{ item }}.db"
   with_items: "{{ postfix.credential }}"
 
 - name: make-config | Deploy /etc/sasl2/smtpd.conf
