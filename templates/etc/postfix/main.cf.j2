@@ -419,6 +419,30 @@ smtp_tls_security_level = may
 #   system-supplied default CAs and trusting third-party certificates.
 #smtp_tls_CApath = /etc/pki/ca-trust/extracted/openssl
 
+# smtp_tls_session_cache_database (default: empty)
+#   The "smtp_tls_session_cache_database"  parameter is a name of the file con-
+#   taining the optional Postfix SMTP client TLS session cache. Specify a data-
+#   base type that supports enumeration, such as "btree" or "sdbm"; there is no
+#   need to support concurrent access. The file is created if it doesn't exist.
+#   The smtp(8) daemon does not use  this parameter directly,  rather the cache
+#   is implemented indirectly in the tlsmgr(8) daemon.
+#   This means that per-smtp-instance master.cf overrides of this parameter are
+#   not effective. Note that each of the cache databases supported by tlsmgr(8)
+#   daemon: $smtpd_tls_session_cache_database, $smtp_tls_session_cache_database
+#   (and with Postfix 2.3 and later $lmtp_tls_session_cache_database), needs to
+#   be stored separately.
+#   It is not at this time possible to store multiple caches in a single data-
+#   base.
+#
+#   Note: dbm databases are not suitable. TLS session objects are too large.
+#
+#   As of version 2.5, Postfix no longer uses root privileges when opening this
+#   file. The file should now be stored under the Postfix-owned data_directory.
+#   As a migration aid,  an attempt to open the file under a non-Postfix direc-
+#   tory is redirected to the Postfix-owned "data_directory",  and a warning is
+#   logged.
+smtp_tls_session_cache_database = btree:${data_directory}/smtp-session-cache
+
 
 # CONNECTION CACHE
 # -----------------------------------------------------------------------------
@@ -1828,6 +1852,37 @@ smtpd_tls_CApath = /etc/pki/ca-trust/extracted/openssl
 #
 #   This feature is available with Postfix version 2.2.
 smtpd_tls_dh1024_param_file =
+
+# smtpd_tls_session_cache_database (default: empty)
+#   The "smtpd_tls_session_cache_database" parameter is a name of the file con-
+#   taining the optional Postfix SMTP server TLS session cache. Specify a data-
+#   base type that supports enumeration, such as "btree" or "sdbm"; there is no
+#   need to support concurrent access. The file is created if it doesn't exist.
+#   The smtpd(8) daemon does not use this parameter directly,  rather the cache
+#   is implemented indirectly in the tlsmgr(8) daemon.
+#   This means that per-smtpd-instance master.cf file  overrides of this param-
+#   eter are not effective. Note, that each of the cache databases supported by
+#   tlsmgr(8) daemon:
+#       - $smtpd_tls_session_cache_database
+#       - $smtp_tls_session_cache_database
+#           (and with Postfix 2.3 and later $lmtp_tls_session_cache_database),
+#   needs to be stored separately. It isn't at this time possible to store mul-
+#   tiple caches in a single database.
+#
+#   Note: dbm databases are not suitable. TLS session objects are too large.
+#
+#   As of version 2.5, Postfix no longer uses root privileges when opening this
+#   file. The file should now be stored under the Postfix-owned data_directory.
+#   As a migration aid,  an attempt to open the file under a non-Postfix direc-
+#   tory is redirected to the Postfix-owned "data_directory",  and a warning is
+#   logged.
+#
+#   As of Postfix version 2.11  the preferred mechanism for  session resumption
+#   is  RFC 5077 TLS session tickets,  which don't require server-side storage.
+#   Consequently,  for Postfix >= 2.11 this parameter  should generally be left
+#   empty. TLS session tickets require  an OpenSSL (at least v0.9.8h) that pro-
+#   vides full support for this TLS extension.
+smtpd_tls_session_cache_database =
 
 
 # INPUT RATE CONTROL
