@@ -71,6 +71,6 @@ new-cert-by-web:
 
 clean:
 	$(RM) *.in *.db.db
-	$(MKDIR) -p $(CONFIGROOT)/backup
-	$(MV) ./*~ ./backup/
+	$(MKDIR) $(CONFIGROOT)/histories
+	$(MV) ./*~ ./histories/ 2> /dev/null || true
 
