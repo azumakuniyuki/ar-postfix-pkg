@@ -19,7 +19,6 @@
       with_items:
         - "postfix-perl-scripts"
         - "postfix-sysvinit"
-        - "spamass-milter-postfix"
         - "postgrey"
         - "pypolicyd-spf"
         - "smtpping"
@@ -37,28 +36,10 @@
         - "cyrus-sasl-md5"
         - "cyrus-sasl-ntlm"
         - "cyrus-sasl-plain"
-#       - "cyrus-sasl-sql"
         - "openssl"
         - "openssl-devel"
         - "openssl-libs"
         - "certbot"
-
-    - name: install-pkg | RedHat | Clam related packages should be installed
-      yum:
-        name:  "{{ item }}"
-        state: "present"
-      with_items:
-        - "clamav"
-        - "clamav-data"
-        - "clamav-devel"
-        - "clamav-lib"
-        - "clamav-milter"
-        - "clamav-milter-systemd"
-        - "clamav-scanner-systemd"
-        - "clamav-server-systemd"
-        - "clamav-update"
-        - "clamd"
-        - "clamsmtp"
 
     - name: install-pkg | RedHat | Email related packages should be installed
       yum:
