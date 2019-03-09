@@ -707,6 +707,34 @@ disable_vrfy_command = yes
 #   by default.
 #smtpd_hard_error_limit = ${stress?1}${stress:20}
 
+# smtpd_delay_open_until_valid_rcpt (default: yes)
+#   Postpone the start of an SMTP mail transaction until a valid "RCPT TO" com-
+#   mand is received. Specify  "no" to create a mail transaction as soon as the
+#   Postfix SMTP server receives  a valid "MAIL FROM" command.  With sites that
+#   reject lots of mail, the  default setting reduces the  use of disk, CPU and
+#   memory resources. The downside is that rejected recipients are logged with
+#   "NOQUEUE" instead of a mail transaction ID. This complicates the logfile a-
+#   nalysis of multi-recipient mail.
+#
+#   This feature is available in Postfix 2.3 and later.
+#smtpd_delay_open_until_valid_rcpt = yes
+
+# smtpd_delay_reject (default: yes)
+#   Wait until the RCPT TO command before evaluating:
+#     - $smtpd_client_restrictions
+#     - $smtpd_helo_restrictions
+#     - $smtpd_sender_restrictions
+#   or wait until the ETRN command before evaluating:
+#     - $smtpd_client_restrictions
+#     - $smtpd_helo_restrictions
+#
+#   This feature is  turned on by default because  some clients apparently mis-
+#   behave when the Postfix SMTP server rejects  commands before "RCPT TO". The
+#   default setting has one major benefit:  it allows Postfix to  log recipient
+#   address information when rejecting a client name/address or sender address,
+#   so that it is possible to find out whose mail is being rejected.
+smtpd_delay_reject = yes
+
 # smtpd_client_restrictions (default: empty)
 #   Optional restrictions  that the Postfix SMTP server  applies in the context
 #   of a client connection request. See "SMTPD_ACCESS_README", section "Delayed
