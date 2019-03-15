@@ -384,6 +384,21 @@ smtp_tls_policy_maps = hash:/etc/postfix/tlspolicies
 #
 smtp_tls_protocols = !SSLv2, !SSLv3
 
+# smtp_tls_mandatory_protocols (default: !SSLv2, !SSLv3)
+#   List of SSL/TLS protocols that the Postfix SMTP client will use with manda-
+#   tory TLS encryption.  In main.cf  the values are  separated by  whitespace,
+#   commas or colons. 
+#
+#   Note: As of OpenSSL 1.0.1 two new protocols are defined, "TLSv1.1" and
+#         "TLSv1.2". When Postfix ≤ 2.5 is linked against OpenSSL 1.0.1 or
+#         later, these, or any other new protocol versions, cannot be disabled
+#         except by also disabling "TLSv1" (typically leaving just "SSLv3").
+#         The latest patch levels of Postfix >= 2.6, and all versions of
+#         Postfix >= 2.10 can explicitly disable support for "TLSv1.1" or
+#         "TLSv1.2".
+#
+#smtp_tls_mandatory_protocols = !SSLv2, !SSLv3
+
 # smtp_tls_security_level (default: empty)
 #   The smtp_tls_security_level configuration parameter is the default SMTP TLS
 #   security level for the Postfix SMTP client.
@@ -1651,7 +1666,17 @@ smtpd_forbidden_commands = CONNECT GET POST
 #       smtpd_tls_protocols = !SSLv2, !SSLv3
 #
 #   This feature is available in Postfix 2.6 and later.
-#smtpd_tls_protocols = !SSLv2, !SSLv3
+smtpd_tls_protocols = !SSLv2, !SSLv3
+
+# smtpd_tls_mandatory_protocols (default: !SSLv2, !SSLv3)
+#   The SSL/TLS  protocols accepted  by the Postfix SMTP  server with mandatory
+#   TLS  encryption.  If the list is empty,  the server supports  all available
+#   SSL/TLS protocol  versions.  A non-empty value is a list of  protocol names
+#   separated by whitespace, commas or colons. The supported protocol names are
+#   "SSLv2", "SSLv3" and "TLSv1", and are not case sensitive. The default value
+#   is "!SSLv2, !SSLv3" for Postfix releases after the middle of 2015, "!SSLv2"
+#   for older releases.
+#smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3
 
 # smtpd_tls_security_level (default: empty)
 #   The SMTP TLS security level  for the Postfix SMTP server;  when a non-empty
