@@ -40,6 +40,7 @@
         - "openssl-devel"
         - "openssl-libs"
         - "certbot"
+        - "python2-certbot-dns-rfc2136"
 
     - name: install-pkg | RedHat | Email related packages should be installed
       yum:
