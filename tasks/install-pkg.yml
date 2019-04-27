@@ -23,7 +23,6 @@
       with_items:
         - "pypolicyd-spf"
         - "smtpping"
-        - "sqlgrey"
         - "swaks"
 
     - name: install-pkg | RedHat | SASL related packages should be installed
@@ -79,7 +78,6 @@
         - "libspf2-2"
         - "libspf2-dev"
         - "smtpping"
-        - "sqlgrey"
         - "swaks"
 
     - name: install-pkg | Debian | SASL related packages should be installed
