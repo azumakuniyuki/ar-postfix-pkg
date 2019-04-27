@@ -390,7 +390,7 @@ smtp_tls_protocols = !SSLv2, !SSLv3
 #   commas or colons. 
 #
 #   Note: As of OpenSSL 1.0.1 two new protocols are defined, "TLSv1.1" and
-#         "TLSv1.2". When Postfix 竕､ 2.5 is linked against OpenSSL 1.0.1 or
+#         "TLSv1.2". When Postfix 遶包ｽ､ 2.5 is linked against OpenSSL 1.0.1 or
 #         later, these, or any other new protocol versions, cannot be disabled
 #         except by also disabling "TLSv1" (typically leaving just "SSLv3").
 #         The latest patch levels of Postfix >= 2.6, and all versions of
@@ -3045,24 +3045,24 @@ authorized_submit_users = static:anyone
 #   also the root directory of Postfix daemons that run chrooted. See the files
 #   in examples/chroot-setup for setting up Postfix chroot environments on dif-
 #   ferent UNIX systems.
-queue_directory = /var/spool/postfix
+#queue_directory = {{ postfix.mailqueues }}
 
 # command_directory (default: see "postconf -d" output)
 #   The "command_directory" parameter specifies the location of all "post*****"
 #   commands.
-command_directory = /usr/sbin
+#command_directory = /usr/sbin
 
 # daemon_directory (default: see "postconf -d" output)
 #   The daemon_directory parameter specifies the location of all Postfix daemon
 #   programs (i.e.  programs listed in the master.cf file). This directory must
 #   be owned by root.
-daemon_directory = /usr/libexec/postfix
+#daemon_directory = /usr/libexec/postfix
 
 # data_directory (default: see "postconf -d" output)
 #   The "data_directory" parameter specifies  the location of  Postfix-writable
 #   data files (caches, random numbers).  This directory  must be  owned by the
 #   mail_owner account (see below).
-data_directory = /var/lib/postfix
+#data_directory = /var/lib/postfix
 
 # alternate_config_directories (default: empty)
 #   A list of "non-default" Postfix configuration directories that may be spec-
@@ -3166,9 +3166,9 @@ html_directory = no
 
 # manpage_directory (default: see "postconf -d" output)
 #   manpage_directory: The location of the Postfix on-line manual pages.
-manpage_directory = /usr/share/man
+#manpage_directory = /usr/share/man
 
 # readme_directory (default: see "postconf -d" output)
 #   readme_directory: The location of the Postfix README files.
-readme_directory = /usr/share/doc/postfix-2.10.1/README_FILES
+#readme_directory = /usr/share/doc/postfix/README_FILES
 
