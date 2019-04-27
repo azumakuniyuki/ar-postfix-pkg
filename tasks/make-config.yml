@@ -77,31 +77,61 @@
     chdir:   "{{ postfix.configroot }}"
   with_items: "{{ postfix.credential }}"
 
-- name: make-config | Deploy /etc/sasl2/smtpd.conf
-  template:
-    src:    "etc/sasl2/smtpd.conf.j2"
-    dest:   "/etc/sasl2/smtpd.conf"
-    mode:   "0644"
-    backup: "yes"
+- block:
+    - name: make-config | RedHat | Deploy /etc/sasl2/smtpd.conf
+      template:
+        src:    "etc/sasl2/smtpd.conf.j2"
+        dest:   "/etc/sasl2/smtpd.conf"
+        mode:   "0644"
+        backup: "yes"
 
-- name: make-config | Create dummy account into /etc/sasldb2
-  register: sasldb2
-  shell: >
-    date | md5sum | saslpasswd2 -c -u {{ ansible_fqdn }} kijitora
-  args:
-    creates: "/etc/sasldb2"
+    - name: make-config | RedHat | Create dummy account into /etc/sasldb2
+      register: sasldb2
+      shell: >
+        date | md5sum | saslpasswd2 -c -u {{ ansible_fqdn }} kijitora
+      args:
+        creates: "/etc/sasldb2"
 
-- name: make-config | Disable dummy account into /etc/sasldb2
-  when: sasldb2.changed
-  shell: >
-    saslpasswd2 -d -u {{ ansible_fqdn }} kijitora
+    - name: make-config | RedHat | Disable dummy account into /etc/sasldb2
+      when: sasldb2.changed
+      shell: >
+        saslpasswd2 -d -u {{ ansible_fqdn }} kijitora
 
-- name: make-config | SASLv2 Password DB should be readable from Postfix
-  file:
-    path:  "/etc/sasldb2"
-    mode:  "0640"
-    owner: "root"
-    group: "postfix"
-    state: "file"
+    - name: make-config | RedHat | SASLv2 Password DB should be readable from Postfix
+      file:
+        path:  "/etc/sasldb2"
+        mode:  "0640"
+        owner: "root"
+        group: "postfix"
+        state: "file"
+  when: ansible_os_family == "RedHat"
 
+- block:
+    - name: make-config | Debian | Deploy /etc/postfix/sasl/smtpd.conf
+      template:
+        src:    "etc/sasl2/smtpd.conf.j2"
+        dest:   "{{ postfix.configroot }}/sasl/smtpd.conf"
+        mode:   "0644"
+        backup: "yes"
+
+    - name: make-config | Debian | Create dummy account into chroot(8)/etc/sasldb2
+      register: sasldb2
+      shell: >
+        date | md5sum | saslpasswd2 -f {{ postfix.mailqueues }}/etc/sasldb2 -c -u {{ ansible_fqdn }} kijitora
+      args:
+        creates: "{{ postfix.mailqueues }}/etc/sasldb2"
+
+    - name: make-config | Debian | Disable dummy account into chroot(8)/etc/sasldb2
+      when: sasldb2.changed
+      shell: >
+        saslpasswd2 -f {{ postfix.mailqueues }}/etc/sasldb2 -d -u {{ ansible_fqdn }} kijitora
+
+    - name: make-config | SASLv2 Password DB should be readable from Postfix
+      file:
+        path:  "{{ postfix.mailqueues }}/etc/sasldb2"
+        mode:  "0640"
+        owner: "root"
+        group: "postfix"
+        state: "file"
+  when: ansible_os_family == "Debian"
 

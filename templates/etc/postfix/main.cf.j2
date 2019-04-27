@@ -390,7 +390,7 @@ smtp_tls_protocols = !SSLv2, !SSLv3
 #   commas or colons. 
 #
 #   Note: As of OpenSSL 1.0.1 two new protocols are defined, "TLSv1.1" and
-#         "TLSv1.2". When Postfix ≤ 2.5 is linked against OpenSSL 1.0.1 or
+#         "TLSv1.2". When Postfix 竕､ 2.5 is linked against OpenSSL 1.0.1 or
 #         later, these, or any other new protocol versions, cannot be disabled
 #         except by also disabling "TLSv1" (typically leaving just "SSLv3").
 #         The latest patch levels of Postfix >= 2.6, and all versions of
@@ -2742,7 +2742,7 @@ home_mailbox = Maildir/
 #   The mail_spool_directory parameter specifies the directory where UNIX-style
 #   mailboxes are kept. The default setting depends on the system type.
 #
-#mail_spool_directory = /var/spool/mail
+#mail_spool_directory = {{ postfix.mailqueues }}
 
 # mailbox_command (default: empty)
 #   The "mailbox_command" parameter specifies  the optional external command to

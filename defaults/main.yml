@@ -11,6 +11,7 @@ postfix:
   started: true
   callmilter: false
   configroot: "/etc/postfix"
+  mailqueues: "/var/spool/postfix"
   serverroot: "/usr"
   workingdir: "/usr/local/src"
   tlscertdir: "/etc/letsencrypt/live"
