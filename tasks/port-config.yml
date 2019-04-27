@@ -6,17 +6,18 @@
 # | .__/ \___/|___/\__|_| |_/_/\_\ || .__/|_|\_\__, | /_/   \__\__,_|___/_|\_\___/
 # |_|                             \_\_|        |___/_/                            
 # port-config
-- name: port-config | SMTP(25) port should be opened
-  firewalld:
-    service:   "smtp"
-    state:     "enabled"
-    immediate: true
-    permanent: true
+- block:
+    - name: port-config | SMTP(25) port should be opened
+      firewalld:
+        service:   "smtp"
+        state:     "enabled"
+        immediate: true
+        permanent: true
 
-- name: port-config | Submission(587) port should be opened
-  firewalld:
-    port:      "587/tcp"
-    state:     "enabled"
-    immediate: true
-    permanent: true
-
+    - name: port-config | Submission(587) port should be opened
+      firewalld:
+        port:      "587/tcp"
+        state:     "enabled"
+        immediate: true
+        permanent: true
+  when: ansible_os_family == "RedHat"

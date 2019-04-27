@@ -9,17 +9,18 @@
 - block:
     - name: install-pkg | RedHat | Postfix should be installed
       yum:
-        name:  "postfix"
+        name:  "{{ item }}"
         state: "present"
+      with_items:
+        - "postfix"
+        - "postfix-perl-scripts"
+        - "postfix-sysvinit"
 
     - name: install-pkg | RedHat | Postfix related packages should be installed
       yum:
         name:  "{{ item }}"
         state: "present"
       with_items:
-        - "postfix-perl-scripts"
-        - "postfix-sysvinit"
-        - "postgrey"
         - "pypolicyd-spf"
         - "smtpping"
         - "sqlgrey"
@@ -41,6 +42,9 @@
         - "openssl-libs"
         - "certbot"
         - "python2-certbot-dns-rfc2136"
+        - "libspf2"
+        - "libspf2-devel"
+        - "libspf2-progs"
 
     - name: install-pkg | RedHat | Email related packages should be installed
       yum:
@@ -48,6 +52,62 @@
         state: "present"
       with_items:
         - "mailx"
+        - "mb2md"
+        - "procmail"
+  when: ansible_os_family == "RedHat"
+
+# -----------------------------------------------------------------------------
+- block:
+    - name: install-pkg | Debian | Postfix should be installed
+      apt:
+        name:  "{{ item }}"
+        state: "present"
+      with_items:
+        - "postfix"
+        - "postfix-doc"
+        - "postfix-mysql"
+        - "postfix-pcre"
+        - "postfix-pgsql"
+        - "postfix-sqlite"
+        - "pflogsumm"
+
+    - name: install-pkg | Debian | Postfix related packages should be installed
+      apt:
+        name:  "{{ item }}"
+        state: "present"
+      with_items:
+        - "libspf2-2"
+        - "libspf2-dev"
+        - "smtpping"
+        - "sqlgrey"
+        - "swaks"
+
+    - name: install-pkg | Debian | SASL related packages should be installed
+      apt:
+        name:  "{{ item }}"
+        state: "present"
+      with_items:
+      with_items:
+        - "libsasl2-2"
+        - "libsasl2-dev"
+        - "libsasl2-modules"
+        - "libsasl2-modules-db"
+        - "cyrus-sasl2-doc"
+        - "sasl2-bin"
+        - "openssl"
+        - "libssl-dev"
+        - "libssl-doc"
+        - "letsencrypt"
+        - "dnsutils"
+
+    - name: install-pkg | Debian | Email related packages should be installed
+      apt:
+        name:  "{{ item }}"
+        state: "present"
+      with_items:
+        - "bsd-mailx"
+        - "maildrop"
+        - "mb2md"
         - "procmail"
   when: ansible_os_family == "RedHat"
 

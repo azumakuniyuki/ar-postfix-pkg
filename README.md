@@ -2,7 +2,9 @@ Ansible Role: Postfix(pkg)
 ================================================================================
 Install and configure Postfix as an SMTP Server
 
-- Install Postfix 2.10.1 using yum at CentOS 7
+- Install Postfix
+  - version 2.10.1 using yum at CentOS 7
+  - version 3.1.9 using apt at Debian 9.8
 - Configure files in /etc/postfix
 - Open tcp/25 and tcp/587
 
@@ -36,5 +38,5 @@ BSD
 
 Author Information
 --------------------------------------------------------------------------------
-[azumakuniyuki](http://nyaan.jp)
+[azumakuniyuki](https://nyaan.jp)
 

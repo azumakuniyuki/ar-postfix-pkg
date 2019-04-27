@@ -9,6 +9,10 @@ galaxy_info:
   - name: EL
     versions:
     - 7
+  - name: Debian
+    versions:
+    - 9.7.0
+    - 9.8.0
   galaxy_tags: ['postfix', 'smtp', 'mta', 'mail', 'email']
 dependencies: []
 
