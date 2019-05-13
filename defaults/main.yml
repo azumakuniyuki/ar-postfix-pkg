@@ -9,7 +9,6 @@
 postfix:
   enabled: true
   started: true
-  callmilter: false
   configroot: "/etc/postfix"
   mailqueues: "/var/spool/postfix"
   serverroot: "/usr"
@@ -41,11 +40,21 @@ postfix:
   mailconfig:
     myhostname: "neko.nyaan.example.jp"
     domainname: "nyaan.example.jp"
-  database:
+  amavisd:
     enabled: false
-    engine: "PostgreSQL"
-    username: "postfix"
-    password: "secret"
-    hostname: "127.0.0.1"
-    port: 5432
+  backend:
+    enabled: false
+    engine:  "MySQL"
+    host: "localhost"
+    port: 3306
+    login:
+      username: "root"
+      password: null
+    # mysql> SHOW CREATE DATABASE `dbname`;
+    database: "email"
+    encoding: "utf8"
+    # mysql> SHOW GRANTS FOR `username`@`hostname`
+    username: "postmaster"
+    password: null
+    grants:   "email.*:ALL,GRANT"
 

@@ -5,9 +5,9 @@
 # | |_) | (_) \__ \ |_|  _| |>  <| || |_) |   < (_| | |/ / | || (_| \__ \   <\__ \
 # | .__/ \___/|___/\__|_| |_/_/\_\ || .__/|_|\_\__, | /_/   \__\__,_|___/_|\_\___/
 # |_|                             \_\_|        |___/_/                            
-# smtp-milter
+# smtp-filter
 - block:
-    - name: smtp-milter | RedHat | amavisd-new should be installed
+    - name: smtp-filter | RedHat | amavisd-new should be installed
       yum:
         name:  "{{ item }}"
         state: "present"
@@ -15,7 +15,7 @@
         - "amavisd-new"
         - "amavisd-milter"
 
-    - name: smtp-milter | RedHat | spamassassin should be installed
+    - name: smtp-filter | RedHat | spamassassin should be installed
       yum:
         name:  "{{ item }}"
         state: "present"
@@ -24,7 +24,7 @@
         - "spamass-milter"
         - "spamass-milter-postfix"
 
-    - name: smtp-milter | RedHat | Clam should be installed
+    - name: smtp-filter | RedHat | Clam should be installed
       yum:
         name:  "{{ item }}"
         state: "present"
@@ -40,11 +40,28 @@
         - "clamav-update"
         - "clamd"
         - "clamsmtp"
+
+    - name: smtp-filter | RedHat | amavisd.conf should be deployed
+      notify: Restart amavis
+      template:
+        src:  "etc/amavisd.conf.j2"
+        dest: "/etc/amavisd.conf"
+        mode: "0644"
+
+    - name: smtp-filter | RedHat | ClamAV config files should be deployed
+      notify: Restart clamsmtpd
+      template:
+        src:  "{{ item }}.j2"
+        dest: "/etc/clamd.d/{{ item }}.conf"
+        mode: "0644"
+      with_items:
+        - "clamsmtp"
+        - "scan"
   when: ansible_os_family == "RedHat"
 
 # -----------------------------------------------------------------------------
 - block:
-    - name: smtp-milter | Debian | amavisd-new should be installed
+    - name: smtp-filter | Debian | amavisd-new should be installed
       apt:
         name:  "{{ item }}"
         state: "present"
@@ -53,7 +70,7 @@
         - "amavisd-milter"
         - "dkimproxy"
 
-    - name: smtp-milter | Debian | spamassassin should be installed
+    - name: smtp-filter | Debian | spamassassin should be installed
       apt:
         name:  "{{ item }}"
         state: "present"
@@ -61,7 +78,7 @@
         - "spamassassin"
         - "spamass-milter"
 
-    - name: smtp-milter | Debian | Clam should be installed
+    - name: smtp-filter | Debian | Clam should be installed
       apt:
         name:  "{{ item }}"
         state: "present"
@@ -78,4 +95,23 @@
         - "clamsmtp"
         - "libclamav7"
         - "libclamav-dev"
+
+    - name: smtp-filter | Debian | Each config files in /etc/amavis/conf.d should be deployed
+      notify: Restart amavis
+      template:
+        src:  "{{ item }}"
+        dest: "/etc/amavis/conf.d/{{ item | basename | replace('.j2', '') }}"
+        mode: "0644"
+      with_fileglob: "templates/etc/amavis/conf.d/*.j2"
+
+    - name: smtp-filter | Debian | ClamAV config files should be deployed
+      notify: Restart clamav-daemon
+      template:
+        src:  "{{ item }}.j2"
+        dest: "/etc/clamav/{{ item }}.conf"
+        mode: "0644"
+      with_items:
+        - "clamd"
+        - "freshclam"
   when: ansible_os_family == "Debian"
+

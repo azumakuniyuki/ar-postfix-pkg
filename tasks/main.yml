@@ -8,8 +8,8 @@
 # tasks file for ar-postfix-pkg
 - include: install-pkg.yml
 - include: make-config.yml
-- include: smtp-milter.yml
-  when: postfix.callmilter == true
+- include: smtp-filter.yml
+  when: postfix.amavisd.enabled == true
 - include: build-local.yml
 - include: boot-script.yml
 - include: port-config.yml
