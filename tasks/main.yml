@@ -10,6 +10,8 @@
 - include: make-config.yml
 - include: smtp-filter.yml
   when: postfix.amavisd.enabled == true
+- include: setup-table.yml
+  when: postfix.backend.enabled == true
 - include: build-local.yml
 - include: boot-script.yml
 - include: port-config.yml

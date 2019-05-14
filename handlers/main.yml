@@ -25,3 +25,4 @@
   service:
     name:  "clamav-daemon"
     state: "restarted"
+

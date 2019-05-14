@@ -1,0 +1,11 @@
+-- {{ postfix.backend.database }}.vmailboxes table
+CREATE TABLE IF NOT EXISTS `vmailboxes` (
+    `id`       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `lhs`      VARCHAR(255) NOT NULL UNIQUE,
+    `rhs`      VARCHAR(255) NOT NULL,
+    `note`     TEXT DEFAULT NULL,
+    `updated`  DATETIME DEFAULT NULL,
+    `created`  DATETIME DEFAULT NULL,
+    `disabled` TINYINT(1) DEFAULT 0 NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='{{ postfix.backend.database }}.vmailboxes'

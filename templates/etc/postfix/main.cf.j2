@@ -2622,6 +2622,8 @@ masquerade_exceptions = root, mailer-daemon, postmaster
 #
 #   See also the VIRTUAL_README and ADDRESS_CLASS_README documents  for further
 #   information.
+#
+#virtual_alias_domains = mysql:{{ postfix.backend.config }}/virtual-alias-domains.cf.j2
 virtual_alias_domains = hash:/etc/postfix/virthosts
 
 # virtual_alias_maps (default: $virtual_maps)
@@ -2630,6 +2632,8 @@ virtual_alias_domains = hash:/etc/postfix/virthosts
 #   in virtual(5).  For an overview  of Postfix  address  manipulations see the
 #   ADDRESS_REWRITING_README document. This feature is available in Postfix 2.0
 #   and later. The default value is backwards compatible with Postfix 1.1.
+#
+#virtual_alias_maps = mysql:{{ postfix.backend.config }}/virtual-alias-maps.cf
 virtual_alias_maps = hash:/etc/postfix/virtusers
 
 # virtual_mailbox_domains (default: $virtual_mailbox_maps)
@@ -2642,6 +2646,8 @@ virtual_alias_maps = hash:/etc/postfix/virtusers
 #   See also the virtual mailbox domain class in the ADDRESS_CLASS_README file.
 #   This parameter expects  the same syntax  as the mydestination configuration
 #   parameter.
+#
+#virtual_mailbox_domains = mysql:{{ postfix.backend.config }}/virtual-mailbox-domains.cf
 virtual_mailbox_domains = hash:/etc/postfix/vmailhosts
 
 # virtual_mailbox_maps (default: empty)
@@ -2669,6 +2675,8 @@ virtual_mailbox_domains = hash:/etc/postfix/vmailhosts
 #           ignore requests to use the proxymap(8) server. Instead it will open
 #           the table directly. Before Postfix version 2.2, the virtual(8) de-
 #           livery agent will terminate with a fatal error.
+#
+#virtual_mailbox_maps = mysql:{{ postfix.backend.config }}/virtual_mailbox_maps.cf
 virtual_mailbox_maps = hash:/etc/postfix/vmailboxes
 
 # virtual_uid_maps (default: empty)
