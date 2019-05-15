@@ -2697,7 +2697,7 @@ virtual_mailbox_maps = hash:/etc/postfix/vmailboxes
 #           ignore requests to use the proxymap(8) server. Instead it will open
 #           the table directly. Before Postfix version 2.2, the virtual(8) de-
 #           livery agent will terminate with a fatal error.
-virtual_uid_maps =
+virtual_uid_maps = static:{{ postfix.mailconfig.mailbox.uid }}
 
 # virtual_gid_maps (default: empty)
 #   Lookup tables with the per-recipient group ID for virtual(8) mailbox deliv-
@@ -2712,7 +2712,7 @@ virtual_uid_maps =
 #           ignore requests to use the proxymap(8) server. Instead it will open
 #           the table directly. Before Postfix version 2.2, the virtual(8) de-
 #           livery agent will terminate with a fatal error.
-virtual_gid_maps =
+virtual_gid_maps = static:{{ postfix.mailconfig.mailbox.gid }}
 
 # virtual_mailbox_base (default: empty)
 #   A prefix path  that the virtual(8) delivery agent  prepends to all pathname
@@ -2723,7 +2723,7 @@ virtual_gid_maps =
 #
 #   This parameter is specific to the virtual(8) delivery agent. It doesn't ap-
 #   ply when mail is delivered with a different mail delivery program.
-virtual_mailbox_base =
+virtual_mailbox_base = {{ postfix.mailconfig.mailbox.home }}
 
 
 # ADDRESS EXTENSIONS (e.g., user+foo)
