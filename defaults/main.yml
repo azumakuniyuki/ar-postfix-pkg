@@ -40,6 +40,17 @@ postfix:
   mailconfig:
     myhostname: "neko.nyaan.example.jp"
     domainname: "nyaan.example.jp"
+    mailbox:
+      # Values should be same as the following roles
+      # - ar-dovecot-pkg.dovecot.mailconfig.mailbox
+      username: "virtmail"
+      password: null
+      group: "virtmail"
+      uid: "660"
+      gid: "660"
+      home: "/home/virtmail"
+      shell: "/bin/sh"
+      comment: "'Virtual Mailbox'"
   amavisd:
     enabled: false
   backend:
