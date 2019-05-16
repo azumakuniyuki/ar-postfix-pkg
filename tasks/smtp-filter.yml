@@ -107,7 +107,7 @@
     - name: smtp-filter | Debian | ClamAV config files should be deployed
       notify: Restart clamav-daemon
       template:
-        src:  "{{ item }}.j2"
+        src:  "etc/clamav/{{ item }}.conf.j2"
         dest: "/etc/clamav/{{ item }}.conf"
         mode: "0644"
       with_items:

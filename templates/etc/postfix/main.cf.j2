@@ -419,6 +419,7 @@ smtp_tls_security_level = may
 #
 #   Specify "tls_append_default_CA = no" to prevent Postfix from appending the
 #   system-supplied default CAs and trusting third-party certificates.
+#smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 #smtp_tls_CAfile = /etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt
 
 # smtp_tls_CApath (default: empty)
@@ -433,6 +434,7 @@ smtp_tls_security_level = may
 #   Specify "tls_append_default_CA = no" to prevent  Postfix from appending the
 #   system-supplied default CAs and trusting third-party certificates.
 #smtp_tls_CApath = /etc/pki/ca-trust/extracted/openssl
+#smtp_tls_CApath = /etc/ssl/certs
 
 # smtp_tls_session_cache_database (default: empty)
 #   The "smtp_tls_session_cache_database"  parameter is a name of the file con-
@@ -1847,7 +1849,8 @@ smtpd_tls_ask_ccert = no
 #       smtpd_tls_CAfile = /etc/postfix/CAcert.pem
 #
 #   This feature is available in Postfix 2.2 and later.
-smtpd_tls_CAfile = /etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt
+#smtpd_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+#smtpd_tls_CAfile = /etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt
 
 # smtpd_tls_CApath (default: empty)
 #   A directory name containing (PEM format) CA certificates of root CAs trust-
@@ -1877,7 +1880,8 @@ smtpd_tls_CAfile = /etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt
 #       smtpd_tls_CApath = /etc/postfix/certs
 #
 #   This feature is available in Postfix 2.2 and later.
-smtpd_tls_CApath = /etc/pki/ca-trust/extracted/openssl
+#smtpd_tls_CApath = /etc/ssl/certs
+#smtpd_tls_CApath = /etc/pki/ca-trust/extracted/openssl
 
 # smtpd_tls_dh1024_param_file (default: empty)
 #   File with "DH parameters" that the Postfix SMTP server should use with non-
@@ -2676,7 +2680,7 @@ virtual_mailbox_domains = hash:/etc/postfix/vmailhosts
 #           the table directly. Before Postfix version 2.2, the virtual(8) de-
 #           livery agent will terminate with a fatal error.
 #
-#virtual_mailbox_maps = mysql:{{ postfix.backend.config }}/virtual_mailbox_maps.cf
+#virtual_mailbox_maps = mysql:{{ postfix.backend.config }}/virtual-mailbox-maps.cf
 virtual_mailbox_maps = hash:/etc/postfix/vmailboxes
 
 # virtual_uid_maps (default: empty)
