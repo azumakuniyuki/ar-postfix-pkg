@@ -2627,7 +2627,7 @@ masquerade_exceptions = root, mailer-daemon, postmaster
 #   See also the VIRTUAL_README and ADDRESS_CLASS_README documents  for further
 #   information.
 #
-#virtual_alias_domains = mysql:{{ postfix.backend.config }}/virtual-alias-domains.cf.j2
+#virtual_alias_domains = mysql:{{ postfix.backend.config }}/virtual-alias-domains.cf
 virtual_alias_domains = hash:/etc/postfix/virthosts
 
 # virtual_alias_maps (default: $virtual_maps)
@@ -2767,7 +2767,7 @@ swap_bangpath = no
 #   qmail-style delivery (the "/" is required).
 #
 #home_mailbox = Mailbox
-home_mailbox = Maildir/
+#home_mailbox = Maildir/
 
 # mail_spool_directory (default: see "postconf -d" output)
 #   The mail_spool_directory parameter specifies the directory where UNIX-style
