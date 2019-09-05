@@ -51,7 +51,14 @@ postfix:
       home: "/home/virtmail"
       shell: "/bin/sh"
       comment: "'Virtual Mailbox'"
-  amavisd:
+  checkvirus:
+    # clamd should be installed and running as root
+    enabled: false
+    logsdir: "/var/log/clam"
+    tempdir: "/var/spool/clam"
+    address: "127.0.0.1:6250"
+    srcport: 6251
+  spamfilter:
     enabled: false
   backend:
     enabled: false
