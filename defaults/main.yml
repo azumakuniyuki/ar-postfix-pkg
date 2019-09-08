@@ -55,7 +55,8 @@ postfix:
     # clamd should be installed and running as root
     enabled: false
     logsdir: "/var/log/clam"
-    tempdir: "/var/spool/clam"
+    tempdir: "/var/tmp/clam"
+    runtime: "/var/spool/clam"
     address: "127.0.0.1:6250"
     srcport: 6251
   spamfilter:

@@ -11,18 +11,8 @@
     name:  "postfix"
     state: "restarted"
 
-- name: Restart amavis
-  service:
-    name:  "amavisd-new"
-    state: "restarted"
-
 - name: Restart clamsmtpd
   service:
     name:  "clamsmtpd"
-    state: "restarted"
-
-- name: Restart clamav-daemon
-  service:
-    name:  "clamav-daemon"
     state: "restarted"
 
