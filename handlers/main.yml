@@ -16,3 +16,9 @@
     name:  "clamsmtpd"
     state: "restarted"
 
+- name: Reload systemd
+  systemd:
+    daemon_reload: "yes"
+    name:  "postfix"
+    state: "restarted"
+
