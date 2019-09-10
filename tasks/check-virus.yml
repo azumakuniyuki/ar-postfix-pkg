@@ -14,17 +14,21 @@
       with_items:
         - "clamsmtp"
 
-    - name: check-virus | RedHat | Each user should be included in virusgroup
+    - name: create-user | clamsmtp user should be created
       user:
-        name:   "{{ item }}"
-        groups: "virusgroup"
-        state:  "present"
-      with_items:
-        - "clamsmtp"
+        createhome: "yes"
+        comment:    "ClamSMTP User"
+        password:   null
+        name:  "clamsmtp"
+        uid:   393
+        group: "mail"
+        shell: "/sbin/nologin"
+        home:  "{{ postfix.checkvirus.rootdir }}"
+        state: "present"
 
-    - name: check-virus | RedHat | Runtime directory should be created
+    - name: check-virus | RedHat | Root directory should be created
       file:
-        path:  "{{ postfix.checkvirus.runtime }}"
+        path:  "{{ postfix.checkvirus.rootdir }}"
         mode:  "0755"
         owner: "clamsmtp"
         group: "mail"
@@ -46,11 +50,18 @@
         mode: "0644"
 
     - name: check-virus | RedHat | Unit file should be deployed
+      register: clamsmtpd_unit_deployed
       notify: Restart clamsmtpd
       template:
         src:  "usr/lib/systemd/system/clamsmtpd.service.j2"
         dest: "/usr/lib/systemd/system/clamsmtpd.service"
         mode: "0644"
 
+    - name: check-virus | RedHat | Reload sytemd
+      when: clamsmtpd_unit_deployed.changed
+      systemd:
+        daemon_reload: "yes"
+        name:  "clamsmtpd"
+        state: "restarted"
   when: ansible_os_family == "RedHat"
 

@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=forking
-PIDFile={{ postfix.checkvirus.runtime }}/smtpd.pid
-ExecStart=/usr/sbin/clamsmtpd -f /etc/clamsmtpd.conf -p {{ postfix.checkvirus.runtime }}/smtpd.pid
+PIDFile={{ postfix.checkvirus.rootdir }}/smtpd.pid
+ExecStart=/usr/sbin/clamsmtpd -f /etc/clamsmtpd.conf -p {{ postfix.checkvirus.rootdir }}/smtpd.pid
 
 [Install]
 WantedBy=multi-user.target

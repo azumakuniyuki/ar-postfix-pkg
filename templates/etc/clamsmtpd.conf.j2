@@ -22,7 +22,7 @@ TimeOut: 180
 Listen: {{ postfix.checkvirus.address }}
 
 # The address clamd is listening on
-ClamAddress: {{ postfix.checkvirus.runtime }}/smtpd.sock
+ClamAddress: {{ postfix.checkvirus.rootdir }}/smtpd.sock
 
 # A header to add to all scanned email
 Header: X-Virus-Scanned: ClamAV using ClamSMTP
