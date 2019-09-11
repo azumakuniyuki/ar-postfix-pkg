@@ -128,12 +128,30 @@ scache    unix  -       -       n       -       1       scache
 #  ${nexthop} ${user}
 #
 # ====================================================================
-#
+# ClamSMTP filter called from "content_filter"
+# service type  private unpriv  chroot  wakeup  maxproc command + args
+#               (yes)   (yes)   (yes)   (never) (100)
+clamsmtp  unix  -       -       n       -       16      smtp
+  -o smtp_send_xforward_command=yes
+  -o smtp_data_done_timeout=600
+
+# Source address for back to Postix after virus scan using ClamSMTP
+127.0.0.1:{{ postfix.checkvirus.srcport }} inet  n  -       n       -       16      smtpd
+  -o content_filter=
+  -o mynetworks_style=host
+  -o smtpd_helo_restrictions=
+  -o smtpd_client_restrictions=
+  -o smtpd_sender_restrictions=
+  -o smtpd_recipient_restrictions=permit_mynetworks,reject
+  -o smtpd_authorized_xforward_hosts=127.0.0.0/8
+  -o receive_override_options=no_unknown_recipient_checks,no_header_body_checks
+
+# ====================================================================
 # Use amavisd-new for checking spam and virus
-#
+# service type  private unpriv  chroot  wakeup  maxproc command + args
+#               (yes)   (yes)   (yes)   (never) (100)
 #amavis    unix  -       -       n       -       2       smtp
 #  -o smtp_data_done_timeout=1200 -o smtp_send_xforward_command=yes
-#  -o disable_dns_lookups=yes
 #127.0.0.1:10025 inet n  -       n       -       -       smtpd
 #  -o content_filter=
 #  -o local_recipient_maps=

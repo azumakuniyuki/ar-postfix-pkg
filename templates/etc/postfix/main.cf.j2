@@ -2413,7 +2413,8 @@ body_checks = pcre:/etc/postfix/re_messagebody
 #          with Postfix 2.6 or earlier, or specify a content_filter value with
 #          an explicit next-hop destination.
 #
-#content_filter=amavis:[127.0.0.1]:10024
+#content_filter = clamsmtp:{{ postfix.checkvirus.address }}
+#receive_override_options = no_address_mappings
 
 # MILTER
 # -----------------------------------------------------------------------------
