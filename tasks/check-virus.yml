@@ -63,5 +63,15 @@
         daemon_reload: "yes"
         name:  "clamsmtpd"
         state: "restarted"
+
+    - name: check-virus | ClamSMTPD should be started
+      service:
+        name:    "clamsmtpd"
+        enabled: "yes"
+
+    - name: check-virus | ClamSMTPD should be enabled
+      service:
+        name:  "clamsmtpd"
+        state: "started"
   when: ansible_os_family == "RedHat"
 
