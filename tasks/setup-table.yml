@@ -14,6 +14,14 @@
     group: "postfix"
     mode:  "0750"
 
+- name: make-config | /etc/postfix/sql directory should be created
+  file:
+    path:  "{{ postfix.configroot }}/sql"
+    state: "directory"
+    owner: "root"
+    group: "postfix"
+    mode:  "0750"
+
 - name: make-config | config files for SQL should be deployed
   template:
     src:   "{{ item }}"
@@ -24,6 +32,15 @@
   with_fileglob: "templates{{ postfix.backend.config }}/*.j2"
 
 - block:
+    - name: make-config | SQL files for MySQL should be deployed
+      template:
+        src:   "{{ item }}"
+        dest:  "{{ postfix.configroot }}/sql/{{ item | basename | replace('.j2', '') }}"
+        mode:  "0640"
+        owner: "root"
+        group: "postfix"
+      with_fileglob: "templates/var/lib/mysql/*.sql.j2"
+
     - name: setup-table | MySQL | Databases should be created
       mysql_db:
         login_user:     "{{ postfix.backend.login.username }}"
