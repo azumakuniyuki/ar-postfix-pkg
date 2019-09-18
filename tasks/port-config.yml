@@ -8,18 +8,26 @@
 # port-config
 - name: port-config | /usr/bin/firewall-cmd exists or not
   register: firewallcmd
-  failed_when: firewallcmd.rc < 0
-  changed_when: firewallcmd.rc > 1
-  command: which firewall-cmd > /dev/null
+  ignore_errors: yes
+  failed_when: firewallcmd.rc == 1
+  changed_when: false
+  command: which firewall-cmd > /dev/null 2&>1
 
-- name: port-config | Each SMTP related port should be opened
+- name: port-config | SMTP port should be opened
   when: firewallcmd.rc == 0
   firewalld:
-    service:   "{{ item }}"
+    service:   "smtp"
     state:     "enabled"
     immediate: true
     permanent: true
-  with_items: ["smtp", "587/tcp"]
+
+- name: port-config | Submission port should be opened
+  when: firewallcmd.rc == 0
+  firewalld:
+    port:      "587/tcp"
+    state:     "enabled"
+    immediate: true
+    permanent: true
 
 - block:
     - name: port-config | Linux | Each SMTP related port should be opened
