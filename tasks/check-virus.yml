@@ -9,10 +9,9 @@
 - block:
     - name: check-virus | RedHat | ClamSMTP should be installed
       yum:
-        name:  "{{ item }}"
         state: "present"
-      with_items:
-        - "clamsmtp"
+        name:
+          - "clamsmtp"
 
     - name: create-user | clamsmtp user should be created
       user:
