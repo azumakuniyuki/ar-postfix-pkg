@@ -33,6 +33,7 @@
 
 - block:
     - name: make-config | SQL files for MySQL should be deployed
+      register: sqlfiles
       template:
         src:   "{{ item }}"
         dest:  "{{ postfix.configroot }}/sql/{{ item | basename | replace('.j2', '') }}"
@@ -59,4 +60,16 @@
         password:       "{{ postfix.backend.password }}"
         priv:           "{{ postfix.backend.grants }}"
         state:          "present"
+
+    - name: setup-table | MySQL | Each table should be created
+      when: sqlfiles.changed
+      mysql_db:
+        name:   "{{ postfix.backend.database }}"
+        state:  "import"
+        target: "{{ postfix.configroot }}/sql/email.{{ item }}.sql"
+      with_items:
+        - "virthosts"
+        - "virtusers"
+        - "vmailboxes"
+        - "vmailhosts"
   when: postfix.backend.engine == "MySQL"
