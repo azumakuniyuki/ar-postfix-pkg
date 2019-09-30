@@ -55,53 +55,48 @@
 - block:
     - name: install-pkg | Debian | Postfix should be installed
       apt:
-        name:  "{{ item }}"
         state: "present"
-      with_items:
-        - "postfix"
-        - "postfix-doc"
-        - "postfix-mysql"
-        - "postfix-pcre"
-        - "postfix-pgsql"
-        - "postfix-sqlite"
-        - "pflogsumm"
+        name:
+          - "postfix"
+          - "postfix-doc"
+          - "postfix-mysql"
+          - "postfix-pcre"
+          - "postfix-pgsql"
+          - "postfix-sqlite"
+          - "pflogsumm"
 
     - name: install-pkg | Debian | Postfix related packages should be installed
       apt:
-        name:  "{{ item }}"
         state: "present"
-      with_items:
-        - "libspf2-2"
-        - "libspf2-dev"
-        - "smtpping"
-        - "swaks"
+        name:
+          - "libspf2-2"
+          - "libspf2-dev"
+          - "smtpping"
+          - "swaks"
 
     - name: install-pkg | Debian | SASL related packages should be installed
       apt:
-        name:  "{{ item }}"
         state: "present"
-      with_items:
-      with_items:
-        - "libsasl2-2"
-        - "libsasl2-dev"
-        - "libsasl2-modules"
-        - "libsasl2-modules-db"
-        - "cyrus-sasl2-doc"
-        - "sasl2-bin"
-        - "openssl"
-        - "libssl-dev"
-        - "libssl-doc"
-        - "letsencrypt"
-        - "dnsutils"
+        name:
+          - "libsasl2-2"
+          - "libsasl2-dev"
+          - "libsasl2-modules"
+          - "libsasl2-modules-db"
+          - "cyrus-sasl2-doc"
+          - "sasl2-bin"
+          - "openssl"
+          - "libssl-dev"
+          - "libssl-doc"
+          - "letsencrypt"
+          - "dnsutils"
 
     - name: install-pkg | Debian | Email related packages should be installed
       apt:
-        name:  "{{ item }}"
         state: "present"
-      with_items:
-        - "bsd-mailx"
-        - "maildrop"
-        - "mb2md"
-        - "procmail"
+        name:
+          - "bsd-mailx"
+          - "maildrop"
+          - "mb2md"
+          - "procmail"
   when: ansible_os_family == "Debian"
 
