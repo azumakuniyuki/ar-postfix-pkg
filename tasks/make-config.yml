@@ -77,6 +77,13 @@
     chdir:   "{{ postfix.configroot }}"
   with_items: "{{ postfix.credential }}"
 
+- name: make-config | Each file in /etc/cron.d should be deployed
+  template:
+    src:  "{{ item }}"
+    dest: "/etc/cron.d/{{ item | basename | replace('.j2', '') }}"
+    mode: "0644"
+  with_fileglob: "templates/etc/cron.d/*.j2"
+
 - block:
     - name: make-config | RedHat | Deploy /etc/sasl2/smtpd.conf
       template:
