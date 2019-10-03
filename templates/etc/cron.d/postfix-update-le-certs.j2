@@ -1,6 +1,7 @@
 # /etc/cron.d/postfix-update-le-certs
 SHELL=/bin/bash
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
+HOOK="systemctl restart postfix && firewall-cmd -q --reload"
 
 # .---------------- minute (0 - 59)
 # |  .------------- hour (0 - 23)
@@ -9,6 +10,6 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 # |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
 # |  |  |  |  |
 # *  *  *  *  * user-name  command to be executed
-#00  06  *  *  4 root       /usr/bin/firewall-cmd --zone=public --add-service=http
-#01  06  *  *  4 root       /usr/bin/certbot certonly --standalone -d mbox.example.jp && /usr/bin/firewall-cmd --reload
+#00  06  *  *  4 root       /usr/bin/firewall-cmd -q --zone=public --add-service=http
+#01  06  *  *  4 root       /usr/bin/certbot renew --standalone --post-hook "$HOOK"
 
