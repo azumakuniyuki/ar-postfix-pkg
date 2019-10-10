@@ -61,6 +61,10 @@ postfix:
     srcport: 6251
   spamfilter:
     enabled: false
+  postfixadmin:
+    enabled:  false
+    webroot:  "/var/www/PostfixAdmin"
+    password: null
   backend:
     enabled: false
     config:  "/etc/postfix/db"
