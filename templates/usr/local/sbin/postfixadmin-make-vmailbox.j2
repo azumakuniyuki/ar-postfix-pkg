@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+export LANG=C
+export PATH="/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin"
+
+VMAILROOT="{{ postfix.mailconfig.mailbox.home }}"
+LOCALPART="$1"
+DOMAINDIR="$2"
+MKMAILDIR="/usr/local/sbin/make-vmailbox"
+
+if [ -n "$LOCALPART" -a -n "$DOMAINDIR" ]; then
+    if [ -x "$MKMAILDIR" ]; then
+        $MKMAILDIR $LOCALPART@$DOMAINDIR
+    else
+        echo "$0: $MKMAILDIR command is not executable"
+        exit 1;
+    fi
+else
+    echo "$0: Invalid parameters"
+    exit 1;
+fi
+exit 0
+

@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+export LANG=C
+export PATH="/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin"
+
+VMAILROOT="{{ postfix.mailconfig.mailbox.home }}"
+LOCALPART="$1"
+DOMAINDIR="$2"
+VMAILPATH=""
+TIMETOKEN="`date '+%F'`"
+
+if [ -n "$LOCALPART" -a -n "$DOMAINDIR" ]; then
+    VMAILPATH="$VMAILROOT/$DOMAINDIR/$LOCALPART"
+    test -d "$VMAILPATH" && mv $VMAILPATH $VMAILPATH-REMOVED-$TIMETOKEN
+else
+    echo "$0: Invalid parameters"
+    exit 1;
+fi
+exit 0
+
