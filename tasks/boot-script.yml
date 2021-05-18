@@ -9,12 +9,12 @@
 - name: boot-script | Postfix should be started
   when: postfix.started == true
   service:
-    name:    "postfix"
-    enabled: "yes"
+    name:  "postfix"
+    state: "started"
 
 - name: boot-script | Postfix should be enabled
   when: postfix.enabled == true
   service:
-    name:  "postfix"
-    state: "started"
+    name:    "postfix"
+    enabled: "yes"
 
