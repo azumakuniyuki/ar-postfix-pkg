@@ -1,13 +1,172 @@
+# Postfix master process configuration file.  For details on the format of the
+# file, see the master(5) manual page (command: "man 5 master"). Do not forget
+# to execute "postfix reload" after editing this file.
 #
-# Postfix master process configuration file.  For details on the format
-# of the file, see the master(5) manual page (command: "man 5 master").
+# ============================================================================
+# SYNTAX (http://www.postfix.org/master.5.html)
+#   The general format of the master.cf file is as follows:
 #
-# Do not forget to execute "postfix reload" after editing this file.
+#     - Empty lines and whitespace-only lines are ignored,  as are lines whose
+#       first non-whitespace character is a `#'.
+#     - A logical line starts with non-whitespace text. A line that starts
+#       with whitespace continues a logical line.
+#     - Each logical line defines  a single Postfix service.Each service is i-
+#       dentified by its name and type as described below. When multiple lines
+#       specify the same service name and type, only the last one is remember-
+#       ed. Otherwise, the order of master.cf service definitions doesn't mat-
+#       ter.
 #
-# ==========================================================================
+#   Each logical line consists of eight fields  separated by whitespace. These
+#   are described below in the order as they appear in the  master.cf file.
+#
+#   Where applicable a field of "-" requests that the builtin default value be
+#   used. For boolean fields specify "y" or "n" to override the default value.
+#
+#   Service name
+#       The service name syntax depends on the service type as described next.
+#
+#   Service typee
+#       Specify one of the following service types:
+#
+#       inet    The service listens on a TCP/IP socket  and is  accessible via
+#               the network.
+#
+#               The service name is specified as host:port,  denoting the host
+#               and port on which new connections should be accepted. The host
+#               part  (and colon) may be omitted.  Either host  or port may be
+#               given in symbolic form (see hosts(5) or services(5)) or in nu-
+#               meric form  (IP address or port number).  Host information may
+#               be enclosed inside "[]"; this form is necessary only with IPv6
+#               addresses.
+#
+#               Note: with Postfix version 2.2 and later specify 
+#                     "inet_interfaces = loopback-only" in main.cf, instead of
+#                     hard-coding loopback IP address information in master.cf
+#                     or in main.cf.
+#
+#       unix    The service listens  on a UNIX-domain stream socket and is ac-
+#               cessible for local clients only.
+#
+#               The service name  is a pathname  relative to the Postfix queue
+#               directory (pathname controlled with the "queue_directory" con-
+#               figuration parameter in main.cf).
+#
+#       unix-dgram
+#               The  service listens on  a UNIX-domain datagram socket  and is
+#               accessible for local clients only.
+#
+#               The service name  is a pathname  relative to the Postfix queue
+#               directory (pathname controlled with the "queue_directory" con-
+#               figuration parameter in main.cf).
+#
+#       pass    The service listens on a UNIX-domain stream socket, and is ac-
+#               cessible to local clients  only. It receives one  open connec-
+#               tion (file descriptor passing) per connection request.
+#
+#               The service name  is a pathname  relative to the Postfix queue
+#               directory (pathname controlled with the "queue_directory" con-
+#               figuration parameter in main.cf).
+#
+#               This feature is available as of Postfix version 2.5.
+#
+#   Private (default: y)
+#       Whether or not access is restricted to the mail system. Internet (type
+#       inet) services can't be private.
+#
+#   Unprivileged (default: y)
+#       Whether the  service runs with root  privileges or as the owner of the
+#       Postfix system (the owner name is controlled by the mail_owner config-
+#       uration variable in the main.cf file). The local(8), pipe(8), spawn(8)
+#       and virtual(8) daemons require privileges.
+#
+#   Chroot (default: Postfix >= 3.0: n, Postfix <3.0: y)
+#       Whether or not the  service runs chrooted  to the mail queue directory
+#       (pathname is controlled  by the queue_directory configuration variable
+#       in the main.cf file).
+#
+#       Chroot should not be used  with the  local(8),  pipe(8), spawn(8), and
+#       virtual(8) daemons.  Although the proxymap(8) server can run chrooted,
+#       doing so  defeats most of  the purpose of  having that service  in the
+#       first place.
+#
+#   Wake up time (default: 0)
+#       Automatically wake up the  named service after the specified number of
+#       seconds. The wake up  is implemented by connecting  to the service and
+#       sending a wake up request.  A "?" at the end of the wake-up time field
+#       requests that no wake up events be sent  before the  first time a ser-
+#       vice is used. Specify 0 for no automatic wake up.
+#
+#       The pickup(8), qmgr(8) and flush(8) daemons require a wake up timer.
+#
+#   Process limit (default: $default_process_limit)
+#       The maximum number of processes that may execute this service simulta-
+#       neously. Specify 0 for no process count limit.
+#
+#       NOTE: Some  Postfix  services  must be configured  as a single-process
+#             service (for example, qmgr(8)) and some services must be config-
+#             ured with no process limit (for example, cleanup(8)). These lim-
+#             its must not be changed.
+#
+#   Command name + arguments
+#       The command to be executed.  Characters that are special to  the shell
+#       such as ">" or "|" have no special meaning here,  and quotes cannot be
+#       used to protect  arguments  containing  whitespace.  To protect white-
+#       space, use "{"  and "}" as described below.
+#
+#       The command name is relative to the Postfix daemon directory (pathname
+#       is controlled by the daemon_directory configuration variable).
+#
+#       The command argument syntax for specific commands is  specified in the
+#       respective daemon manual page.
+#
+#       The following command-line options have the same effect for all daemon
+#       programs:
+#
+#       -D  Run the daemon under control  by  the  command  specified with the
+#           debugger_command variable in the main.cf configuration file.
+#           See DEBUG_README for hints and tips.
+#
+#       -o { name = value } (long form, Postfix >= 3.0)
+#       -o name=value (short form)
+#           Override the named main.cf configuration parameter.  The parameter
+#           value can refer  to other parameters as "$name" etc., just like in
+#           main.cf. See postconf(5) for syntax.
+#
+#           NOTE 1: With the "long form" shown above, whitespace after "{", a-
+#                   round "=", and before "}" is ignored, and whitespace with-
+#                   in the parameter value is preserved.
+#
+#           NOTE 2: with the  "short form" shown  above, do not specify white-
+#                   space around the "=" or in parameter values.  To specify a
+#                   parameter  value  that  contains  whitespace, use the long
+#                   form described above, or use commas  instead of spaces, or
+#                   specify the value in main.cf. Example:
+#
+#                   /etc/postfix/master.cf:
+#                       submission inet .... smtpd
+#                           -o smtpd_xxx_yyy=$submission_xxx_yyy
+#
+#                   /etc/postfix/main.cf
+#                       submission_xxx_yyy = text with whitespace...
+#
+#           NOTE 3: Over-zealous use of parameter  overrides makes the Postfix
+#                   configuration hard to  understand and  maintain. At a cer-
+#                   tain point,  it might be  easier to configure multiple in-
+#                   stances  of Postfix,  instead of configuring multiple per-
+#                   sonalities via master.cf.
+#
+#       -v  Increase the verbose logging level. Specify multiple -v options to
+#           make a Postfix daemon process increasingly verbose.
+#
+#       Other command-line arguments
+#           Specify "{" and "}"  around command  arguments that contain white-
+#           space (Postfix 3.0 and later). Whitespace after "{" and before "}"
+#           is ignored.
+#
+# ----------------------------------------------------------------------------
 # service type  private unpriv  chroot  wakeup  maxproc command + args
 #               (yes)   (yes)   (yes)   (never) (100)
-# ==========================================================================
+# ----------------------------------------------------------------------------
 smtp      inet  n       -       n       -       -       smtpd
 #smtp      inet  n       -       n       -       1       postscreen
 #smtpd     pass  -       -       n       -       -       smtpd
@@ -60,59 +219,60 @@ virtual   unix  -       n       n       -       -       virtual
 lmtp      unix  -       -       n       -       -       lmtp
 anvil     unix  -       -       n       -       1       anvil
 scache    unix  -       -       n       -       1       scache
+
+
+# ============================================================================
+# Interfaces to non-Postfix software. Be sure to examine the manual pages of
+# the non-Postfix software to find out what options it wants. Many of the fol-
+# lowing services use the Postfix pipe(8) delivery agent. See the pipe(8) man
+# page for information about ${recipient} and other message envelope options.
 #
-# ====================================================================
-# Interfaces to non-Postfix software. Be sure to examine the manual
-# pages of the non-Postfix software to find out what options it wants.
-#
-# Many of the following services use the Postfix pipe(8) delivery
-# agent.  See the pipe(8) man page for information about ${recipient}
-# and other message envelope options.
-# ====================================================================
-#
-# maildrop. See the Postfix MAILDROP_README file for details.
-# Also specify in main.cf: maildrop_destination_recipient_limit=1
-#
+# maildrop. See the Postfix MAILDROP_README file for details. Also specify in
+# main.cf: maildrop_destination_recipient_limit=1
+# ----------------------------------------------------------------------------
+# service type  private unpriv  chroot  wakeup  maxproc command + args
+#               (yes)   (yes)   (yes)   (never) (100)
+# ----------------------------------------------------------------------------
 #maildrop  unix  -       n       n       -       -       pipe
 #  flags=DRhu user=vmail argv=/usr/local/bin/maildrop -d ${recipient}
-#
-# ====================================================================
-#
+
+
+# ============================================================================
 # Recent Cyrus versions can use the existing "lmtp" master.cf entry.
 #
 # Specify in cyrus.conf:
 #   lmtp    cmd="lmtpd -a" listen="localhost:lmtp" proto=tcp4
 #
 # Specify in main.cf one or more of the following:
-#  mailbox_transport = lmtp:inet:localhost
-#  virtual_transport = lmtp:inet:localhost
-#
-# ====================================================================
+#   mailbox_transport = lmtp:inet:localhost
+#   virtual_transport = lmtp:inet:localhost
 #
 # Cyrus 2.1.5 (Amos Gouaux)
-# Also specify in main.cf: cyrus_destination_recipient_limit=1
-#
+#   Also specify in main.cf: cyrus_destination_recipient_limit=1
+# ----------------------------------------------------------------------------
+# service type  private unpriv  chroot  wakeup  maxproc command + args
+#               (yes)   (yes)   (yes)   (never) (100)
+# ----------------------------------------------------------------------------
 #cyrus     unix  -       n       n       -       -       pipe
 #  user=cyrus argv=/usr/lib/cyrus-imapd/deliver -e -r ${sender} -m ${extension} ${user}
-#
-# ====================================================================
-#
-# Old example of delivery via Cyrus.
-#
-#old-cyrus unix  -       n       n       -       -       pipe
-#  flags=R user=cyrus argv=/usr/lib/cyrus-imapd/deliver -e -m ${extension} ${user}
-#
-# ====================================================================
-#
+
+
+# ============================================================================
 # See the Postfix UUCP_README file for configuration details.
-#
+# ----------------------------------------------------------------------------
+# service type  private unpriv  chroot  wakeup  maxproc command + args
+#               (yes)   (yes)   (yes)   (never) (100)
+# ----------------------------------------------------------------------------
 #uucp      unix  -       n       n       -       -       pipe
 #  flags=Fqhu user=uucp argv=uux -r -n -z -a$sender - $nexthop!rmail ($recipient)
-#
-# ====================================================================
-#
+
+
+# ============================================================================
 # Other external delivery methods.
-#
+# ----------------------------------------------------------------------------
+# service type  private unpriv  chroot  wakeup  maxproc command + args
+#               (yes)   (yes)   (yes)   (never) (100)
+# ----------------------------------------------------------------------------
 #ifmail    unix  -       n       n       -       -       pipe
 #  flags=F user=ftn argv=/usr/lib/ifmail/ifmail -r $nexthop ($recipient)
 #
@@ -126,11 +286,14 @@ scache    unix  -       -       n       -       1       scache
 #mailman   unix  -       n       n       -       -       pipe
 #  flags=FR user=list argv=/usr/lib/mailman/bin/postfix-to-mailman.py
 #  ${nexthop} ${user}
-#
-# ====================================================================
+
+
+# ============================================================================
 # ClamSMTP filter called from "content_filter"
+# ----------------------------------------------------------------------------
 # service type  private unpriv  chroot  wakeup  maxproc command + args
 #               (yes)   (yes)   (yes)   (never) (100)
+# ----------------------------------------------------------------------------
 clamsmtp  unix  -       -       n       -       16      smtp
   -o smtp_send_xforward_command=yes
   -o smtp_data_done_timeout=600
@@ -146,10 +309,13 @@ clamsmtp  unix  -       -       n       -       16      smtp
   -o smtpd_authorized_xforward_hosts=127.0.0.0/8
   -o receive_override_options=no_unknown_recipient_checks,no_header_body_checks
 
-# ====================================================================
+
+# ============================================================================
 # Use amavisd-new for checking spam and virus
+# ----------------------------------------------------------------------------
 # service type  private unpriv  chroot  wakeup  maxproc command + args
 #               (yes)   (yes)   (yes)   (never) (100)
+# ----------------------------------------------------------------------------
 #amavis    unix  -       -       n       -       2       smtp
 #  -o smtp_data_done_timeout=1200 -o smtp_send_xforward_command=yes
 #127.0.0.1:10025 inet n  -       n       -       -       smtpd
@@ -166,4 +332,54 @@ clamsmtp  unix  -       -       n       -       16      smtp
 #  -o smtpd_error_sleep_time=0
 #  -o smtpd_soft_error_limit=1024
 #  -o smtpd_hard_error_limit=1023
+
+
+# ============================================================================
+# Outgoing SMTP connection to some ESPs
+# ----------------------------------------------------------------------------
+# service type  private unpriv  chroot  wakeup  maxproc command + args
+#               (yes)   (yes)   (yes)   (never) (100)
+# ----------------------------------------------------------------------------
+google-smtp: unix -     -       n       -       1       smtp
+  -o anvil_rate_limit_unit=60s
+  -o smtp_destination_concurrency_limit=2
+  -o smtp_destination_recipient_limit=10
+  -o smtp_destination_concurrency_failed_cohort_limit=10
+  -o syslog_name=postfix/google
+
+yahoo-smtp: unix -      -       n       -       1       smtp
+  -o anvil_rate_limit_unit=60s
+  -o smtp_initial_destination_concurrency=1
+  -o smtp_destination_concurrency_limit=4
+  -o smtp_destination_recipient_limit=2
+  -o smtp_destination_rate_delay=1s
+  -o syslog_name=postfix/yahoo
+
+# https://www.nttdocomo.co.jp/service/imode_mail/notice/mass_send/
+nttdocomo-smtp: unix -  -       n       -       1       smtp
+  -o anvil_rate_limit_unit=5s
+  -o smtp_destination_concurrency_limit=1
+  -o smtp_destination_recipient_limit=1
+  -o syslog_name=postfix/nttdocomo
+
+# https://www.au.com/mobile/service/attention/specification/
+aubykddi-smtp: unix -   -       n       -       1       smtp
+  -o anvil_rate_limit_unit=60s
+  -o smtp_destination_concurrency_limit=1
+  -o smtp_destination_recipient_limit=1
+  -o syslog_name=postfix/aubykddi
+
+# https://www.softbank.jp/mobile/support/mail/antispam/howto/wrestle/
+softbank-smtp: unix -   -       n       -       1       smtp
+  -o anvil_rate_limit_unit=60s
+  -o smtp_destination_concurrency_limit=1
+  -o smtp_destination_recipient_limit=1
+  -o syslog_name=postfix/softbank
+
+# https://www.ymobile.jp/service/others/spam/
+ymobile-smtp: unix -    -       n       -       1       smtp
+  -o anvil_rate_limit_unit=60s
+  -o smtp_destination_concurrency_limit=1
+  -o smtp_destination_recipient_limit=1
+  -o syslog_name=postfix/ymobile
 

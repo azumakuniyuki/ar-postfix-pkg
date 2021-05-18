@@ -1,133 +1,111 @@
 # SMTPD SENDER RESTRICTIONS (MAIL FROM)
-# =============================================================================
+# --------------------=============================================================================
 # smtpd_sender_restrictions (default: empty)
-#   Optional restrictions  that the Postfix SMTP server  applies in the context
-#   of a client MAIL FROM command.  See "SMTPD_ACCESS_README", section "Delayed
-#   evaluation of SMTP access restriction lists" for a discussion of evaluation
-#   context and time.
+#   Optional restrictions that the Postfix SMTP server applies in the context of a client MAIL FROM
+#   command. See SMTPD_ACCESS_README, section "Delayed evaluation of SMTP access restriction lists"
+#   for a discussion of evaluation context and time. The default is to permit everything.
 #
-#   The default is to permit everything.
-#
-#   The following restrictions are specific to the sender address received with
-#   the MAIL FROM command.
+#   The following restrictions are specific to the sender address received  with the MAIL FROM com-
+#   mand.
 #
 #   - check_sender_access type:table
-#       Search the specified access(5) database for the MAIL FROM address, do-
-#       main, parent domains, or localpart@, and execute the corresponding ac-
-#       tion.
+#       Search the specified access(5)  database for the MAIL FROM address, domain, parent domains,
+#       or localpart@, and execute the corresponding action.
 #
 #   - check_sender_a_access type:table
-#       Search the specified access(5) database for the IP addresses for the
-#       MAIL FROM domain, and execute the corresponding action. Note: a result
-#       of "OK" is not allowed for safety reasons. Instead, use DUNNO in order
-#       to exclude specific hosts from blacklists. This feature is available in
-#       Postfix 3.0 and later.
+#       Search the specified  access(5) database for the IP addresses for the MAIL FROM domain, and
+#       execute the corresponding action. Note: a result of "OK" is not allowed for safety reasons.
+#       Instead, use "DUNNO" in order to exclude specific hosts from blacklists. This feature is a-
+#       vailable in Postfix 3.0 and later.
 #
 #   - check_sender_mx_access type:table
-#       Search the specified access(5) database for the MX hosts for the MAIL
-#       FROM domain, and execute the corresponding action. Note: a result of
-#       "OK" is not allowed for safety reasons. Instead, use DUNNO in order to
-#       exclude specific hosts from blacklists. This feature is available in
-#       Postfix 2.1 and later.
+#       Search the specified access(5) database for the MX hosts for the MAIL FROM domain, and exe-
+#       cute the corresponding action. Note: a result of "OK" is not allowed for safety reasons.In-
+#       stead, use DUNNO in order to exclude specific hosts from blacklists. This feature is avail-
+#       able in Postfix 2.1 and later.
 #
 #   - check_sender_ns_access type:table
-#       Search the specified access(5) database for the DNS servers for the
-#       MAIL FROM domain, and execute the corresponding action. Note: a result
-#       of "OK" is not allowed for safety reasons. Instead, use DUNNO in order
-#       to exclude specific hosts from blacklists. This feature is available in
-#       Postfix 2.1 and later.
+#       Search the specified  access(5) database for the DNS servers  for the MAIL FROM domain, and
+#       execute the corresponding action. Note: a result of "OK" is not allowed for safety reasons.
+#       Instead, use "DUNNO" in order to exclude specific hosts from blacklists. This feature is a-
+#       vailable in Postfix 2.1 and later.
 #
 #   - reject_authenticated_sender_login_mismatch
-#       Enforces the reject_sender_login_mismatch restriction for authenticated
-#       clients only. This feature is available in Postfix version 2.1 and lat-
-#       er.
+#       Enforces  the  "reject_sender_login_mismatch" restriction  for authenticated  clients only.
+#       This feature is available in Postfix version 2.1 and later.
 #
 #   - reject_known_sender_login_mismatch
-#       Apply the reject_sender_login_mismatch restriction only to MAIL FROM
-#       addresses that are known in $smtpd_sender_login_maps. This feature is
-#       available in Postfix version 2.11 and later.
+#       Apply the "reject_sender_login_mismatch" restriction only to "MAIL FROM" addresses that are
+#       known in $smtpd_sender_login_maps. This feature is available in Postfix 2.11 and later.
 #
 #   - reject_non_fqdn_sender
-#       Reject the request when the MAIL FROM address specifies a domain that
-#       is not in fully-qualified domain form as required by the RFC.
-#
-#       The non_fqdn_reject_code parameter specifies the response code for re-
-#       jected requests (default: 504).
+#       Reject the request when the MAIL FROM address specifies a domain that is not in fully-qual-
+#       ified  domain form as required by  the RFC.  The "non_fqdn_reject_code" parameter specifies
+#       the response code for rejected requests (default: 504).
 #
 #   - reject_rhsbl_sender rbl_domain=d.d.d.d
-#       Reject the request when the MAIL FROM domain is listed with the A rec-
-#       ord "d.d.d.d" under rbl_domain (Postfix version 2.1 and later only).
-#       Each "d" is a number, or a pattern inside "[]" that contains one or
-#       more ";"-separated numbers or number..number ranges (Postfix version
-#       2.8 and later). If no "=d.d.d.d" is specified, reject the request when
-#       the MAIL FROM domain is listed with any A record under rbl_domain. 
+#       Reject the request when the  "MAIL FROM" domain is listed with the A record "d.d.d.d" under
+#       "rbl_domain"  (Postfix 2.1 and later only).  Each "d" is a number, or a pattern inside "[]"
+#       that contains one or more ";"-separated numbers or "number..number" ranges (Postfix version
+#       2.8 and later). If no "=d.d.d.d" is specified, reject the request when the MAIL FROM domain
+#       is listed with any A record under rbl_domain. 
 #
-#       The maps_rbl_reject_code parameter specifies the response code for re-
-#       jected requests (default: 554); the default_rbl_reply parameter speci-
-#       fies the default server reply; and the rbl_reply_maps parameter speci-
-#       fies tables with server replies indexed by rbl_domain. This feature is
-#       available in Postfix 2.0 and later.
+#       The "maps_rbl_reject_code" parameter specifies the response code for rejected requests (de-
+#       fault: 554);  the "default_rbl_reply" parameter specifies the default server reply; and the
+#       "rbl_reply_maps" parameter specifies tables with server replies indexed by "rbl_domain".
+#       This feature is available in Postfix 2.0 and later.
 #
 #   - reject_sender_login_mismatch
-#       Reject the request when $smtpd_sender_login_maps specifies an owner for
-#       the MAIL FROM address, but the client is not (SASL) logged in as that
-#       MAIL FROM address owner; or when the client is (SASL) logged in, but
-#       the client login name doesn't own the MAIL FROM address according to
-#       $smtpd_sender_login_maps.
+#       Reject the request when "$smtpd_sender_login_maps" specifies an owner for the MAIL FROM ad-
+#       dress,  but the client is not (SASL) logged in as that MAIL FROM address owner; or when the
+#       client is (SASL) logged in, but the client login name doesn't own the MAIL FROM address ac-
+#       cording to $smtpd_sender_login_maps.
 #
 #   - reject_unauthenticated_sender_login_mismatch
-#       Enforces the reject_sender_login_mismatch restriction for unauthenti-
-#       cated clients only. This feature is available in Postfix version 2.1
-#       and later.
+#       Enforces the "reject_sender_login_mismatch" restriction for unauthenticated clients only.
+#       This feature is available in Postfix version 2.1 and later.
 #
 #   - reject_unknown_sender_domain
-#       Reject the request when Postfix is not final destination for the sender
-#       address, and the MAIL FROM domain has 1) no DNS MX and no DNS A record,
-#       or 2) a malformed MX record such as a record with a zero-length MX
-#       hostname (Postfix version 2.3 and later). 
+#       Reject the request  when Postfix is not final destination  for the sender address,  and the
+#       MAIL FROM domain has 1) no DNS MX and no DNS A record, or  2) a malformed MX record such as
+#       a record with a zero-length MX hostname (Postfix version 2.3 and later).
 #
-#       The reply is specified with the unknown_address_reject_code parameter
-#       (default: 450), unknown_address_tempfail_action (default:
-#       defer_if_permit), or 550 (nullmx, Postfix 3.0 and later). See the re-
-#       spective parameter descriptions for details.
+#       The reply is  specified with the  "unknown_address_reject_code"  parameter  (default: 450),
+#       "unknown_address_tempfail_action" (default: defer_if_permit),  or 550 (nullmx, Postfix ver-
+#       sion3.0 and later). See the respective parameter descriptions for details.
 #
 #   - reject_unlisted_sender
-#       Reject the request when the MAIL FROM address is not listed in the list
-#       of valid recipients for its domain class. See the
-#       smtpd_reject_unlisted_sender parameter description for details. This
-#       feature is available in Postfix 2.1 and later.
+#       Reject the request when the MAIL FROM address is not listed in the list of valid recipients
+#       for its domain class.  See the "smtpd_reject_unlisted_sender" parameter description for de-
+#       tails. This feature is available in Postfix 2.1 and later.
 #
 #   - reject_unverified_sender
-#       Reject the request when mail to the MAIL FROM address is known to
-#       bounce, or when the sender address destination is not reachable. Ad-
-#       dress verification information is managed by the verify(8) server; see
-#       the ADDRESS_VERIFICATION_README file for details. 
+#       Reject the request when mail to the MAIL FROM address is known to bounce, or when the send-
+#       er address destination is not reachable. Address verification information is managed by the
+#       verify(8) server; see the ADDRESS_VERIFICATION_README file for details. 
 #
-#       - The unverified_sender_reject_code parameter specifies the numerical
-#         response code when an address is known to bounce (default: 450,
-#         change into 550 when you are confident that it is safe to do so). 
+#       - The unverified_sender_reject_code parameter specifies the numerical response code when an
+#         address is known to bounce  (default: 450, change into 550 when you are confident that it
+#         is safe to do so). 
 #
-#       - The unverified_sender_defer_code specifies the numerical response
-#         code when an address probe failed due to a temporary problem
-#         (default: 450). 
+#       - The "unverified_sender_defer_code" specifies the numerical response code when an address
+#         probe failed due to a temporary problem (default: 450). 
 #
-#       - The unverified_sender_tempfail_action parameter specifies the action
-#         after address probe failure due to a temporary problem (default:
-#         defer_if_permit).
+#       - The "unverified_sender_tempfail_action"  specifies the action after address probe failure
+#         due to a temporary problem (default: defer_if_permit).
 #
-#       - This feature breaks for aliased addresses with
-#         "enable_original_recipient = no" (Postfix <= 3.2). 
+#       - This  feature breaks for aliased addresses with "enable_original_recipient = no" (Postfix
+#         <= 3.2).
 #
 #       This feature is available in Postfix 2.1 and later.
 #
 #   Other restrictions that are valid in this context:
-#     - Generic restrictions that can be used in any SMTP command context,
-#       described under smtpd_client_restrictions.
-#     - SMTP command specific restrictions described under
-#       smtpd_client_restrictions and smtpd_helo_restrictions.
-#     - SMTP command specific restrictions described under
-#       smtpd_recipient_restrictions. When recipient restrictions are listed
-#       under smtpd_sender_restrictions, they have effect only with
-#       "smtpd_delay_reject = yes", so that $smtpd_sender_restrictions is eval-
-#        uated at the time of the RCPT TO command.
-# -----------------------------------------------------------------------------
+#     - Generic restrictions that can be used in any SMTP command context, described under
+#       "smtpd_client_restrictions".
+#     - SMTP command specific restrictions described under "smtpd_client_restrictions" and 
+#       smtpd_helo_restrictions.
+#     - SMTP command specific restrictions described under "smtpd_recipient_restrictions".
+#       When recipient restrictions are listed under "smtpd_sender_restrictions", they have
+#       effect only with "smtpd_delay_reject = yes", so that $smtpd_sender_restrictions is
+#       evaluated at the time of the RCPT TO command.
+# -------------------------------------------------------------------------------------------------

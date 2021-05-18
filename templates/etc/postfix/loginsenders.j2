@@ -1,59 +1,50 @@
 # SMTPD SENDER LOGIN MAPS: EMAIL-ADDRESS -- SASL LOGIN NAME
-# =============================================================================
+# =================================================================================================
 # smtpd_sender_login_maps (default: empty)
-#   Optional lookup table with the "SASL" login names that own the sender (MAIL
-#   FROM) addresses.  Specify zero or more "type:name" lookup tables, separated
-#   by whitespace or comma.  Tables will be searched in the specified order un-
-#   til a match is found. With lookups from indexed files such as DB or DBM, or
-#   from networked tables such as NIS, LDAP or SQL, the following search opera-
-#   tions are done with a sender address of user@domain:
+#   Optional lookup table with the "SASL" login names  that own the sender ("MAIL FROM") addresses.
+#   Specify zero or more "type:name" lookup tables,  separated by whitespace or comma.  Tables will
+#   be searched in the specified order until a match is found. With lookups from indexed files such
+#   as DB or DBM,  or from networked tables such as NIS,  LDAP or SQL,  the following search opera-
+#   tions are  done with a  sender address of user@domain:  In all cases the result of table lookup
+#   must be either "not found" or a list of SASL login names separated by comma and/or whitespace.
 #
 #     1. user@domain
 #           This table lookup is always done and has the highest precedence.
 #
 #     2. user
-#           This table lookup is done only when the domain part of the sender
-#           address matches "$myorigin", "$mydestination", "$inet_interfaces"
-#           or "$proxy_interfaces".
+#           This table lookup is done only when the domain part of the sender address matches
+#           "$myorigin", "$mydestination", "$inet_interfaces" or "$proxy_interfaces".
 #
 #     3. @domain
 #           This table lookup is done last and has the lowest precedence.
 #
-#   In all cases the result of  table lookup  must be either  "not found"  or a
-#   list of SASL login names separated by comma and/or whitespace.
-#
 # smtpd_sender_restrictions (default: empty)
-#   Optional restrictions  that the Postfix SMTP server  applies in the context
-#   of a client MAIL FROM command.  See "SMTPD_ACCESS_README", section "Delayed
-#   evaluation of SMTP access restriction lists" for a discussion of evaluation
-#   context and time.
+#   Optional restrictions that the Postfix SMTP server applies in the context of a client MAIL FROM
+#   command. See SMTPD_ACCESS_README, section "Delayed evaluation of SMTP access restriction lists"
+#   for a discussion of evaluation context and time.
 #
 #   The default is to permit everything.
 #
-#   The following restrictions are specific to the sender address received with
-#   the MAIL FROM command.
+#   The following restrictions are specific to the sender address received with the MAIL FROM com-
+#   mand.
 #
 #   - reject_sender_login_mismatch
-#       Reject the request when $smtpd_sender_login_maps specifies an owner for
-#       the MAIL FROM address, but the client is not (SASL) logged in as that
-#       MAIL FROM address owner; or when the client is (SASL) logged in, but
-#       the client login name doesn't own the MAIL FROM address according to
-#       $smtpd_sender_login_maps.
+#       Reject the request when "$smtpd_sender_login_maps" specifies an owner for the MAIL FROM ad-
+#       dress, but the client is not (SASL) logged in as that MAIL FROM address owner;  or when the
+#       client is (SASL) logged in, but the client login name doesn't own the MAIL FROM address ac-
+#       cording to $smtpd_sender_login_maps.
 #
 # smtpd_recipient_restrictions (default: see "postconf -d" output)
-#   Optional restrictions  that the Postfix SMTP server applies  in the context
-#   of a client SMTP "RCPT TO"  command, after "smtpd_relay_restrictions".  See
-#   "SMTPD_ACCESS_README",  section "Delayed evaluation of SMTP access restric-
-#   tion lists" for a discussion of evaluation context and time.
+#   Optional restrictions that the Postfix SMTP server applies in the context of a client SMTP RCPT
+#   TO command, after "smtpd_relay_restrictions". See "SMTPD_ACCESS_README", section "Delayed eval-
+#   uation of SMTP access restriction lists" for a discussion of evaluation context and time.
 #
-#   With Postfix versions before 2.10,  the rules for relay permission and spam
-#   blocking were combined  under "smtpd_recipient_restrictions",  resulting in
-#   error-prone configuration.  As of Postfix 2.10,  relay permission rules are
-#   preferably implemented with smtpd_relay_restrictions,  so that a permissive
-#   spam blocking policy  under smtpd_recipient_restrictions will no longer re-
+#   With Postfix versions before 2.10,  the rules for relay permission  and spam blocking were com-
+#   bined under "smtpd_recipient_restrictions",  resulting in error-prone configuration.As of Post-
+#   fix 2.10, relay permission rules are preferably implemented with "smtpd_relay_restrictions", so
+#   that a permissive  spam blocking policy under "smtpd_recipient_restrictions" will no longer re-
 #   sult in a permissive mail relay policy.
 #
 #   - permit_sasl_authenticated
-#       Permit the request when the client is successfully authenticated via
-#       the RFC 4954 (AUTH) protocol.
-# -----------------------------------------------------------------------------
+#       Permit the request when the client is successfully authenticated via the RFC 4954 protocol.
+# -------------------------------------------------------------------------------------------------
