@@ -1,31 +1,21 @@
 # VIRTUAL MAILBOX MAPS
-# =============================================================================
+# =================================================================================================
 # virtual_mailbox_maps (default: empty)
-#   Optional lookup tables  with all valid addresses  in the domains that match
-#   "$virtual_mailbox_domains".  In a lookup table, specify a left-hand side of
-#   "@domain.tld" to match any user in the specified domain  that does not have
-#   a specific "user@domain.tld" entry.  The remainder of this text is specific
-#   to the virtual(8) delivery agent.  It does not apply when mail is delivered
-#   with a different mail delivery program.
+#   Optional lookup tables with all valid addresses in the domains that match
+#   "$virtual_mailbox_domains". In a lookup table, specify a left-hand side of "@domain.tld" to
+#   match any user in the specified domain that does not have a specific "user@domain.tld" entry.
+#   The remainder of this text is specific to the virtual(8) delivery agent. It does not apply when
+#   mail is delivered with a different mail delivery program.
 #
-#   The virtual(8) delivery agent uses  this table to look up the per-recipient
-#   mailbox or  maildir pathname.  If the lookup result ends  in a slash ("/"),
-#   "maildir-style" delivery is carried out,  otherwise the path  is assumed to
-#   specify a "UNIX-style" mailbox file. Note that $virtual_mailbox_base is un-
-#   conditionally prepended to this path.  When a recipient address  has an op-
-#   tional address extension (neko+nyaaaan@domain.tld), the virtual(8) delivery
-#   agent looks up the full address first,  and when the lookup fails, it looks
-#   up the unextended address (neko@domain.tld).
+#   The virtual(8) delivery agent uses this table to look up the per-recipient mailbox or  maildir
+#   pathname. If the lookup result ends  in a slash ("/"), "maildir-style" delivery is carried out,
+#   otherwise the path is assumed to specify a "UNIX-style" mailbox file.
 #
-#   Note 1: for security reasons, the virtual(8) delivery agent disallows regu-
-#           lar expression substitution of $1 etc. in regular expression lookup
-#           tables, because that would open a security hole.
-#
-#   Note 2: for security reasons, the virtual(8) delivery agent will silently
-#           ignore requests to use the proxymap(8) server. Instead it will open
-#           the table directly. Before Postfix version 2.2, the virtual(8) de-
-#           livery agent will terminate with a fatal error.
-# -----------------------------------------------------------------------------
+#   Note that $virtual_mailbox_base is unconditionally prepended to this path. When a recipient ad-
+#   dress has an optional address extension (neko+nyaaaan@domain.tld), the virtual(8) delivery a-
+#   gent looks up the full address first, and when the lookup fails, it looks up the unextended ad-
+#   dress (neko@domain.tld).
+# -------------------------------------------------------------------------------------------------
 # postmaster@example.jp     postmaster
 # hostmaster@example.jp     postmaster
 # abuse@example.jp          postmaster

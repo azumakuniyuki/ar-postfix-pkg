@@ -1,18 +1,15 @@
 # VIRTUAL ALIAS DOMAINS
-# =============================================================================
+# =================================================================================================
 # virtual_alias_domains (default: $virtual_alias_maps)
-#   Postfix is  final destination  for the specified list  of virtual alias do-
-#   mains, that is, domains for which all addresses are aliased to addresses in
-#   other local or remote domains. The SMTP server validates recipient address-
-#   es with "$virtual_alias_maps" and rejects non-existent recipients. See also
-#   the virtual alias domain class in the ADDRESS_CLASS_README file.
+#   Postfix is final destination for the specified list of virtual alias domains, that is, domains
+#   for which all addresses are aliased to addresses in other local or remote domains. The SMTP
+#   server validates recipient addresses with $virtual_alias_maps and rejects non-existent recipi-
+#   ents. See also the virtual alias domain class in the ADDRESS_CLASS_README file.
 #
-#   The default value is $virtual_alias_maps  so that you can keep all informa-
-#   tion about  virtual alias domains in one place.  If you have many users, it
-#   is better to separate information that changes more frequently (virtual ad-
-#   dress -----> local or remote address mapping) from information that changes
-#   less frequently (the list of virtual domain names).
+#   The default value is $virtual_alias_maps so that you can keep all information about virtual a-
+#   lias domains in one place. If you have many users, it is better to separate information that
+#   changes more frequently (virtual address -----> local or remote address mapping) from informa-
+#   tion that changes less frequently (the list of virtual domain names).
 #
-#   See also the VIRTUAL_README and ADDRESS_CLASS_README documents  for further
-#   information.
-# -----------------------------------------------------------------------------
+#   See also the VIRTUAL_README and ADDRESS_CLASS_README documents  for further information.
+# -------------------------------------------------------------------------------------------------

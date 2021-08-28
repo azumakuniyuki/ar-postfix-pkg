@@ -1,13 +1,10 @@
 # TRANSPORT MAPS
-# =============================================================================
+# =================================================================================================
 # transport_maps (default: empty)
-#   Optional lookup tables with mappings from recipient address to (message de-
-#   livery transport, next-hop destination). See transport(5) for details.
-#
-#   Pattern matching of domain names  is controlled  by the presence or absence
-#   of "transport_maps"  in  the  "parent_domain_matches_subdomains"  parameter
-#   value.  For safety reasons,  as of Postfix 2.3  this feature does not allow
-#   $number substitutions in regular expression maps.
-# -----------------------------------------------------------------------------
+#   Optional lookup tables with mappings from recipient address to(message delivery transport, next
+#    hop destination). See transport(5) for details. Pattern matching of domain names is controlled
+#    by the presence or absence of transport_maps in the "parent_domain_matches_subdomains" parame-
+#    ter value.
+# -------------------------------------------------------------------------------------------------
 gmail.com   google-smtp:
 

@@ -1,124 +1,25 @@
 # SMTP TLS POLICY MAPS
-# =============================================================================
+# =================================================================================================
 # smtp_tls_policy_maps (default: empty)
-#   Optional lookup tables with the Postfix SMTP client  TLS security policy by
-#   next-hop destination;  when a non-empty  value is specified, this overrides
-#   the obsolete "smtp_tls_per_site" parameter. See "TLS_README" for a more de-
-#   tailed discussion of TLS  security levels. The TLS  policy table is indexed
-#   by the full next-hop destination, which is either the recipient  domain, or
-#   the verbatim  next-hop specified  in the transport table, $local_transport,
-#   $virtual_transport,  $relay_transport or $default_transport.  This includes
-#   any enclosing  square brackets and any non-default  destination server port
-#   suffix. The LMTP socket type prefix (inet: or unix:) is not included in the
-#   lookup key.
+#   Optional lookup tables  with the Postfix SMTP client  TLS security policy  by next-hop destina-
+#   tion; when a non-empty value is specified,  this overrides the obsolete "smtp_tls_per_site" pa-
+#   rameter. See "TLS_README" for a more detailed discussion of TLS  security levels. The TLS poli-
+#   cy table is indexed by the full next-hop destination, which is either the recipient  domain, or
+#   the verbatim  next-hop specified  in the transport table, $local_transport, $virtual_transport,
+#   $relay_transport or $default_transport. This includes any enclosing square brackets and any non
+#   default destination server port suffix. The LMTP socket type prefix (inet: or unix:) is not in-
+#   cluded in the lookup key.
 #
-#   Only the next-hop domain, or "$myhostname" with LMTP over UNIX-domain sock-
-#   ets, is used as the nexthop name for certificate verification. The port and
-#   any enclosing square brackets are used in the table lookup key, but are not
-#   used for server name verification.
+#   Only the next-hop domain,  or "$myhostname" with LMTP over UNIX-domain sockets,  is used as the
+#   nexthop name for certificate verification.  The port and any enclosing square brackets are used
+#   in the table lookup key, but are not used for server name verification.
 #
-#   When the lookup  key is a domain name  without enclosing square brackets or
-#   any ":port" suffix (typically the recipient domain), and the full domain is
-#   not found in the table, just as with the transport(5) table, the parent do-
-#   main starting with a leading "." is matched recursively. This allows one to
-#   specify a security policy for a recipient domain and all its sub-domains.
+#   When the lookup key is a  domain name without  enclosing square brackets or any  ":port" suffix
+#   (typically the recipient domain),  and the full domain is not found in the table,  just as with
+#   the transport(5) table, the parent domain starting with a leading "." is matched recursively.
+#   This allows one to specify a security policy for a recipient domain and all its sub-domains.
 #
-#   - none: No TLS. No additional attributes are supported at this level.
-#
-#   - may:  Opportunistic TLS. Since sending in the clear is acceptable, de-
-#           manding stronger than default TLS security merely reduces inter-
-#           operability. The optional "ciphers", "exclude", and "protocols"
-#           attributes (available for opportunistic TLS with Postfix >= 2.6)
-#           and "connection_reuse" attribute (Postfix >= 3.4) override the
-#           "smtp_tls_ciphers", "smtp_tls_exclude_ciphers",
-#           "smtp_tls_protocols", and "smtp_tls_connection_reuse" configuration
-#           parameters. When opportunistic TLS handshakes fail, Postfix retries
-#           the connection with TLS disabled. This allows mail delivery to
-#           sites with non-interoperable TLS implementations.
-#
-#   - encrypt:
-#           Mandatory TLS encryption. At this level and higher, the optional
-#           "protocols" attribute overrides the main.cf
-#           smtp_tls_mandatory_protocols parameter, the optional "ciphers" at-
-#           tribute overrides the main.cf smtp_tls_mandatory_ciphers parameter,
-#           the optional "exclude" attribute (Postfix >= 2.6) overrides the
-#           main.cf smtp_tls_mandatory_exclude_ciphers parameter, and the op-
-#           tional "connection_reuse" attribute (Postfix >= 3.4) overrides the
-#           main.cf smtp_tls_connection_reuse parameter. In the policy table,
-#           multiple protocols or excluded ciphers must be separated by colons,
-#           as attribute values may not contain whitespace or commas.
-#
-#   - dane:
-#           Opportunistic DANE TLS. The TLS policy for the destination is ob-
-#           tained via TLSA records in DNSSEC. If no TLSA records are found,
-#           the effective security level used is may. If TLSA records are
-#           found, but none are usable, the effective security level is en-
-#           crypt. When usable TLSA records are obtained for the remote SMTP
-#           server, the server certificate must match the TLSA records. RFC7672
-#           (DANE) TLS authentication and DNSSEC support is available with
-#           Postfix 2.11 and later. The optional "connection_reuse" attribute
-#           (Postfix >= 3.4) overrides the main.cf smtp_tls_connection_reuse
-#           parameter.
-#
-#   - dane-only:
-#           Mandatory DANE TLS. The TLS policy for the destination is obtained
-#           via TLSA records in DNSSEC. If no TLSA records are found, or none
-#           are usable, no connection is made to the server. When usable TLSA
-#           records are obtained for the remote SMTP server, the server certif-
-#           icate must match the TLSA records. RFC 7672 (DANE) TLS authentica-
-#           tion and DNSSEC support is available with Postfix 2.11 and later.
-#           The optional "connection_reuse" attribute (Postfix >= 3.4) over-
-#           rides the main.cf smtp_tls_connection_reuse parameter.
-#
-#   - fingerprint:
-#           Certificate fingerprint verification. Available with Postfix 2.5
-#           and later. At this security level, there are no trusted Certifica-
-#           tion Authorities. The certificate trust chain, expiration date, ...
-#           are not checked. Instead, the optional match attribute, or else the
-#           main.cf smtp_tls_fingerprint_cert_match parameter, lists the certi-
-#           ficate fingerprints or the public key fingerprint (Postfix 2.9 and
-#           later) of the valid server certificate. The digest algorithm used
-#           to calculate the fingerprint is selected by the
-#           smtp_tls_fingerprint_digest parameter. Multiple fingerprints can be
-#           combined with a "|" delimiter in a single match attribute, or mul-
-#           tiple match attributes can be employed. The ":" character is not
-#           used as a delimiter as it occurs between each pair of fingerprint
-#           (hexadecimal) digits. The optional "connection_reuse" attribute
-#           (Postfix >= 3.4) overrides the main.cf smtp_tls_connection_reuse
-#           parameter.
-#
-#   - verify:
-#           Mandatory TLS verification. At this security level, DNS MX lookups
-#           are trusted to be secure enough, and the name verified in the serv-
-#           er certificate is usually obtained indirectly via unauthenticated
-#           DNS MX lookups. The optional "match" attribute overrides the
-#           main.cf smtp_tls_verify_cert_match parameter. In the policy table,
-#           multiple match patterns and strategies must be separated by colons.
-#           In practice explicit control over matching is more common with the
-#           "secure" policy, described below. The optional "connection_reuse"
-#           attribute (Postfix 竕･ 3.4) overrides the main.cf
-#           smtp_tls_connection_reuse parameter.
-#
-#   - secure:
-#           Secure-channel TLS. At this security level, DNS MX lookups, though
-#           potentially used to determine the candidate next-hop gateway IP ad-
-#           dresses, are not trusted to be secure enough for TLS peername veri-
-#           fication. Instead, the default name verified in the server certifi-
-#           cate is obtained directly from the next-hop, or is explicitly spec-
-#           ified via the optional match attribute which overrides the main.cf
-#           smtp_tls_secure_cert_match parameter. In the policy table, multiple
-#           match patterns and strategies must be separated by colons. The
-#           match attribute is most useful when multiple domains are supported
-#           by common server, the policy entries for additional domains specify
-#           matching rules for the primary domain certificate. While transport
-#           table overrides routing the secondary domains to the primary next-
-#           hop also allow secure verification, they risk delivery to the wrong
-#           destination when domains change hands or are re-assigned to new
-#           gateways. With the "match" attribute approach, routing is not per-
-#           turbed, and mail is deferred if verification of a new MX host
-#           fails. The optional "connection_reuse" attribute (Postfix >= 3.4)
-#           overrides the main.cf smtp_tls_connection_reuse parameter.
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
 # Example:
 #   /etc/postfix/main.cf:
 #       smtp_tls_policy_maps = hash:/etc/postfix/tls_policy
@@ -142,5 +43,5 @@
 #         table can render #the secure level vulnerable to DNS forgery. Do not
 #         use the hostname strategy for secure-channel configurations in envi-
 #         ronments where DNS security is n#ot assured.
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
 

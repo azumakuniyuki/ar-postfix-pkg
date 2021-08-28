@@ -1,29 +1,26 @@
 # SMTPD COMMAND FILTER
-# =============================================================================
+# =================================================================================================
 # smtpd_command_filter (default: empty)
-#   The "smtpd_command_filter" configuration parameter is a mechanism to trans-
-#   form SMTP commands from remote SMTP clients.  This is a last-resort tool to
-#   work around client  commands that break  interoperability with  the Postfix
-#   SMTP server.  Other uses involve fault injection to test Postfix's handling
-#   of invalid commands.
+#   The smtpd_command_filter configuration parameter is a mechanism to transform SMTP commands from
+#   remote SMTP clients. This is a last-resort tool to work around client commands that break
+#   interoperability with the Postfix SMTP server. Other uses involve fault injection to test Post-
+#   fix's handling of invalid commands.
 #
-#   Specify the name of a  "type:table" lookup table.  The search string is the
-#   SMTP command  as received from the remote SMTP client,  except that initial
-#   whitespace and the trailing <CR><LF> are removed.  The result value is exe-
-#   cuted by the Postfix SMTP server.
+#   Specify the name of a "type:table" lookup table. The search string is the SMTP command as re-
+#   ceived from the remote SMTP client, except that initial whitespace and the trailing <CR><LF>
+#   are removed. The result value is executed by the Postfix SMTP server.
 #
 #   There is no need to use smtpd_command_filter for the following cases:
 #
 #     - Use "resolve_numeric_domain = yes" to accept "user@ipaddress".
-#     - Postfix already accepts the correct form "user@[ipaddress]". Use
-#       virtual_alias_maps or canonical_maps to translate these into domain
-#       names if necessary.
-#     - Use "strict_rfc821_envelopes = no" to accept
-#       "RCPT TO:<User Name <user@example.com>>". Postfix will ignore the
-#       "User Name" part and deliver to the <user@example.com> address.
-# -----------------------------------------------------------------------------
-#   Examples of problems that can be solved with the smtpd_command_filter
-#   feature:
+#     - Postfix already accepts the correct form "user@[ipaddress]". Use virtual_alias_maps or
+#       canonical_maps to translate these into domain names if necessary.
+#     - Use "strict_rfc821_envelopes = no" to accept "RCPT TO:<User Name <user@example.com>>".
+#       Postfix will ignore the "User Name" part and deliver to the <user@example.com> address.
+#
+#   This feature is available in Postfix 2.7.
+# -------------------------------------------------------------------------------------------------
+#   Examples of problems that can be solved with the smtpd_command_filter feature:
 #
 #       /etc/postfix/main.cf:
 #           smtpd_command_filter = pcre:/etc/postfix/re_smtpcommand
@@ -39,17 +36,15 @@
 #           # WARNING: do not lose the parameters that follow the address.
 #           /^(RCPT\s+TO:\s*<)'([^[:space:]]+)'(>.*)/     $1$2$3
 #
-#           # Append XVERP to MAIL FROM commands to request VERP-style deliv-
-#           # ery. See VERP_README for more information on how to use Postfix
-#           # VERP.
+#           # Append XVERP to MAIL FROM commands to request VERP-style deliv# ery. See VERP_README
+#           # for more information on how to use Postfix VERP.
 #           /^(MAIL FROM:\s*<listname@example\.com>.*)/   $1 XVERP
 #
-#           # Bounce-never mail sink. Use notify_classes=bounce,resource,soft-
-#           # ware to send bounced mail to the postmaster (with message body
-#           # removed).
+#           # Bounce-never mail sink. Use notify_classes=bounce,resource,soft# ware to send bounced
+#           # mail to the postmaster (with message body # removed).
 #           /^(RCPT\s+TO:\s*<.*>.*)\s+NOTIFY=\S+(.*)/     $1 NOTIFY=NEVER$2
 #           /^(RCPT\s+TO:.*)/                             $1 NOTIFY=NEVER
 #
 #   This feature is available in Postfix 2.7.
-# -----------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
 
