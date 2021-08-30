@@ -29,6 +29,7 @@ postfix:
     - "re_messagebody"
     - "relocated"
     - "sendermt"
+    - "serversni"
     - "transport"
     - "tlspolicies"
     - "virthosts"
