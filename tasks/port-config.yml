@@ -6,42 +6,53 @@
 # | .__/ \___/|___/\__|_| |_/_/\_\ || .__/|_|\_\__, | /_/   \__\__,_|___/_|\_\___/
 # |_|                             \_\_|        |___/_/                            
 # port-config
-- name: port-config | /usr/bin/firewall-cmd exists or not
-  register: firewallcmd
-  ignore_errors: yes
-  failed_when: firewallcmd.rc == 1
-  changed_when: false
-  command: which firewall-cmd > /dev/null 2&>1
+- block:
+  - name: port-config | /usr/bin/firewall-cmd exists or not
+    register: firewallcmd
+    ignore_errors: yes
+    failed_when: firewallcmd.rc == 1
+    changed_when: false
+    command: which firewall-cmd > /dev/null 2&>1
 
-- name: port-config | SMTP port should be opened
-  when: firewallcmd.rc == 0
-  firewalld:
-    service:   "smtp"
-    state:     "enabled"
-    immediate: true
-    permanent: true
+  - name: port-config | SMTP port should be opened
+    when: firewallcmd.rc == 0
+    firewalld:
+      service:   "smtp"
+      state:     "enabled"
+      immediate: true
+      permanent: true
 
-- name: port-config | Submission port should be opened
-  when: firewallcmd.rc == 0
-  firewalld:
-    port:      "587/tcp"
-    state:     "enabled"
-    immediate: true
-    permanent: true
+  - name: port-config | Submission port should be opened
+    when: firewallcmd.rc == 0
+    firewalld:
+      port:      "587/tcp"
+      state:     "enabled"
+      immediate: true
+      permanent: true
+
+  - name: port-config | Linux | Each SMTP related port should be opened
+    when: firewallcmd.rc == 1
+    iptables:
+      comment:     "open {{ item }}"
+      chain:       "INPUT"
+      source:      "0.0.0.0"
+      destination: "{{ ansible_default_ipv4.address }}"
+      destination_port: "{{ item }}"
+      protocol:    "tcp"
+      jump:        "ACCEPT"
+    with_items:
+      - "25"
+      - "587"
+  when: ansible_os_family == "RedHat"
 
 - block:
-    - name: port-config | Linux | Each SMTP related port should be opened
-      when: firewallcmd.rc == 1
-      iptables:
-        comment:     "open {{ item }}"
-        chain:       "INPUT"
-        source:      "0.0.0.0"
-        destination: "{{ ansible_default_ipv4.address }}"
-        destination_port: "{{ item }}"
-        protocol:    "tcp"
-        jump:        "ACCEPT"
-      with_items:
-        - "25"
-        - "587"
-  when: ansible_system == "Linux"
+  - name: port-config | Debian | Allow 25, 587, and 465 for dovecot
+    ufw:
+      rule: "allow"
+      name: "{{ item }}"
+    with_items:
+      - "Postfix"
+      - "Postfix SMTPS"
+      - "Postfix Submission"
+  when: ansible_os_family == "Debian" 
 
