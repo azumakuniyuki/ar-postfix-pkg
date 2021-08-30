@@ -1,0 +1,23 @@
+# SERVER SNI MAPS
+# =================================================================================================
+# tls_server_sni_maps (default: empty)
+#   Optional lookup tables that map names received from remote SMTP clients via the TLS Server Name
+#   Indication:SNI extension to the appropriate keys and certificate chains.  This parameter is im-
+#   plemented in the Postfix TLS library,  and applies to both smtpd(8) and the SMTP server mode of
+#   tlsproxy(8).
+#
+#   When this parameter is non-empty, the Postfix SMTP server enables SNI extension processing, and
+#   logs SNI values  that are invalid or don't match an entry in the the specified tables.  When an
+#   entry does match,  the SNI name is logged as part of the connection summary at log levels 1 and
+#   higher.
+#
+#   The lookup key is either  the verbatim SNI domain name  or an ancestor  domain prefixed  with a
+#   leading dot.  For internationalized domains,  the lookup key must be in IDNA 2008  A-label form
+#   (as required in the TLS SNI extension).  The syntax of the lookup value is the same as with the
+#   smtp_tls_chain_files parameter (see there for additional details), but here scoped to just TLS
+#   connections in which the client sends a matching SNI domain name.
+#
+#   This feature is available in Postfix 3.4 and later.
+# -------------------------------------------------------------------------------------------------
+#[email.example.org]        username:password
+#[relay.example.jp]:587     usernane:password
