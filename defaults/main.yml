@@ -65,6 +65,7 @@ postfix:
   postfixadmin:
     enabled:  false
     webroot:  "/var/www/PostfixAdmin"
+    confdir:  "/etc/postfixadmin"
     password: null
   backend:
     enabled: false

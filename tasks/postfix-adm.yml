@@ -25,7 +25,7 @@
 - name: postfix-adm | Deploy PostfixAdmin/config.local.php
   template:
     src:    "config.local.php.j2"
-    dest:   "{{ postfix.postfixadmin.webroot }}/config.local.php"
+    dest:   "{{ postfix.postfixadmin.confdir }}/config.local.php"
     mode:   "0644"
     backup: "yes"
 
