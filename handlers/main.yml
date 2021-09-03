@@ -13,7 +13,7 @@
 
 - name: Restart clamsmtpd
   service:
-    name:  "clamsmtpd"
+    name:  "{{ postfix.checkvirus.service }}"
     state: "restarted"
 
 - name: Reload systemd
