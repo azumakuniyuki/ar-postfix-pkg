@@ -55,16 +55,19 @@ postfix:
   checkvirus:
     # clamd should be installed and running as root
     enabled: false
+    service: "clamsmtpd"
     rootdir: "/var/spool/clam"
     logsdir: "/var/log/clam"
     tempdir: "/var/tmp/clam"
+    runtiem: "/var/run/clam"
     address: "127.0.0.1:6250"
     srcport: 6251
   spamfilter:
     enabled: false
   postfixadmin:
     enabled:  false
-    webroot:  "/var/www/PostfixAdmin"
+    pfaroot:  "/user/sahre/postfixadmin"
+    webuser:  "httpd"
     confdir:  "/etc/postfixadmin"
     password: null
   backend:
