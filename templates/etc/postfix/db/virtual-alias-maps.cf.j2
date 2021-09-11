@@ -9,6 +9,5 @@ hosts    = {{ postfix.backend.host }}
 user     = {{ postfix.backend.username }}
 password = {{ postfix.backend.password }}
 dbname   = {{ postfix.backend.database }}
-query    = SELECT rhs FROM virtusers WHERE lhs = '%s' AND disabled = 0
-# query  = SELECT goto FROM alias WHERE address = '%s' AND active = 1
+query    = SELECT goto FROM alias WHERE address = '%s' AND active = 1
 

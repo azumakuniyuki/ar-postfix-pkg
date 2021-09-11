@@ -9,6 +9,5 @@ hosts    = {{ postfix.backend.host }}
 user     = {{ postfix.backend.username }}
 password = {{ postfix.backend.password }}
 dbname   = {{ postfix.backend.database }}
-query    = SELECT rhs FROM vmailboxes WHERE lhs = '%s' AND disabled = 0
-# query  = SELECT maildir FROM mailbox WHERE username = '%s' AND active = 1
+query    = SELECT maildir FROM mailbox WHERE username = '%s' AND active = 1
 

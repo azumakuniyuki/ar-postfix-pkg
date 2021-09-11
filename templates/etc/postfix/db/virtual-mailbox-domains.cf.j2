@@ -9,6 +9,5 @@ hosts    = {{ postfix.backend.host }}
 user     = {{ postfix.backend.username }}
 password = {{ postfix.backend.password }}
 dbname   = {{ postfix.backend.database }}
-query    = SELECT rhs FROM vmailhosts WHERE lhs = '%s' AND disabled = 0
-# query  = SELECT domain FROM domain WHERE domain = '%s' AND backupmx = 0 AND active = 1
+query    = SELECT domain FROM domain WHERE domain = '%s' AND backupmx = 0 AND active = 1
 
