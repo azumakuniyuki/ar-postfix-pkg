@@ -22,13 +22,13 @@ TimeOut: 180
 Listen: {{ postfix.checkvirus.address }}
 
 # The address clamd is listening on
-ClamAddress: /var/run/clam/clamd.sock
+ClamAddress: {{ postfix.checkviurs.ctlsock }}
 
 # A header to add to all scanned email
 Header: X-Virus-Scanned: ClamAV using ClamSMTP
 
 # Directory for temporary files
-TempDirectory: {{ postfix.checkvirus.tempdir }}
+#TempDirectory: {{ postfix.checkvirus.tempdir }}
 
 # What to do when we see a virus (use 'bounce' or 'pass' or 'drop'
 Action: bounce

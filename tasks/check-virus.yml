@@ -12,65 +12,80 @@
         state: "present"
         name:
           - "clamsmtp"
-
-    - name: create-user | clamsmtp user should be created
-      user:
-        createhome: "yes"
-        comment:    "ClamSMTP User"
-        password:   null
-        name:  "clamsmtp"
-        uid:   393
-        group: "mail"
-        shell: "/sbin/nologin"
-        home:  "{{ postfix.checkvirus.rootdir }}"
-        state: "present"
-
-    - name: check-virus | RedHat | Root directory should be created
-      file:
-        path:  "{{ postfix.checkvirus.rootdir }}"
-        mode:  "0755"
-        owner: "clamsmtp"
-        group: "mail"
-        state: "directory"
-
-    - name: check-virus | RedHat | Temporary directory should be created
-      file:
-        path:  "{{ postfix.checkvirus.tempdir }}"
-        mode:  "0755"
-        owner: "clamsmtp"
-        group: "mail"
-        state: "directory"
-
-    - name: check-virus | RedHat | Configuration files should be deployed
-      notify: Restart clamsmtpd
-      template:
-        src:  "etc/clamsmtpd.conf.j2"
-        dest: "/etc/clamsmtpd.conf"
-        mode: "0644"
-
-    - name: check-virus | RedHat | Unit file should be deployed
-      register: clamsmtpd_unit_deployed
-      notify: Restart clamsmtpd
-      template:
-        src:  "usr/lib/systemd/system/clamsmtpd.service.j2"
-        dest: "/usr/lib/systemd/system/clamsmtpd.service"
-        mode: "0644"
-
-    - name: check-virus | RedHat | Reload sytemd
-      when: clamsmtpd_unit_deployed.changed
-      systemd:
-        daemon_reload: "yes"
-        name:  "clamsmtpd"
-        state: "restarted"
-
-    - name: check-virus | ClamSMTPD should be started
-      service:
-        name:    "clamsmtpd"
-        enabled: "yes"
-
-    - name: check-virus | ClamSMTPD should be enabled
-      service:
-        name:  "clamsmtpd"
-        state: "started"
   when: ansible_os_family == "RedHat"
+
+- block:
+    - name: check-virus | Debian | ClamSMTP should be installed
+      apt:
+        state: "present"
+        name:
+          - "clamsmtp"
+  when: ansible_os_family == "Debian"
+
+- name: create-user | clamsmtp user should be created
+  user:
+    createhome: "yes"
+    comment:    "ClamSMTP User"
+    password:   null
+    name:       "clamsmtp"
+    group:      "mail"
+    shell:      "/sbin/nologin"
+    home:       "{{ postfix.checkvirus.rootdir }}"
+    state:      "present"
+
+- name: check-virus | Root directory should be created
+  file:
+    path:  "{{ postfix.checkvirus.rootdir }}"
+    mode:  "0755"
+    owner: "clamsmtp"
+    group: "mail"
+    state: "directory"
+
+- name: check-virus | Temporary directory should be created
+  file:
+    path:  "{{ postfix.checkvirus.tempdir }}"
+    mode:  "0755"
+    owner: "clamsmtp"
+    group: "mail"
+    state: "directory"
+
+- name: check-virus | Runtime directory should be created
+  file:
+    path:  "{{ postfix.checkvirus.runtime }}"
+    mode:  "0755"
+    owner: "clamsmtp"
+    group: "mail"
+    state: "directory"
+
+- name: check-virus | Configuration files should be deployed
+  notify: Restart clamsmtpd
+  template:
+    src:  "etc/clamsmtpd.conf.j2"
+    dest: "/etc/clamsmtpd.conf"
+    mode: "0644"
+
+- name: check-virus | Unit file should be deployed
+  register: clamsmtpd_unit_deployed
+  notify: Restart clamsmtpd
+  template:
+    src:  "usr/lib/systemd/system/clamsmtpd.service.j2"
+    dest: "/usr/lib/systemd/system/{{ postfix.checkvirus.service }}.service"
+    mode: "0644"
+
+- name: check-virus | Reload systemd
+  when: clamsmtpd_unit_deployed.changed
+  systemd:
+    daemon_reload: "yes"
+    name:  "{{ postfix.checkvirus.service }}"
+    state: "restarted"
+
+- name: check-virus | ClamSMTPD should be started
+  service:
+    name:    "{{ postfix.checkvirus.service }}"
+    enabled: "yes"
+
+- name: check-virus | ClamSMTPD should be enabled
+  service:
+    name:  "{{ postfix.checkvirus.service }}"
+    state: "started"
 

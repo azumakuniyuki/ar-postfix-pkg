@@ -1,0 +1,15 @@
+# {{ postfix.configroot }}/procmailrc: called from virtual_transport
+# =================================================================================================
+SHELL=/bin/sh
+PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
+
+MAILDIR={{ postfix.mailconfig.mailbox.root }}/$DOMAIN/$USER/Maildir
+DEFAULT=$MAILDIR/
+
+LOCKFILE={{ postfix.mailconfig.mailbox.logs }}/.procmail.lock
+LOGFILE={{ postfix.mailconfig.mailbox.logs }}/.procmail.log
+
+DROPPRIVS=yes
+VERBOSE=OFF
+
+

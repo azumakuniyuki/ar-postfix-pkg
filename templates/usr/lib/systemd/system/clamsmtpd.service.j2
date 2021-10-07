@@ -4,6 +4,9 @@ After=network.target
 
 [Service]
 Type=forking
+User=clamsmtp
+Group=clamsmtp
+RuntimeDirectory=clam
 PIDFile={{ postfix.checkvirus.rootdir }}/smtpd.pid
 ExecStart=/usr/sbin/clamsmtpd -f /etc/clamsmtpd.conf -p {{ postfix.checkvirus.rootdir }}/smtpd.pid
 

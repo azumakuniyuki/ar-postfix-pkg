@@ -30,12 +30,16 @@
     groups: "{{ postfix.mailconfig.mailbox.group }}"
     state:  "present"
 
-- name: create-user | mailbox directory should be readable from virtmail group
+- name: create-user | Sub directories should be created at the virtmail home
   file:
-    path:  "{{ postfix.mailconfig.mailbox.home }}"
+    path:  "{{ item }}"
     owner: "{{ postfix.mailconfig.mailbox.username }}"
     group: "{{ postfix.mailconfig.mailbox.group }}"
     mode:  "0770"
     state: "directory"
-
+  with_items:
+    - "{{ postfix.mailconfig.mailbox.root }}"
+    - "{{ postfix.mailconfig.mailbox.conf }}"
+    - "{{ postfix.mailconfig.mailbox.logs }}"
+    - "{{ postfix.mailconfig.mailbox.sbin }}"
 

@@ -1,23 +1,39 @@
 #!/bin/sh
-#
 export LANG=C
 export PATH="/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin"
 
-VMAILROOT="{{ postfix.mailconfig.mailbox.home }}"
-LOCALPART="$1"
-DOMAINDIR="$2"
+# $0 'neko@nyaan.jp' 'nyaan.jp' 'nyaan.jp/neko/' '0'
+ARGUMENT1="$1"
+ARGUMENT2="$2"
+
+VMAILROOT="{{ postfix.mailconfig.mailbox.root }}"
 MKMAILDIR="/usr/local/sbin/make-vmailbox"
 
-if [ -n "$LOCALPART" -a -n "$DOMAINDIR" ]; then
-    if [ -x "$MKMAILDIR" ]; then
-        $MKMAILDIR $LOCALPART@$DOMAINDIR
+if [ -x "$MKMAILDIR" ]; then
+    # make-vmailbox command is executable
+    if [ -n "$ARGUMENT1" ]; then
+        echo $ARGUMENT1 | grep '@' > /dev/null 2>&1
+        if [ "$?" -eq "0" ]; then
+            # Call make-vmailbox local-part@domain-part.example.jp
+            $MKMAILDIR $ARGUMENT1 > /dev/null
+
+        else
+            if [ -n "$ARGUMENT2" ]; then
+                # There is no "@" character at the 1st argument
+                # Call make-vmailbox local-part domain-part.example.jp
+                $MKMAILDIR $ARGUMENT1@$ARGUMENT2 > /dev/null
+            else
+                echo "$0: Invalid parameters"
+                exit 255
+            fi
+        fi
+        exit 0
     else
-        echo "$0: $MKMAILDIR command is not executable"
-        exit 1;
+        echo "$0: Invalid parameters"
+        exit 254
     fi
 else
-    echo "$0: Invalid parameters"
-    exit 1;
+    echo "$0: $MKMAILDIR command is not executable"
+    exit 127
 fi
-exit 0
 

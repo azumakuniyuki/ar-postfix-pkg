@@ -22,10 +22,27 @@
     group: "{{ postfix.mailconfig.mailbox.group }}"
   with_fileglob: "templates/usr/local/sbin/postfixadmin-*.j2"
 
-- name: postfix-adm | Deploy PostfixAdmin/config.local.php
+- name: postfix-adm | Link additional scripts for PostfixAdmin
+  template:
+    src:   "{{ item }}"
+    dest:  "{{ postfix.mailconfig.mailbox.sbin }}/{{ item | basename | replace('.j2', '') }}"
+    owner: "root"
+    group: "{{ postfix.mailconfig.mailbox.group }}"
+  with_fileglob: "templates/usr/local/sbin/postfixadmin-*.j2"
+
+- name: postfix-adm | Deploy config files for PostfixAdmin
   template:
     src:    "config.local.php.j2"
-    dest:   "{{ postfix.postfixadmin.confdir }}/config.local.php"
+    dest:  "{{ postfix.postfixadmin.confdir }}/{{ item | basename | replace('.j2', '') }}"
     mode:   "0644"
     backup: "yes"
+  with_fileglob: "templates/*.php.j2"
+
+- name: postfix-adm | templates_c directory should be created
+  file:
+    path:  "{{ postfix.postfixadmin.pfaroot }}/templates_c"
+    owner: "root"
+    group: "{{ postfix.postfixadmin.webuser }}"
+    mode:  "0775"
+    state: "directory"
 

@@ -52,6 +52,10 @@ postfix:
       home: "/home/virtmail"
       shell: "/bin/sh"
       comment: "'Virtual Mailbox'"
+      root: "/home/virtmail/mbox"
+      conf: "/home/virtmail/conf"
+      logs: "/home/virtmail/logs"
+      logs: "/home/virtmail/sbin"
   checkvirus:
     # clamd should be installed and running as root
     enabled: false
@@ -59,7 +63,8 @@ postfix:
     rootdir: "/var/spool/clam"
     logsdir: "/var/log/clam"
     tempdir: "/var/tmp/clam"
-    runtiem: "/var/run/clam"
+    runtime: "/var/run/clam"
+    ctlsock: "/run/clamav/clamd.ctl"
     address: "127.0.0.1:6250"
     srcport: 6251
   spamfilter:

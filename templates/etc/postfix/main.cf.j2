@@ -326,7 +326,6 @@ smtp_tls_policy_maps = hash:/etc/postfix/tlspolicies
 #   Note: As of OpenSSL 1.0.1  two new protocols are defined,  "TLSv1.1" and "TLSv1.2".  The latest
 #         patch levels of Postfix >= 2.6,  and all versions of Postfix ?= 2.10 can explicitly disa-
 #         ble support for "TLSv1.1" or "TLSv1.2"
-#
 smtp_tls_protocols = !SSLv2, !SSLv3
 
 # smtp_tls_mandatory_protocols = (default: see "postconf -d" output)
@@ -353,14 +352,12 @@ smtp_tls_protocols = !SSLv2, !SSLv3
 #   ged.   Hexadecimal versions should only be used when Postfix is linked with some future version
 #   of OpenSSL that supports TLS 1.4 or later, but Postfix does not yet support a symbolic name for
 #   that protocol version.
-#
 #smtp_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1, !TLSv1.1
 
 
 # smtp_tls_security_level (default: empty)
 #   The smtp_tls_security_level configuration parameter is the default SMTP TLS security level for
 #   the Postfix SMTP client.
-#
 smtp_tls_security_level = may
 
 # smtp_tls_CAfile (default: empty)
@@ -376,7 +373,6 @@ smtp_tls_security_level = may
 #
 #   Specify "tls_append_default_CA = no" to prevent Postfix from appending the system-supplied de-
 #   fault CAs and trusting third-party certificates.
-#
 #smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 #smtp_tls_CAfile = /etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt
 
@@ -389,9 +385,8 @@ smtp_tls_security_level = may
 #   Specify  "smtp_tls_CApath=/path/to/system_CA_directory" to use ONLY the system-supplied default
 #   Certification Authority certificates.   Specify "tls_append_default_CA = no" to prevent Postfix
 #   from appending the system-supplied default CAs and trusting third-party certificates.
-#
-#smtp_tls_CApath = /etc/pki/ca-trust/extracted/openssl
 #smtp_tls_CApath = /etc/ssl/certs
+#smtp_tls_CApath = /etc/pki/ca-trust/extracted/openssl
 
 # smtp_tls_session_cache_database (default: empty)
 #   The "smtp_tls_session_cache_database" parameter is a  name of the file containing  the optional
@@ -410,7 +405,6 @@ smtp_tls_security_level = may
 #   be stored under the Postfix-owned "data_directory".  As a migration aid, an attempt to open the
 #   file under a non-Postfix directory is redirected to the Postfix-owned "data_directory",   and a
 #   warning is logged.
-#
 smtp_tls_session_cache_database = btree:${data_directory}/smtp-session-cache
 
 
@@ -419,7 +413,6 @@ smtp_tls_session_cache_database = btree:${data_directory}/smtp-session-cache
 # connection_cache_protocol_timeout (default: 5s)
 #   The connection_cache_protocol_timeout configuration parameter  is the time limit for connection
 #   cache  connect, send or receive operations. The time limit is enforced in the client.
-#
 connection_cache_protocol_timeout = 5s
 
 # connection_cache_ttl_limit (default: 2s)
@@ -427,7 +420,6 @@ connection_cache_protocol_timeout = 5s
 #   connection cache server allows. Requests that specify a larger TTL will be stored with the max-
 #   imum allowed TTL.   The purpose of this additional  control is to protect the infrastructure a-
 #   gainst careless people. The cache TTL is already bounded by $max_idle.
-#
 connection_cache_ttl_limit = 2s
 
 # smtp_connection_cache_destinations (default: empty)
@@ -444,7 +436,6 @@ connection_cache_ttl_limit = 2s
 #     - a /file/name with domain names and/or relay host names as defined above,
 #     - a "type:table" with domain names  and/or relay host names on the left-hand side. The right-
 #       hand side result from "type:table" lookups is ignored.
-#
 smtp_connection_cache_destinations = hash:/etc/postfix/conncache
 
 
@@ -458,21 +449,18 @@ smtp_connection_cache_destinations = hash:/etc/postfix/conncache
 #   try in the master.cf file.  A low limit of 2 is recommended, just in case someone has an expen-
 #   sive shell command in a ".forward" file or in an alias(e.g., a mailing list manager). You don't
 #   want to run lots of those at the same time.
-#
 local_destination_concurrency_limit = 2
  
 # default_destination_concurrency_limit (default: 20)
 #   Each message delivery transport has its "XXX_destination_concurrency_limit" parameter.  The de-
 #   fault is $default_destination_concurrency_limit for most delivery transports. For the local de-
 #   livery agent the default is 2.
-#
 default_destination_concurrency_limit = 4
 
 # default_destination_recipient_limit (default: 50)
 #   The default maximal number of  recipients per  message delivery.  This is the default limit for
 #   delivery via the lmtp(8), pipe(8), smtp(8), and virtual(8) delivery agents. Setting this param-
 #   eter to a value of 1 affects email deliveries as follows:
-#
 default_destination_recipient_limit = 50
 
 # default_destination_rate_delay (default: 0s)
@@ -503,9 +491,6 @@ default_destination_recipient_limit = 50
 #         specify a  "transport_destination_concurrency_failed_cohort_limit"  of 10 or more to pre-
 #         vent Postfix  from deferring all mail for the same destination  after only one connection
 #         or handshake error.
-#
-#   This feature is available in Postfix 2.5 and later.
-#
 default_destination_rate_delay = 0
 
 # initial_destination_concurrency (default: 5)
@@ -517,21 +502,18 @@ default_destination_rate_delay = 0
 #   transport is the master.cf name of the message delivery transport (Postfix 2.5 and later).
 #
 #   Warning: with concurrency of 1, one bad message can be enough to block all mail to a site.
-#
 initial_destination_concurrency = 2
 
 # smtp_destination_concurrency_limit (default: $default_destination_concurrency_limit)
 #   The maximal number of parallel deliveries to the same destination via the smtp message delivery
 #   transport. This limit is enforced by the queue manager. The message delivery transport name is
 #   the first field in the entry in the master.cf file.
-#
 smtp_destination_concurrency_limit = 4
 
 # smtp_destination_recipient_limit (default: $default_destination_recipient_limit)
 #   The maximal number of recipients per message for the smtp message delivery transport. This lim-
 #   it is enforced by the queue manager. The message delivery transport name is the first field in
 #   the entry in the master.cf file.
-#
 smtp_destination_recipient_limit = 25
 
 
@@ -542,10 +524,7 @@ smtp_destination_recipient_limit = 25
 #   receives mail on. By default, the software claims all active interfaces on the machine. The pa-
 #   rameter also controls delivery of mail to "user@[ip.address]".  See also the "proxy_interfaces"
 #   parameter, for network addresses that are forwarded to us via a proxy or network address trans-
-#   lator.
-#
-#   Note: you need to stop/start Postfix when this parameter changes.
-#
+#   lator. Note: you need to stop/start Postfix when this parameter changes.
 #inet_interfaces = $myhostname
 #inet_interfaces = $myhostname, localhost
 #inet_interfaces = localhost
@@ -583,7 +562,6 @@ inet_protocols = ipv4
 #   the address list specified  with the inet_interfaces parameter. You must specify your proxy/NAT
 #   addresses  when  your  system  is a backup "MX" host for other domains, otherwise mail delivery
 #   loops will happen when the primary MX host is down.
-#
 #proxy_interfaces =
 #proxy_interfaces = 1.2.3.4
 
@@ -601,14 +579,12 @@ inet_protocols = ipv4
 #   (see STANDARD_CONFIGURATION_README). The local machine is always the final destination for mail
 #   addressed to  "user@[the.net.work.address]"  of an interface that the mail system receives mail
 #   on (see the inet_interfaces parameter).
-#
 mydestination = $myhostname, localhost
 
 # empty_address_recipient (default: MAILER-DAEMON)
 #   The  recipient of  mail addressed  to the "<>": null address.  Postfix does not accept such ad-
 #   dresses in SMTP commands,  but they may still be created locally as the result of configuration
 #   or software error.
-#
 empty_address_recipient = MAILER-DAEMON
 
 # always_bcc (default: empty)
@@ -650,7 +626,6 @@ always_bcc =
 #   Note: automatic BCC recipients are produced only for new mail. To avoid mailer loops, automatic
 #         BCC recipients are not generated after Postfix forwards mail internally, or after Postfix
 #         generates mail itself.
-#
 sender_bcc_maps =
 
 # recipient_bcc_maps (default: empty)
@@ -676,12 +651,10 @@ sender_bcc_maps =
 #   Note: automatic BCC recipients are produced only for new mail. To avoid mailer loops, automatic
 #         BCC recipients are not generated after Postfix forwards mail internally, or after Postfix
 #         generates mail itself.
-#
 recipient_bcc_maps =
 
 # disable_vrfy_command (default: no)
 #   Disable the SMTP "VRFY" command. This stops some techniques used to harvest email addresses.
-#
 disable_vrfy_command = yes
 
 
@@ -693,7 +666,6 @@ disable_vrfy_command = yes
 #   FROM command. With sites that reject lots of mail, the default setting reduces the use of disk,
 #   CPU and memory resources.  The downside is that rejected recipients are logged with NOQUEUE in-
 #   stead of a mail transaction ID. This complicates the logfile analysis of multi-recipient mail.
-#
 #smtpd_delay_open_until_valid_rcpt = yes
 
 # smtpd_delay_reject (default: yes)
@@ -709,7 +681,6 @@ disable_vrfy_command = yes
 #   SMTP server rejects commands before RCPT TO.  The default setting has one major benefit: it al-
 #   lows Postfix to log recipient address information when rejecting a client name/address or send-
 #   er address, so that it is possible to find out whose mail is being rejected.
-#
 smtpd_delay_reject = yes
 
 # smtpd_client_restrictions (default: empty)
@@ -1025,7 +996,7 @@ smtpd_peername_lookup = yes
 #   connections in which the client sends a matching SNI domain name.
 #
 #   This feature is available in Postfix 3.4 and later.
-tls_server_sni_maps = serversni
+tls_server_sni_maps = hash:{{ postfix.configroot }}/serversni
 
 # SMTP COMMAND
 # -------------------------------------------------------------------------------------------------
@@ -1539,13 +1510,10 @@ smtpd_tls_protocols = !SSLv2, !SSLv3
 #           certificates,
 #           see TLS_README for a discussion of the smtpd_tls_ask_ccert, smtpd_tls_req_ccert, and
 #           permit_tls_clientcerts features.
-#
 #   Note 2: The parameter setting "smtpd_tls_security_level = encrypt" implies "smtpd_tls_auth_only
 #           = yes".
-
 #   Note 3: when invoked via "sendmail -bs", Postfix will never offer STARTTLS due to insufficient
 #           privileges to access the server private key. This is intended behavior.
-#
 smtpd_tls_security_level = may
 
 # smtpd_tls_wrappermode (default: no)
@@ -1668,7 +1636,8 @@ smtpd_tls_ask_ccert = no
 #   mation about Postfix "perfect" forward secrecy support in one place: what forward secrecy is,
 #   how to tweak settings, and what you can expect to see  when Postfix uses ciphers with forward
 #   secrecy.
-smtpd_tls_dh1024_param_file =
+smtpd_tls_dh512_param_file  = {{ postfix.configroot }}/dh-512.pem
+smtpd_tls_dh1024_param_file = {{ postfix.configroot }}/dh2048.pem
 
 # smtpd_tls_session_cache_database (default: empty)
 #   The "smtpd_tls_session_cache_database" parameter is a name of the file containing the optional
@@ -1805,6 +1774,7 @@ anvil_rate_time_unit = 60s
 #   - Time units: s (seconds), m (minutes), h (hours), d (days), w (weeks).
 #   - The default time unit is s (seconds).
 anvil_status_update_time = 600s
+
 
 # TRUST AND RELAY CONTROL
 # -------------------------------------------------------------------------------------------------
@@ -2005,6 +1975,7 @@ mailbox_size_limit = 2147483647
 #   can be overruled for specific services in the master.cf file.
 default_process_limit = 100
 
+
 # SASL: SIMPLE AUTHENTICATION AND SECURITY LAYER
 # -------------------------------------------------------------------------------------------------
 # smtpd_sasl_auth_enable (default: no)
@@ -2027,13 +1998,6 @@ default_process_limit = 100
 #         With this, Postfix becomes as secure as other mail systems that use the Cyrus SASL li-
 #         brary. Dovecot provides an alternative that may be worth considering.
 smtpd_sasl_auth_enable = no
-
-# broken_sasl_auth_clients (default: no)
-#   Enable interoperability with remote SMTP clients that implement an obsolete version of the
-#   "AUTH" command (RFC 4954). Examples of such SMTP clients are Microsoft Outlook Express version
-#   4 and Microsoft Exchange version 5.0.  Specify  "broken_sasl_auth_clients = yes"  to have Post-
-#   fix advertise "AUTH" support in a non-standard way.
-broken_sasl_auth_clients = yes
 
 # smtpd_sasl_security_options (default: noanonymous)
 #   Postfix SMTP server "SASL" security options; as of Postfix version 2.3 the list of available
@@ -2067,13 +2031,43 @@ broken_sasl_auth_clients = yes
 #   authentication realm name is the null string.
 #smtpd_sasl_local_domain = $myhostname
 
+# smtpd_sasl_path (default: smtpd)
+#   Implementation-specific information that the Postfix SMTP server passes through to the SASL
+#   plug-in implementation that is selected with smtpd_sasl_type. Typically this specifies the name
+#   of a configuration file or rendezvous point.
+#smtpd_sasl_path = smtpd
+#smtpd_sasl_path = private/auth
+
+#smtpd_sasl_type (default: cyrus)
+#   The SASL plug-in type that the Postfix SMTP server should use for authentication. The available
+#   types are listed with the "postconf -a" command.
+#smtpd_sasl_type = dovecot
+
+#smtpd_sasl_response_limit (default: 12288)
+#   The maximum length of a SASL client's response to a server challenge. When the client's "ini-
+#   tial response" is longer than the normal limit for SMTP commands, the client must omit its ini-
+#   tial response, and wait for an empty server challenge; it can then send what would have been
+#   its "initial response" as a response to the empty server challenge. RFC4954 requires the server
+#   to accept client responses up to at least 12288 octets of base64-encoded text. The default val-
+#   ue is therefore also the minimum value accepted for this parameter.  This feature is available
+#   in Postfix 3.4 and later. Prior versions use "line_length_limit", which may need to be raised
+#   to accommodate larger client responses, as may be needed with GSSAPI authentication of Windows
+#   AD users who are members of many groups.
+#smtpd_sasl_response_limit = 12288
+#
+# broken_sasl_auth_clients (default: no)
+#   Enable interoperability with remote SMTP clients that implement an obsolete version of the
+#   "AUTH" command (RFC 4954). Examples of such SMTP clients are Microsoft Outlook Express version
+#   4 and Microsoft Exchange version 5.0.  Specify  "broken_sasl_auth_clients = yes"  to have Post-
+#   fix advertise "AUTH" support in a non-standard way.
+broken_sasl_auth_clients = yes
 
 # smtpd_client_auth_rate_limit (default: 0)
 #   The maximal number of "AUTH" commands that any client is allowed to send to this service per
 #   time unit, regardless of whether or not  Postfix actually accepts those commands. By default,
 #   there is no limit on the number "AUTH" commands that a client may send. To disable this fea-
 #   ture, specify a limit of 0. This feature is available in Postfix 3.1 and later.
-# smtpd_client_auth_rate_limit = 0
+#smtpd_client_auth_rate_limit = 0
 
 
 # JUNK MAIL CONTROLS
@@ -2114,6 +2108,7 @@ body_checks = pcre:/etc/postfix/re_messagebody
 #          specify a content_filter value with an explicit next-hop destination.
 #content_filter = clamsmtp:{{ postfix.checkvirus.address }}
 #receive_override_options = no_address_mappings
+
 
 # MILTER
 # -------------------------------------------------------------------------------------------------
@@ -2350,7 +2345,22 @@ virtual_gid_maps = static:{{ postfix.mailconfig.mailbox.gid }}
 #   not litter the file system with mailboxes.  While "virtual_mailbox_base" could be set to "/",
 #   this setting isn't recommended. This parameter is specific to the virtual(8) delivery agent. It
 #   doesn't apply when mail is delivered with a different mail delivery program.
-virtual_mailbox_base = {{ postfix.mailconfig.mailbox.home }}
+virtual_mailbox_base = {{ postfix.mailconfig.mailbox.root }}
+
+# virtual_mailbox_limit (default: 51200000)
+#   The maximal size in bytes of an individual virtual(8) mailbox or maildir file, or zero (no
+#   limit). This parameter is specific to the virtual(8) delivery agent. It does not apply when
+#   mail is delivered with a different mail delivery program.
+#virtual_mailbox_limit = 1073741824
+
+# virtual_transport (default: virtual)
+#   The default mail delivery transport and next-hop destination for final delivery to domains
+#   listed with $virtual_mailbox_domains. This information can be overruled with the transport(5)
+#   table. Specify a string of the form transport:nexthop, where transport is the name of a mail
+#   delivery transport defined in master.cf. The :nexthop destination is optional; its syntax is
+#   documented in the manual page of the corresponding delivery agent.
+#virtual_transport = virtual
+#virtual_transport = lmtp:unix:private/dovecot-lmtp 
 
 
 # ADDRESS EXTENSIONS (e.g., user+foo)
@@ -2383,23 +2393,62 @@ home_mailbox = Maildir/
 #mail_spool_directory = {{ postfix.mailqueues }}
 
 # mailbox_command (default: empty)
-#   The mailbox_command parameter specifies  the optional external command to use instead of mail-
-#   box delivery. The command is run  as the recipient with proper HOME, SHELL and LOGNAME environ-
-#   ment settings. Exception: delivery for root is done as $default_user.
+#   Optional external command that the local(8) delivery agent should use for mailbox delivery. The
+#   command is run with the user ID and the primary group ID privileges of the recipient.
+#   Exception: command delivery for root executes with $default_privs privileges. This is not a
+#   problem, because 1) mail for root should always be aliased to a real user and 2) don't log in
+#   as root, use "su" instead.
 #
-#   Other environment variables of interest:
-#     - USER (recipient username)
-#     - EXTENSION (address extension)
-#     - DOMAIN (domain part of address)
-#     - LOCAL (the address localpart)
+#   The following environment variables are exported to the command:
+#
+#   CLIENT_ADDRESS:     Remote client network address.
+#   CLIENT_HELO:        Remote client EHLO command parameter.
+#   CLIENT_HOSTNAME:    Remote client hostname.
+#   CLIENT_PROTOCOL:    Remote client protocol.
+#   DOMAIN:             The domain part of the recipient address.
+#   EXTENSION:          The optional address extension.
+#   HOME:               The recipient home directory.
+#   LOCAL:              The recipient address localpart.
+#   LOGNAME:            The recipient's username.
+#   ORIGINAL_RECIPIENT: The entire recipient address, before any address rewriting or aliasing.
+#   RECIPIENT:          The full recipient address.
+#   SASL_METHOD:        SASL authentication method specified in the remote client AUTH command.
+#   SASL_SENDER:        SASL sender address specified in the remote client MAIL FROM command.
+#   SASL_USER:          SASL username specified in the remote client AUTH command.
+#   SENDER:             The full sender address.
+#   SHELL:              The recipient's login shell.
+#   USER:               The recipient username.
 #
 #   Unlike other Postfix configuration parameters, the mailbox_command parameter is not subjected
-#   to $parameter substitutions.  This is to make it easier to specify shell syntax.
+#   to $name substitutions. This is to make it easier to specify shell syntax (see example below).
+#   If you can, avoid shell meta characters because they will force Postfix to run an expensive
+#   shell process. If you're delivering via "procmail" then running a shell won't make a noticeable
+#   difference in the total cost.
 #
-#   IF YOU USE THIS TO DELIVER MAIL SYSTEM-WIDE,  YOU MUST SET UP AN ALIAS THAT FORWARDS MAIL FOR
-#   ROOT TO A REAL USER.
-#mailbox_command = /some/where/procmail
-#mailbox_command = /some/where/procmail -a "$EXTENSION"
+#   Note: if you use the mailbox_command feature to deliver mail system-wide, you must set up an a-
+#   lias that forwards mail for root to a real user.
+#
+#   The precedence of local(8) delivery features from high to low is: aliases, .forward files,
+#   mailbox_transport_maps, mailbox_transport, mailbox_command_maps, mailbox_command, home_mailbox,
+#   mail_spool_directory, fallback_transport_maps, fallback_transport and luser_relay.
+#
+#Examples:
+#   mailbox_command = /some/where/procmail
+#   mailbox_command = /some/where/procmail -a "$EXTENSION"
+#   mailbox_command = /some/where/maildrop -d "$USER" -f "$SENDER" "$EXTENSION"
+#mailbox_command = /usr/bin/procmail
+#mailbox_command = /usr/bin/procmail -a "$EXTENSION"
+
+# mailbox_command_maps (default: empty)
+#   Optional lookup tables with per-recipient external commands to use for local(8) mailbox deliv-
+#   ery. Behavior is as with mailbox_command.
+#   The precedence of local(8) delivery features from high to low is: aliases, .forward files,
+#   mailbox_transport_maps, mailbox_transport, mailbox_command_maps, mailbox_command, home_mailbox,
+#   mail_spool_directory, fallback_transport_maps, fallback_transport and luser_relay.
+#
+#   Specify zero or more "type:name" lookup tables, separated by whitespace or comma. Tables will
+#   be searched in the specified order until a match is found.
+#mailbox_command_maps =
 
 # mailbox_transport (default: empty)
 #   The mailbox_transport specifies the optional transport in master.cf to use after processing a-
@@ -2637,12 +2686,12 @@ queue_directory = {{ postfix.mailqueues }}
 
 # command_directory (default: see "postconf -d" output)
 #   The command_directory parameter specifies the location of all "post*****" commands.
-command_directory = /usr/sbin
+#command_directory = /usr/sbin
 
 # daemon_directory (default: see "postconf -d" output)
 #   The daemon_directory parameter specifies the location of all Postfix daemon programs (i.e. pro-
 #   grams listed in the master.cf file). This directory must be owned by root.
-daemon_directory = /usr/libexec/postfix
+#daemon_directory = /usr/libexec/postfix
 
 # data_directory (default: see "postconf -d" output)
 #   The data_directory parameter specifies the location of Postfix-writable data files (caches,
@@ -2665,7 +2714,6 @@ alternate_config_directories =
 #
 #   Note: on OpenBSD systems specify /dev/arandom when /dev/urandom gives timeout errors.
 #tls_random_source = dev:/dev/urandom
-#
 
 # DEBUGGING CONTROL
 # -------------------------------------------------------------------------------------------------

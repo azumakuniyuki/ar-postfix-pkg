@@ -14,6 +14,12 @@
     owner: "root"
     group: "{{ postfix.mailconfig.mailbox.group }}"
 
+- name: make-config | make-vmailbox script should be linked
+  file:
+    src:   "/usr/local/sbin/make-vmailbox"
+    dest:  "{{ postfix.mailconfig.mailbox.sbin }}/make-vmailbox"
+    state: "link"
+
 - name: make-config | Deploy each config file in /etc/postfix
   notify: Restart Postfix
   template:
@@ -24,6 +30,7 @@
   with_items:
     - "main.cf"
     - "master.cf"
+    - "procmailrc"
 
 - name: make-config | Deploy other files in /etc/postfix
   template:
@@ -44,8 +51,7 @@
 
 - name: make-config | aliases.db file should be updated
   when: aliases.changed
-  shell: >
-    /usr/bin/newaliases
+  shell: /usr/bin/newaliases
   args:
     chdir:   "{{ postfix.configroot }}"
 
@@ -91,6 +97,18 @@
     dest: "/etc/cron.d/{{ item | basename | replace('.j2', '') }}"
     mode: "0644"
   with_fileglob: "templates/etc/cron.d/*.j2"
+
+- name: make-config | DH parameter file should be created(512)
+  shell: openssl dhparam -out {{ postfix.configroot }}/dh-512.pem 512
+  args:
+    chdir:   "{{ postfix.configroot }}"
+    creates: "{{ postfix.configroot }}/dh-512.pem"
+
+- name: make-config | DH parameter file should be created(2048)
+  shell: openssl dhparam -out {{ postfix.configroot }}/dh2048.pem 2048
+  args:
+    chdir:   "{{ postfix.configroot }}"
+    creates: "{{ postfix.configroot }}/dh2048.pem"
 
 - block:
     - name: make-config | RedHat | Deploy /etc/sasl2/smtpd.conf

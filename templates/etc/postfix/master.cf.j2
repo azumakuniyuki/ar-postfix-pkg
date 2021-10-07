@@ -185,13 +185,187 @@ lmtp      unix  -       -       n       -       -       lmtp
 anvil     unix  -       -       n       -       1       anvil
 scache    unix  -       -       n       -       1       scache
 
-
 # =================================================================================================
 # Interfaces to non-Postfix software. Be sure to examine the manual pages of the non-Postfix soft-
 # ware to find out what options it wants. Many of the following services use the Postfix pipe(8)
 # delivery agent. See the pipe(8) man page for information about ${recipient} and other message en-
 # velope options.
 #
+# COMMAND ATTRIBUTE SYNTAX
+#   The external command attributes are given in the master.cf file at  the end of a service defi-
+#   nition. The syntax is as follows:
+#
+#   chroot=pathname (optional)
+#       Change the process root directory and working directory to the named directory. This hap-
+#       pens before switching to the privileges specified with the user attribute, and before exe-
+#       cuting the optional directory=pathname directive. Delivery is deferred in case of failure.
+#
+#   directory=pathname (optional)
+#       Change to the named directory before executing the external command. The directory must be
+#       accessible for the user specified with the user attribute (see below). The default working
+#       directory is $queue_directory.  Delivery is deferred in case of failure.
+#
+#   eol=string (optional, default: \n)
+#       The output record delimiter. Typically one would use either \r\n or \n. The usual C-style
+#       backslash escape sequences  are  recognized: \a \b \f \n \r \t \v \ddd (up to three octal
+#       digits) and \\.
+#
+#   flags=BDFORXhqu.> (optional)
+#       Optional message processing flags. By default, a message is copied unchanged.
+#
+#           B   Append a blank line at the end of each message. This is required by some mail user
+#               agents that recognize "From  " lines only when preceded by a blank line.
+#
+#           D   Prepend a "Delivered-To: recipient" message header with the envelope recipient ad-
+#               dress. Note: for this to work, the transport_destination_recipient_limit must be 1
+#               (see SINGLE-RECIPIENT DELIVERY above for details).
+#
+#               The D flag also enforces loop detection (Postfix 2.5  and later): if a message al-
+#               ready contains a "Delivered-To:" header with the same recipient address, then the
+#               message is returned as undeliverable. The address comparison is case insensitive.
+#
+#           F   Prepend a "From sender time_stamp" envelope header to the message content. This is
+#               expected by, for example, UUCP software.
+#
+#           O   Prepend an "X-Original-To: recipient" message header with the recipient address as
+#               given to Postfix. Note: for this to work, the transport_destination_recipient_limit
+#               must be 1 (see SINGLE-RECIPIENT DELIVERY above for details).
+#
+#           R   Prepend a Return-Path: message header with the envelope sender address.
+#
+#           X   Indicate that the external command performs final delivery.  This flag affects the
+#               status reported in success DSN (delivery status notification) messages, and changes
+#               it from "relayed" into "delivered".
+#
+#           h   Fold the command-line $original_recipient and $recipient address domain part (text
+#               to the right of the right-most @ character) to lower case; fold the entire command-
+#               line $domain and $nexthop host or domain information to lower case. This is recom-
+#               mended for delivery via UUCP.
+#
+#           q   Quote white space and other special characters in the command-line $sender, $origi-
+#               nal_recipient and $recipient address localparts (text to the left of the right-most
+#               @ character), according to an 8-bit transparent version of RFC 822. This is recom-
+#               mended for delivery via UUCP or BSMTP.
+#
+#               The result is compatible with the address parsing of command-line recipients by the
+#               Postfix sendmail(1) mail submission command.
+#
+#               The q flag affects only entire addresses, not the partial address  information from
+#               the $user, $extension or $mailbox command-line macros.
+#
+#           u   Fold the command-line $original_recipient and $recipient address localpart (text to
+#               the left of the right-most @ character) to lower case. This is recommended for de-
+#               livery via UUCP.
+#
+#           .   Prepend "." to lines starting with ".". This is needed by, for example, BSMTP soft-
+#               ware.
+#
+#           >   Prepend ">" to lines starting with "From ". This is expected by, for example, UUCP
+#               software.
+#
+#       null_sender=replacement (default: MAILER-DAEMON)
+#              Replace the null sender address (typically used for delivery status notifications)
+#              with the specified text when expanding the $sender command-line macro, and when gen-
+#              erating  a From_ or Return-Path: message header.
+#
+#              If the null sender replacement text is a non-empty string then it is affected by the
+#              q flag for address quoting in command-line arguments.
+#
+#              The null sender replacement text may be empty; this form is recommended for content
+#              filters that feed mail back into Postfix. The empty sender address is not affected
+#              by the q flag for address quoting in command-line arguments.
+#
+#              Caution: a null sender address is easily mis-parsed by naive software. For example,
+#              when the pipe(8) daemon executes a command such as:
+#
+#                  Wrong: command -f$sender -- $recipient
+#
+#              the command will mis-parse the -f option value when the sender address is a null
+#              string. For correct parsing, specify  $sender as an argument by itself:
+#
+#                  Right: command -f $sender -- $recipient
+#
+#       size=size_limit (optional)
+#              Don't deliver messages that exceed this size limit (in bytes); return them to the
+#              sender instead.
+#
+#       user=username (required)
+#       user=username:groupname
+#              Execute the external command with the user ID and group ID of the specified user-
+#              name.  The software refuses to execute commands with root privileges, or with the
+#              privileges of the mail system owner. If groupname is specified, the corresponding
+#              group ID is used instead of the group ID of username.
+#
+#       argv=command... (required)
+#              The command to be executed. This must be specified as the last command attribute.
+#              The command is executed directly, i.e. without interpretation of shell meta charac-
+#              ters by a shell command interpreter.
+#
+#              Specify "{" and "}" around command arguments that contain whitespace (Postfix 3.0
+#              and later). Whitespace after the opening "{" and before the closing "}" is ignored.
+#              In  the command argument vector, the following macros are recognized and replaced
+#              with corresponding information from the Postfix queue manager delivery request.
+#
+#              In addition to the form ${name}, the forms $name and the deprecated form $(name) are
+#              also recognized. Specify $$ where a single $ is wanted.
+#
+#              ${client_address} -- This macro expands to the remote client network address.
+#              ${client_helo} ----- This macro expands to the remote client HELO command parameter.
+#              ${client_hostname} - This macro expands to the remote client hostname.
+#              ${client_port} ----- This macro expands to the remote client TCP port number.
+#              ${client_protocol} - This macro expands to the remote client protocol.
+#              ${domain} ---------- This macro expands to the domain portion of the recipient ad-
+#                                   dress. For example, with an address user+foo@domain the domain
+#                                   is domain. This information is modified by the h flag for case
+#                                   folding.
+#              ${extension} ------- This macro expands to the extension part of a recipient ad-
+#                                   dress. For example, with an address user+foo@domain the exten-
+#                                   sion is foo. A command-line argument that contains ${extension}
+#                                   expands into as many command-line arguments as there are recip-
+#                                   ients.
+#                                   This information is modified by the u flag for case folding.
+#              ${mailbox} --------- This macro expands to the complete local part of a recipient
+#                                   address. For example, with an address user+foo@domain the mail-
+#                                   box is user+foo. A command-line argument that contains ${mail-
+#                                   box} expands to as many command-line arguments as there are re-
+#                                   cipients. This information is modified by the u flag for case
+#                                   folding.
+#              ${nexthop} --------- This macro expands to the next-hop hostname. This information
+#                                   is modified by the h flag for case folding.
+#              ${original_recipient}
+#                                   This macro expands to the complete recipient address before any
+#                                   address rewriting or aliasing. A command-line argument that
+#                                   contains ${original_recipient} expands to as many command-line
+#                                   arguments as there are recipients. This information is modified
+#                                   by the hqu flags for quoting and case folding.
+#              ${queue_id} -------- This macro expands to the queue id. This feature is available
+#                                   as of Postfix 2.11.
+#              ${recipient} ------- This macro expands to the complete recipient address. A com-
+#                                   mand-line argument that contains ${recipient} expands to as
+#                                   many command-line arguments as there are recipients. This in-
+#                                   formation is modified by the hqu flags for quoting and case
+#                                   folding.
+#              ${sasl_method} ----- This macro expands to the name of the SASL authentication mech-
+#                                   anism in the AUTH command when the Postfix SMTP server received
+#                                   the message.
+#              ${sasl_sender} ----- This macro expands to the SASL sender name (i.e. the original
+#                                   submitter as per RFC 4954) in the MAIL FROM command when the
+#                                   Postfix SMTP server received the message.
+#              ${sasl_username} --- This macro expands to the SASL user name in the AUTH command
+#                                   when the Postfix SMTP server received the message.
+#              ${sender} ---------- This macro expands to the envelope sender address. By default,
+#                                   the null sender address expands to MAILER-DAEMON; this can be
+#                                   changed with the null_sender attribute, as described above.
+#                                   This information is modified by the q flag for quoting.
+#              ${size} ------------ This macro expands to Postfix's idea of the message size, which
+#                                   is an approximation of the size of the message as delivered.
+#              ${user} ------------ This macro expands to the username part of a recipient address.
+#                                   For example, with an address user+foo@domain the username part
+#                                   is user. A command-line argument that contains ${user} expands
+#                                   into as many command-line arguments as there are  recipients.
+#                                   This information is modified by the u flag for case folding.
+
+# =================================================================================================
 # maildrop. See the Postfix MAILDROP_README file for details. Also specify in main.cf:
 # maildrop_destination_recipient_limit=1
 # -------------------------------------------------------------------------------------------------
@@ -238,6 +412,10 @@ scache    unix  -       -       n       -       1       scache
 # service type  private unpriv  chroot  wakeup  maxproc command + args
 #               (yes)   (yes)   (yes)   (never) (100)
 # -------------------------------------------------------------------------------------------------
+#procmail  unix  -       n       n       -       -       pipe
+#  flags=R user={{ postfix.mailconfig.mailbox.username }} argv=/usr/bin/procmail -t -m
+#  USER=${user} DOMAIN=${nexthop} {{ postfix.configroot }}/procmailrc
+#
 #ifmail    unix  -       n       n       -       -       pipe
 #  flags=F user=ftn argv=/usr/lib/ifmail/ifmail -r $nexthop ($recipient)
 #
