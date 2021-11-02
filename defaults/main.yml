@@ -55,7 +55,7 @@ postfix:
       root: "/home/virtmail/mbox"
       conf: "/home/virtmail/conf"
       logs: "/home/virtmail/logs"
-      logs: "/home/virtmail/sbin"
+      sbin: "/home/virtmail/sbin"
   checkvirus:
     # clamd should be installed and running as root
     enabled: false
