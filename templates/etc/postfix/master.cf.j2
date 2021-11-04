@@ -414,7 +414,7 @@ scache    unix  -       -       n       -       1       scache
 # -------------------------------------------------------------------------------------------------
 #procmail  unix  -       n       n       -       -       pipe
 #  flags=R user={{ postfix.mailconfig.mailbox.username }} argv=/usr/bin/procmail -t -m
-#  USER=${user} DOMAIN=${nexthop} {{ postfix.configroot }}/procmailrc
+#  USER=${user} DOMAIN=${nexthop} {{ postfix.mailconfig.mailbox.conf }}/procmailrc
 #
 #ifmail    unix  -       n       n       -       -       pipe
 #  flags=F user=ftn argv=/usr/lib/ifmail/ifmail -r $nexthop ($recipient)
