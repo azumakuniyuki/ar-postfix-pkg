@@ -30,7 +30,21 @@
   with_items:
     - "main.cf"
     - "master.cf"
-    - "procmailrc"
+
+- name: make-config | Deploy procmailrc into /home/virtmail/conf
+  template:
+    src:    "etc/postfix/procmailrc.j2"
+    dest:   "{{ postfix.mailconfig.mailbox.conf }}/procmailrc"
+    owner:  "{{ postfix.mailconfig.mailbox.username }}"
+    group:  "{{ postfix.mailconfig.mailbox.group }}"
+    mode:   "0644"
+    backup: "yes"
+
+- name: make-config | Link to procmailrc
+  file:
+    src:    "{{ postfix.mailconfig.mailbox.conf }}/procmailrc"
+    dest:   "{{ postfix.configroot }}/procmailrc"
+    state:  "link"
 
 - name: make-config | Deploy other files in /etc/postfix
   template:
