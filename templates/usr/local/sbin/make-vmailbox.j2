@@ -7,7 +7,7 @@ VIRTMAILUSER="{{ postfix.mailconfig.mailbox.username }}"
 VIRTMAILHOME="{{ postfix.mailconfig.mailbox.root }}"
 NEWMAILADDRS="$@"
 DOASVIRTMAIL=""
-INTERNALDIRS="cur new tmp etc"
+INTERNALDIRS="cur new tmp etc log"
 
 if [ $USER != "{{ postfix.mailconfig.mailbox.username }}" ]; then
     DOASVIRTMAIL="sudo -u {{ postfix.mailconfig.mailbox.username }} "
