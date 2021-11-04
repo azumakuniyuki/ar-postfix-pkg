@@ -1,4 +1,4 @@
-# {{ postfix.configroot }}/procmailrc: called from virtual_transport
+# {{ postfix.mailconfig.mailbox.conf }}/procmailrc: called from virtual_transport
 # =================================================================================================
 SHELL=/bin/sh
 PATH=/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
@@ -11,5 +11,5 @@ LOGFILE={{ postfix.mailconfig.mailbox.logs }}/.procmail.log
 
 DROPPRIVS=yes
 VERBOSE=OFF
-
+SWITCHRC="$MAILDIR/etc/procmailrc"
 
