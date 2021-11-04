@@ -3,14 +3,14 @@
 export LANG=C
 export PATH="/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin"
 
-VIRTMAILUSER="{{ postfix.mailconfig.mailbox.username }}"
-VIRTMAILHOME="{{ postfix.mailconfig.mailbox.root }}"
+VIRTMAILUSER="{{ dovecot.mailconfig.mailbox.username }}"
+VIRTMAILHOME="{{ dovecot.mailconfig.mailbox.root }}"
 NEWMAILADDRS="$@"
 DOASVIRTMAIL=""
 INTERNALDIRS="cur new tmp etc log"
 
-if [ $USER != "{{ postfix.mailconfig.mailbox.username }}" ]; then
-    DOASVIRTMAIL="sudo -u {{ postfix.mailconfig.mailbox.username }} "
+if [ $USER != "{{ dovecot.mailconfig.mailbox.username }}" ]; then
+    DOASVIRTMAIL="sudo -u {{ dovecot.mailconfig.mailbox.username }} "
 fi
 
 if [ -n "$NEWMAILADDRS" ]; then
@@ -26,7 +26,11 @@ if [ -n "$NEWMAILADDRS" ]; then
                 for v in $INTERNALDIRS; do
                     $DOASVIRTMAIL mkdir -pm 0700 $VIRTMAILHOME/$dpart/$lpart/$v
                 done
-                $DOASVIRTMAIL touch $VIRTMAILHOME/$dpart/$lpart/etc/procmailrc
+                $DOASVIRTMAIL touch      $VIRTMAILHOME/$dpart/$lpart/etc/procmailrc
+                $DOASVIRTMAIL chmod 0640 $VIRTMAILHOME/$dpart/$lpart/etc/procmailrc
+
+                $DOASVIRTMAIL touch      $VIRTMAILHOME/$dpart/$lpart/log/procmail.log
+                $DOASVIRTMAIL chmod 0640 $VIRTMAILHOME/$dpart/$lpart/log/procmail.log
                 echo "$E => $VIRTMAILHOME/$dpart/$lpart"
             fi
         else
@@ -40,3 +44,4 @@ else
     echo "Example: $0 neko@nyaan.jp kijitora@libsisimai.org"
     exit 1;
 fi
+
