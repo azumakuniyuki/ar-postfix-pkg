@@ -22,7 +22,7 @@
           - "clamsmtp"
   when: ansible_os_family == "Debian"
 
-- name: create-user | clamsmtp user should be created
+- name: check-virus | clamsmtp user should be created
   user:
     createhome: "yes"
     comment:    "ClamSMTP User"
