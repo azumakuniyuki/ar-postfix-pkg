@@ -19,6 +19,9 @@
       yum:
         state: "present"
         name:
+          - "libopendkim"
+          - "libopendkim-devel"
+          - "opendkim"
           - "pypolicyd-spf"
           - "smtpping"
           - "swaks"
@@ -71,6 +74,7 @@
         name:
           - "libspf2-2"
           - "libspf2-dev"
+          - "opendkim"
           - "smtpping"
           - "swaks"
 
