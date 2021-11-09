@@ -8,6 +8,8 @@
 # tasks file for ar-postfix-pkg
 - include: install-pkg.yml
 - include: create-user.yml
+  include: dkim-milter.yml
+  when: postfix.dkimmilter.enabled == true
 - include: check-virus.yml
   when: postfix.checkvirus.enabled == true
 - include: spam-filter.yml
