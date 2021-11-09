@@ -411,7 +411,7 @@ Socket local:{{ postfix.dkimmilter.ctlsock }}
 ##  SoftwareHeader { yes | no } | default "no"
 ##    Add a DKIM-Filter header field to messages passing through this filter to identify messages
 ##    it has processed.
-SoftwareHeader yes
+SoftwareHeader no
 
 ##  StrictHeaders { yes | no } | default "no"
 ##    Requests that the DKIM library refuse to process a message whose header fields do not conform
