@@ -48,17 +48,17 @@
 
 ##  AutoRestart { yes | no } | default "no"
 ##    Indicate whether or not the filter should arrange to restart automatically if it crashes.
-#AutoRestart no
+AutoRestart yes
 
 ##  AutoRestartCount n | default 0
 ##    Sets the maximum automatic restart count. After this number of automatic restarts, the filter
 ##    will give up and terminate. A value of 0 implies no limit.
-#AutoRestartCount 0
+AutoRestartCount 32
 
 ##  AutoRestartRate n/t[u] | default (none)
 ##    Sets the maximum automatic restart rate. See the opendkim.conf(5) man page for the format of
 ##    this parameter.
-#AutoRestartRate n/tu
+AutoRestartRate 1/1m
 
 ##  Background { yes | no } | default "yes"
 ##    Indicate whether or not the filter should run in the background.
