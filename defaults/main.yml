@@ -56,9 +56,22 @@ postfix:
       conf: "/home/virtmail/conf"
       logs: "/home/virtmail/logs"
       sbin: "/home/virtmail/sbin"
+  dkimmilter:
+    enabled: false
+    started: false
+    service: "opendkim"
+    confdir: "/etc/dkim"
+    rootdir: "/var/spool/dkim"
+    runtime: "/var/run/dkim"
+    pidfile: "/var/run/dkim/opendkim.pid"
+    ctlsock: "/var/run/dkim/opendkim.sock"
+    address: "127.0.0.1"
+    srcport: "8891"
+    default: "default"
   checkvirus:
     # clamd should be installed and running as root
     enabled: false
+    started: false
     service: "clamsmtpd"
     rootdir: "/var/spool/clam"
     logsdir: "/var/log/clam"
