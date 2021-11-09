@@ -11,6 +11,11 @@
     name:  "postfix"
     state: "restarted"
 
+- name: Restart OpenDKIM
+  service:
+    name:  "{{ postfix.dkimmilter.service }}"
+    state: "restarted"
+
 - name: Restart clamsmtpd
   service:
     name:  "{{ postfix.checkvirus.service }}"
