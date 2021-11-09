@@ -1,0 +1,9 @@
+## {{ postfix.dkimmilter.confdir }}/dkim-keytable
+##  KeyTable dataset | default (none)
+##    Defines a table that will be queried to convert key names to sets of data of the form (sign-
+##    ing domain, signing selector, private key). The private key can either contain a PEM-format-
+##    ted private key, a base64-encoded DER format private key, or a path to a file containing one
+##    of those.
+## ================================================================================================
+#selector._domainkey.example.jp example.jp:selector:{{ postfix.dkimmilter.confdir }}/keys/selector.key
+
