@@ -39,7 +39,7 @@
 ##  AuthservID string | default (local host name)
 ##    Defines the "authserv-id" token to be used when generating Authentication-Results headers af-
 ##    ter message verification.
-#AuthservID {{ postfix.mailconfig.domainname }}
+AuthservID {{ postfix.mailconfig.myhostname }}
 
 ##  AuthservIDWithJobID | default "no"
 ##    Appends a "/" followed by the MTA's job ID to the "authserv-id" token when generating Authen-
@@ -92,7 +92,7 @@ Canonicalization relaxed/relaxed
 ##  DNSTimeout n | default 10
 ##    Specify the time in seconds to wait for replies from the nameserver when requesting keys or
 ##    signing policies.
-#DNSTimeout 10
+DNSTimeout 30
 
 ##  Domain dataset | default (none)
 ##    Specify for which domain(s) signing should be done. No default; must be specified for sign-
