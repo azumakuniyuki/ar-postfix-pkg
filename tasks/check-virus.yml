@@ -79,12 +79,14 @@
     name:  "{{ postfix.checkvirus.service }}"
     state: "restarted"
 
-- name: check-virus | ClamSMTPD should be started
+- name: check-virus | ClamSMTPD should be enabled
+  when: postfix.checkvirus.enabled == true
   service:
     name:    "{{ postfix.checkvirus.service }}"
     enabled: "yes"
 
-- name: check-virus | ClamSMTPD should be enabled
+- name: check-virus | ClamSMTPD should be started
+  when: postfix.checkvirus.started == true
   service:
     name:  "{{ postfix.checkvirus.service }}"
     state: "started"
