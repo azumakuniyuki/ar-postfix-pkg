@@ -1,0 +1,8 @@
+# Set the necessary startup options
+OPTIONS="-x /etc/opendkim.conf -P {{ postfix.dkimmilter.pidfile }}"
+
+# Set the default DKIM selector
+DKIM_SELECTOR={{ postfix.dkimmilter.default }}
+
+# Set the default DKIM key location
+DKIM_KEYDIR={{ postfix.dkimmilter.confdir }}/keys
