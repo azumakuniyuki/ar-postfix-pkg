@@ -46,7 +46,7 @@
   when: ansible_os_family == "RedHat"
 
 - block:
-  - name: port-config | Debian | Allow 25, 587, and 465 for dovecot
+  - name: port-config | Debian | Allow 25, 587, and 465 for Postfix
     ufw:
       rule: "allow"
       name: "{{ item }}"
