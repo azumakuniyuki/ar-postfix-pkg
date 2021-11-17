@@ -32,8 +32,8 @@
 
 - name: postfix-adm | Deploy config files for PostfixAdmin
   template:
-    src:    "config.local.php.j2"
-    dest:  "{{ postfix.postfixadmin.confdir }}/{{ item | basename | replace('.j2', '') }}"
+    src:    "{{ item }}"
+    dest:   "{{ postfix.postfixadmin.confdir }}/{{ item | basename | replace('.j2', '') }}"
     mode:   "0644"
     backup: "yes"
   with_fileglob: "templates/*.php.j2"
