@@ -1,0 +1,117 @@
+---
+#                  _    __ _       __      _       __     ___            _        
+#  _ __   ___  ___| |_ / _(_)_  __/ /_ __ | | ____ \ \   / / |_ __ _ ___| | _____ 
+# | '_ \ / _ \/ __| __| |_| \ \/ / || '_ \| |/ / _` | | / /| __/ _` / __| |/ / __|
+# | |_) | (_) \__ \ |_|  _| |>  <| || |_) |   < (_| | |/ / | || (_| \__ \   <\__ \
+# | .__/ \___/|___/\__|_| |_/_/\_\ || .__/|_|\_\__, | /_/   \__\__,_|___/_|\_\___/
+# |_|                             \_\_|        |___/_/                            
+# check-dmarc
+- block:
+    - name: check-dmarc | RedHat | opendmarc should be installed
+      yum:
+        state: "present"
+        name:
+          - "opendmarc"
+  when: ansible_os_family == "RedHat"
+
+- block:
+    - name: check-dmarc | Debian | opendmarc should be installed
+      environment:
+        DEBIAN_FRONTEND: "noninteractive"
+      apt:
+        state: "present"
+        name:
+          - "opendmarc"
+  when: ansible_os_family == "Debian"
+
+- name: check-dmarc | Group for OpenDMARC should be created
+  group:
+    name:  "opendmarc"
+    state: "present"
+
+- name: check-dmarc | opendmarc user should be created
+  user:
+    createhome: "yes"
+    comment:    "OpenDMARC Milter"
+    password:   null
+    name:       "opendmarc"
+    group:      "opendmarc"
+    groups:     "mail"
+    shell:      "/sbin/nologin"
+    home:       "{{ postfix.opendmarc.runtime }}"
+    state:      "present"
+
+- name: check-dmarc | runtime directory should be 755
+  file:
+    path:  "{{ postfix.opendmarc.runtime }}"
+    mode:  "0770"
+    owner: "opendmarc"
+    group: "mail"
+    state: "directory"
+
+- name: check-dmarc | /etc/dmarc directory should be created
+  file:
+    path:  "{{ postfix.opendmarc.confdir }}"
+    mode:  "0755"
+    owner: "root"
+    group: "opendmarc"
+    state: "directory"
+
+- name: check-dmarc | /etc/opendmarc.conf should be deployed
+  notify: Restart OpenDMARC
+  template:
+    src:   "etc/opendmarc.conf.j2"
+    dest:  "/etc/opendmarc.conf"
+    mode:  "0644"
+    owner: "root"
+    group: "root"
+
+- name: check-dmarc | /etc/sysconfig/opendmarc should be deployed
+  when: ansible_os_family == "RedHat"
+  notify: Restart OpenDMARC
+  template:
+    src:   "etc/sysconfig/opendmarc.j2"
+    dest:  "/etc/sysconfig/opendmarc"
+    mode:  "0644"
+    owner: "root"
+    group: "root"
+
+- name: check-dmarc | tables for OpenDMARC should be deployed
+  notify: Restart OpenDMARC
+  template:
+    src:   "etc/dmarc/{{ item }}.j2"
+    dest:  "{{ postfix.opendmarc.confdir }}/{{ item }}"
+    mode:  "0640"
+    owner: "opendmarc"
+    group: "opendmarc"
+  loop:
+    - "trusted-hosts"
+    - "ignored-hosts"
+
+- name: check-dmarc | Unit file should be deployed
+  register: opendmarc_unit_deployed
+  notify: Restart OpenDMARC
+  template:
+    src:  "usr/lib/systemd/system/{{ postfix.opendmarc.service }}.service.j2"
+    dest: "/usr/lib/systemd/system/{{ postfix.opendmarc.service }}.service"
+    mode: "0644"
+
+- name: check-dmarc | Reload systemd
+  when: opendmarc_unit_deployed.changed
+  systemd:
+    daemon_reload: "yes"
+    name:  "{{ postfix.opendmarc.service }}"
+    state: "restarted"
+
+- name: check-dmarc | OpenDMARC should be started
+  when: postfix.opendmarc.started == true
+  service:
+    name:  "{{ postfix.opendmarc.service }}"
+    state: "started"
+
+- name: check-dmarc | OpenDMARC should be enabled
+  when: postfix.opendmarc.enabled == true
+  service:
+    name:    "{{ postfix.opendmarc.service }}"
+    enabled: "yes"
+
