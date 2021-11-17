@@ -13,6 +13,7 @@ postfix:
   mailqueues: "/var/spool/postfix"
   serverroot: "/usr"
   workingdir: "/usr/local/src"
+  snicertdir: "/etc/postfix/tls"
   tlscertdir: "/etc/letsencrypt/live"
   dbmapfiles:
     - "connaccess"
@@ -41,6 +42,11 @@ postfix:
   mailconfig:
     myhostname: "neko.nyaan.example.jp"
     domainname: "nyaan.example.jp"
+    alsobelong:
+      - "mail"
+      - "virtmail"
+      - "opendkim"
+      - "opendmarc"
     mailbox:
       # Values should be same as the following roles
       # - ar-dovecot-pkg.dovecot.mailconfig.mailbox
@@ -68,6 +74,16 @@ postfix:
     address: "127.0.0.1"
     srcport: "8891"
     default: "default"
+  opendmarc:
+    enabled: false
+    started: false
+    service: "opendmarc"
+    confdir: "/etc/dmarc"
+    runtime: "/var/run/dmarc"
+    pidfile: "/var/run/dmarc/opendmarc.pid"
+    ctlsock: "/var/run/dmarc/opendmarc.sock"
+    address: "127.0.0.1"
+    srcport: "8893"
   checkvirus:
     # clamd should be installed and running as root
     enabled: false
