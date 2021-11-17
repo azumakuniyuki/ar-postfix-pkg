@@ -124,6 +124,26 @@
     chdir:   "{{ postfix.configroot }}"
     creates: "{{ postfix.configroot }}/dh2048.pem"
 
+- name: make-config | tls/Makefile should be deployed
+  template:
+    src:    "etc/postfix/tls/Makefile.j2"
+    dest:   "{{ postfix.snicertdir }}/Makefile"
+    mode:   "0644"
+
+- name: make-config | TLS directory for SNI should be created
+  file:
+    path:  "{{ postfix.snicertdir }}"
+    mode:  "0750"
+    owner: "root"
+    group: "postfix"
+    state: "directory"
+
+- name: make-config | Each certificate and key shoudl be copied
+  changed_when: false
+  shell: make sni-certificates
+  args:
+    chdir: "{{ postfix.configroot }}"
+
 - block:
     - name: make-config | RedHat | Deploy /etc/sasl2/smtpd.conf
       template:
