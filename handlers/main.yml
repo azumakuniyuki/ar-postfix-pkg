@@ -16,6 +16,11 @@
     name:  "{{ postfix.dkimmilter.service }}"
     state: "restarted"
 
+- name: Restart OpenDMARC
+  service:
+    name:  "{{ postfix.opendmarc.service }}"
+    state: "restarted"
+
 - name: Restart clamsmtpd
   service:
     name:  "{{ postfix.checkvirus.service }}"
