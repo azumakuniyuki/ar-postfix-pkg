@@ -57,6 +57,8 @@
 # -----------------------------------------------------------------------------
 - block:
     - name: install-pkg | Debian | Postfix should be installed
+      environment:
+        DEBIAN_FRONTEND: "noninteractive"
       apt:
         state: "present"
         name:
@@ -69,6 +71,8 @@
           - "pflogsumm"
 
     - name: install-pkg | Debian | Postfix related packages should be installed
+      environment:
+        DEBIAN_FRONTEND: "noninteractive"
       apt:
         state: "present"
         name:
@@ -79,6 +83,8 @@
           - "swaks"
 
     - name: install-pkg | Debian | SASL related packages should be installed
+      environment:
+        DEBIAN_FRONTEND: "noninteractive"
       apt:
         state: "present"
         name:
@@ -95,6 +101,8 @@
           - "dnsutils"
 
     - name: install-pkg | Debian | Email related packages should be installed
+      environment:
+        DEBIAN_FRONTEND: "noninteractive"
       apt:
         state: "present"
         name:
