@@ -24,12 +24,6 @@
     home:  "{{ postfix.mailconfig.mailbox.home }}"
     state: "present"
 
-- name: create-user | postfix should be included in virtmail group
-  user:
-    name:   "postfix"
-    groups: "{{ postfix.mailconfig.mailbox.group }}"
-    state:  "present"
-
 - name: create-user | Sub directories should be created at the virtmail home
   file:
     path:  "{{ item }}"

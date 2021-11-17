@@ -8,7 +8,7 @@
 # tasks file for ar-postfix-pkg
 - include: install-pkg.yml
 - include: create-user.yml
-  include: dkim-milter.yml
+- include: dkim-milter.yml
   when: postfix.dkimmilter.enabled == true
 - include: check-virus.yml
   when: postfix.checkvirus.enabled == true
@@ -19,6 +19,15 @@
   when: postfix.backend.enabled == true
 - include: postfix-adm.yml
   when: postfix.postfixadmin.enabled == true
+  include: check-dmarc.yml
+  when: postfix.dkimmilter.enabled == true
+
+- name: main | postfix should be included in other groups
+  user:
+    name:   "postfix"
+    groups: "{{ postfix.mailconfig.alsobelong }}"
+    state:  "present"
+
 - include: build-local.yml
 - include: boot-script.yml
 - include: port-config.yml
