@@ -19,5 +19,5 @@
 #
 #   This feature is available in Postfix 3.4 and later.
 # -------------------------------------------------------------------------------------------------
-#[email.example.org]        username:password
-#[relay.example.jp]:587     usernane:password
+#{{ postfix.mailconfig.myhostname }}  {{ postfix.tlscertdir }}/{{ postfix.mailconfig.myhostname }}/fullchain.pem
+#

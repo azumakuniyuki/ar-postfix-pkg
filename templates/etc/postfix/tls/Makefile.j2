@@ -1,0 +1,72 @@
+# /etc/postfix/tls/Makefile
+#  __  __       _         __ _ _
+# |  \/  | __ _| | _____ / _(_) | ___
+# | |\/| |/ _` | |/ / _ \ |_| | |/ _ \
+# | |  | | (_| |   <  __/  _| | |  __/
+# |_|  |_|\__,_|_|\_\___|_| |_|_|\___|
+# -------------------------------------------------------------------------------------------------
+MAILOWNER  = postfix
+MAILGROUP  = postfix
+CONFIGROOT = /etc/postfix
+CERTANDKEY = {{ postfix.tlscertdir }}
+
+POSTFIX    = /usr/sbin/postfix
+POSTMAP    = /usr/sbin/postmap
+NEWALIASES = /usr/bin/newaliases
+MKDIR      = mkdir -p
+CHMOD      = chmod -c
+CHOWN      = chown -c
+RM         = rm -f
+MV         = mv
+CP         = cp -p
+UPDATE     = cp -up
+
+POSTFIXCTL = check reload
+SYSTEMDCTL = start stop restart
+
+SNIDOMAINS = $(shell grep -E '^[0-9A-Za-z]' $(CONFIGROOT)/serversni | cut -d' ' -f1)
+OPENSSLRSA = openssl rsa  -noout -in
+OPENSSLCER = openssl x509 -noout -in
+POSTMASTER = postmaster
+
+.DEFAULT_GOAL = check
+
+# -------------------------------------------------------------------------------------------------
+.PHONY: clean
+all:
+	$(MAKE) sni-certificates
+
+check:
+	@$(foreach v, $(SNIDOMAINS), printf -- "- $v.crt \t"; $(OPENSSLCER) $v.crt -dates | grep Af | sed 's/^.*=//';)
+	@$(foreach v, $(SNIDOMAINS), printf -- "- $v.cer \t"; $(OPENSSLCER) $v.cer -dates | grep Af | sed 's/^.*=//';)
+	@$(foreach v, $(SNIDOMAINS), printf -- "- $v.key \t"; $(OPENSSLRSA) $v.key -check;)
+
+sni-certificates:
+	@$(foreach v, $(SNIDOMAINS), make $v.key $v.crt $v.cer $v.pem;)
+
+%.pem: %.key %.crt %.cer
+	$(CP) $< $*.tmp
+	bash -c 'diff -u <($(OPENSSLCER) $*.crt -modulus | openssl md5) <($(OPENSSLRSA) $*.key -modulus | openssl md5)'
+	cat $*.crt $*.cer >> $*.tmp
+	touch $@
+	diff $*.tmp $@ > /dev/null 2>&1 || $(CP) $*.tmp $@
+	$(CHMOD) 0600 $@
+	$(CHOWN) root:root $@
+	$(RM) $*.tmp
+
+%.key:
+	$(UPDATE) $(realpath $(CERTANDKEY)/$*/privkey.pem) $@
+	$(OPENSSLRSA) $@
+
+%.crt:
+	$(UPDATE) $(realpath $(CERTANDKEY)/$*/cert.pem) $@
+	$(OPENSSLCER) $@ -checkend 300 > /dev/null 2>&1
+
+%.cer:
+	$(UPDATE) $(realpath $(CERTANDKEY)/$*/chain.pem) $@
+	$(OPENSSLCER) $@ -checkend 300 > /dev/null 2>&1
+
+# -------------------------------------------------------------------------------------------------
+clean:
+	$(RM) ./*.tmp
+

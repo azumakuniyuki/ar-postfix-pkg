@@ -8,21 +8,26 @@
 MAILOWNER  = postfix
 MAILGROUP  = postfix
 CONFIGROOT = /etc/postfix
+SNICERTDIR = {{ postfix.snicertdir }}
+CERTANDKEY = {{ postfix.tlscertdir }}
 
 POSTFIX    = /usr/sbin/postfix
 POSTMAP    = /usr/sbin/postmap
 NEWALIASES = /usr/bin/newaliases
 MKDIR      = mkdir -p
+CHMOD      = chmod -c
+CHOWN      = chown -c
 RM         = rm -f
 MV         = mv
-CP         = cp
+CP         = cp -p
+UPDATE     = cp -up
 
 POSTFIXCTL = check reload
 SYSTEMDCTL = start stop restart
 
-MYHOSTNAME := $(shell grep '^myhostname' main.cf | awk '{ print $$3 }')
-MYDOMAIN   := $(shell grep '^mydomain'   main.cf | awk '{ print $$3 }')
-POSTMASTER := postmaster
+MYHOSTNAME = $(shell grep '^myhostname' main.cf | awk '{ print $$3 }')
+MYDOMAIN   = $(shell grep '^mydomain'   main.cf | awk '{ print $$3 }')
+POSTMASTER = postmaster
 
 .DEFAULT_GOAL = status
 
@@ -33,14 +38,11 @@ all:
 		test -f $$v && printf "%s " `basename $$v`; \
 		test -f $$v && $(MAKE) `basename $$v`.db > /dev/null 2>&1; \
 	done
+	$(MAKE) sni-certificates
 	@echo
 
 aliases.db: aliases
 	test -f $< && $(NEWALIASES)
-
-smtpauth.db: smtpauth.in
-	test -f $< && $(POSTMAP) $< && $(MV) $<.db $@ && $(RM) $<
-	chown root.$(MAILGROUP) $@
 
 %.db: %.in
 	test -f $<
@@ -49,6 +51,19 @@ smtpauth.db: smtpauth.in
 %.in: %
 	test -f $< && $(CP) $< $<.in
 
+serversni.db: serversni
+	$(MAKE) sni-certificates
+	test -f $< && $(POSTMAP) -F hash:$<
+	test -f $@ && $(CHOWN) root.$(MAILGROUP) $@
+
+smtpauth.db: smtpauth
+	test -f $< && $(POSTMAP) $<
+	test -f $@ && $(CHOWN) root.$(MAILGROUP) $@
+
+sni-certificates:
+	cd ./tls && $(MAKE) $@
+
+# -------------------------------------------------------------------------------------------------
 $(POSTFIXCTL):
 	$(POSTFIX) $@
 
@@ -58,6 +73,7 @@ $(SYSTEMDCTL): check
 status:
 	/usr/bin/systemctl $@ postfix
 
+# -------------------------------------------------------------------------------------------------
 auth-plain-password:
 	@test -n "$(U)" || (echo 'Specify "U" macro like: make U=sasl-user@example.jp' && false)
 	@test -n "$(P)" || (echo 'Specify "P" macro like: make P=sasl-user-password'   && false)

@@ -1565,7 +1565,7 @@ smtpd_tls_ask_ccert = no
 #
 #   Example:
 #       smtpd_tls_cert_file = /etc/postfix/server.pem
-#smtpd_tls_cert_file = {{ postfix.tlscertdir }}/{{ postfix.mailconfig.myhostname }}/fullchain.pem
+#smtpd_tls_cert_file = {{ postfix.tlscertdir }}/{{ postfix.mailconfig.myhostname }}.cer
 
 # smtpd_tls_key_file (default: $smtpd_tls_cert_file)
 #   File with the Postfix SMTP server RSA private key in PEM format. This file may be combined with
@@ -1574,7 +1574,7 @@ smtpd_tls_ask_ccert = no
 #   The private key must be accessible without a pass-phrase,  i.e. it must not be encrypted. File
 #   permissions should grant read-only access to the system superuser account ("root"), and no ac-
 #   cess to anyone else.
-#smtpd_tls_key_file = {{ postfix.tlscertdir }}/{{ postfix.mailconfig.myhostname }}/privkey.pem
+#smtpd_tls_key_file = {{ postfix.tlscertdir }}/{{ postfix.mailconfig.myhostname }}.key
 
 # smtpd_tls_eccert_file (default: empty)
 #   File with the Postfix SMTP server  "ECDSA" certificate  in PEM format. This file may also con-
@@ -1666,7 +1666,7 @@ smtpd_tls_session_cache_database =
 #   parameter obsoletes the legacy algorithm-specific key and certificate file settings. When this
 #   parameter is non-empty, the legacy parameters are ignored, and a warning is logged if any are
 #   also non-empty. With the proliferation of multiple private key algorithms—which, as of OpenSSL
-#   1.1.1, include DSA (obsolete), RSA, ECDSA, Ed25519 and Ed448—it is increasingly impractical to
+#   1.1.1, include DSA (obsolete), RSA, ECDSA, Ed25519 and Ed448--it is increasingly impractical to
 #   use separate parameters to configure the key and certificate chain for each algorithm. There-
 #   fore, Postfix now supports storing multiple keys and corresponding certificate chains in a sin-
 #   gle file or in a set of files.
@@ -1698,7 +1698,7 @@ smtpd_tls_session_cache_database =
 #   mon, but not yet universal, and Ed25519 and Ed448 support is mostly absent. Therefore, an RSA
 #   key should generally be configured, along with any additional keys for the other algorithms
 #   when desired.
-#smtpd_tls_chain_files =
+#smtpd_tls_chain_files = {{ postfix.snicertdir }}/{{ postfix.mailconfig.myhostname }}.pem
 
 
 # INPUT RATE CONTROL
@@ -2116,7 +2116,8 @@ body_checks = pcre:/etc/postfix/re_messagebody
 #   A list of Milter (mail filter) applications for new mail that arrives via the Postfix smtpd(8)
 #   server. Specify space or comma as separator. See the "MILTER_README" document for details.
 #smtpd_milters =
-#   unix:{{ postfix.dkimmilter.ctlsock }}
+#   unix:{{ postfix.dkimmilter.ctlsock }},
+#   unix:{{ postfix.opendmarc.ctlsock }}
 
 # non_smtpd_milters (default: empty)
 #   A list of Milter (mail filter) applications for new mail that does not arrive via the Postfix
@@ -2747,8 +2748,9 @@ debug_peer_level = 2
 #   If you use an X-based debugger, be sure to set up your XAUTHORITY environment variable before
 #   starting Postfix.
 debugger_command =
-    PATH=/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin
-    ddd $daemon_directory/$process_name $process_id & sleep 5
+#   PATH=/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin
+#   ddd $daemon_directory/$process_name $process_id & sleep 5
+#   strace -o /tmp/tr.$process_name.$process_id -p $process_id & sleep 1
 
 #   If you can't use X Window, use this to capture the call stack when a daemon crashes. The result
 #   is in a file in the configuration directory, and is named after the process name and the proc-
