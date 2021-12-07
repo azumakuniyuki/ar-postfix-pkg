@@ -484,14 +484,14 @@ clamsmtp  unix  -       -       n       -       16      smtp
 #               (yes)   (yes)   (yes)   (never) (100)
 # -------------------------------------------------------------------------------------------------
 google-smtp unix -     -       n       -       1       smtp
-  -o anvil_rate_limit_unit=60s
+  -o anvil_rate_time_unit=60s
   -o smtp_destination_concurrency_limit=2
   -o smtp_destination_recipient_limit=10
   -o smtp_destination_concurrency_failed_cohort_limit=10
   -o syslog_name=postfix/google
 
 yahoo-smtp unix -      -       n       -       1       smtp
-  -o anvil_rate_limit_unit=60s
+  -o anvil_rate_time_unit=60s
   -o smtp_initial_destination_concurrency=1
   -o smtp_destination_concurrency_limit=4
   -o smtp_destination_recipient_limit=2
@@ -500,28 +500,28 @@ yahoo-smtp unix -      -       n       -       1       smtp
 
 # https://www.nttdocomo.co.jp/service/imode_mail/notice/mass_send/
 nttdocomo-smtp unix -  -       n       -       1       smtp
-  -o anvil_rate_limit_unit=5s
+  -o anvil_rate_time_unit=5s
   -o smtp_destination_concurrency_limit=1
   -o smtp_destination_recipient_limit=1
   -o syslog_name=postfix/nttdocomo
 
 # https://www.au.com/mobile/service/attention/specification/
 aubykddi-smtp unix -   -       n       -       1       smtp
-  -o anvil_rate_limit_unit=60s
+  -o anvil_rate_time_unit=60s
   -o smtp_destination_concurrency_limit=1
   -o smtp_destination_recipient_limit=1
   -o syslog_name=postfix/aubykddi
 
 # https://www.softbank.jp/mobile/support/mail/antispam/howto/wrestle/
 softbank-smtp unix -   -       n       -       1       smtp
-  -o anvil_rate_limit_unit=60s
+  -o anvil_rate_time_unit=60s
   -o smtp_destination_concurrency_limit=1
   -o smtp_destination_recipient_limit=1
   -o syslog_name=postfix/softbank
 
 # https://www.ymobile.jp/service/others/spam/
 ymobile-smtp unix -    -       n       -       1       smtp
-  -o anvil_rate_limit_unit=60s
+  -o anvil_rate_time_unit=60s
   -o smtp_destination_concurrency_limit=1
   -o smtp_destination_recipient_limit=1
   -o syslog_name=postfix/ymobile
