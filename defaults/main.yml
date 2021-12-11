@@ -99,10 +99,10 @@ postfix:
   spamfilter:
     enabled: false
   postfixadmin:
-    enabled:  false
-    pfaroot:  "/user/sahre/postfixadmin"
-    webuser:  "httpd"
-    confdir:  "/etc/postfixadmin"
+    enabled: false
+    pfaroot: "/user/sahre/postfixadmin"
+    webuser: "httpd"
+    confdir: "/etc/postfixadmin"
     password: null
   backend:
     enabled: false
