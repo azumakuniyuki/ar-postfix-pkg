@@ -46,6 +46,14 @@
     dest:   "{{ postfix.configroot }}/procmailrc"
     state:  "link"
 
+- name: make-config | Deploy /etc/logrotate.d/virtmail
+  template:
+    src:    "etc/logrotate.d/virtmail.j2"
+    dest:   "/etc/logrotate.d/virtmail"
+    owner:  "root"
+    group:  "root"
+    mode:   "0644"
+
 - name: make-config | Deploy other files in /etc/postfix
   template:
     src:    "etc/postfix/{{ item }}.j2"

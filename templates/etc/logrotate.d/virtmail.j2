@@ -1,0 +1,9 @@
+{{ postfix.mailconfig.mailbox.logs }}/*.log {
+    rotate 64
+    daily
+    missingok
+    compress
+    su {{ postfix.mailconfig.mailbox.username }} {{ postfix.mailconfig.mailbox.group }}
+    create 0600 {{ postfix.mailconfig.mailbox.username }} {{ postfix.mailconfig.mailbox.group }}
+}
+
