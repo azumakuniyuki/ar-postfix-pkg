@@ -7,12 +7,17 @@
 # -------------------------------------------------------------------------------------------------
 MAILOWNER  = postfix
 MAILGROUP  = postfix
-CONFIGROOT = /etc/postfix
-SNICERTDIR = {{ postfix.snicertdir }}
+CONFIGROOT = {{ postfix.configroot }}
 CERTANDKEY = {{ postfix.tlscertdir }}
+POSTFIX    = {{ postfix.serverroot }}/sbin/postfix
+POSTMAP    = {{ postfix.serverroot }}/sbin/postmap
+POSTCONF   = {{ postfix.serverroot }}/sbin/postconf
+POSTALIAS  = {{ postfix.serverroot }}/sbin/postalias
+POSTQUEUE  = {{ postfix.serverroot }}/sbin/postqueue
+POSTSUPER  = {{ postfix.serverroot }}/sbin/postsuper
+QUEUEDIR   = {{ postfix.mailqueues }}
+EXPIRES    = 14
 
-POSTFIX    = /usr/sbin/postfix
-POSTMAP    = /usr/sbin/postmap
 NEWALIASES = /usr/bin/newaliases
 MKDIR      = mkdir -p
 CHMOD      = chmod -c
@@ -25,8 +30,10 @@ UPDATE     = cp -up
 POSTFIXCTL = check reload
 SYSTEMDCTL = start stop restart
 
-MYHOSTNAME = $(shell grep '^myhostname' main.cf | awk '{ print $$3 }')
-MYDOMAIN   = $(shell grep '^mydomain'   main.cf | awk '{ print $$3 }')
+MYHOSTNAME = $(shell $(POSTCONF) -h myhostname)
+MYDOMAIN   = $(shell $(POSTCONF) -h mydomain)
+MAPFILES   = $(shell $(POSTCONF) | tr ',' '\n' | grep -E '(hash|cidr|pcre):{{ postfix.configroot }}' | sed 's/^.*://g' | sort -u)
+HELDQUEUES = $(shell find $(QUEUEDIR)/hold -type f -ctime +$(EXPIRES))
 POSTMASTER = postmaster
 
 .DEFAULT_GOAL = status
@@ -34,10 +41,7 @@ POSTMASTER = postmaster
 # -------------------------------------------------------------------------------------------------
 .PHONY: clean
 all:
-	@for v in `grep -E '(hash|cidr|pcre):' main.cf | grep -v '#' | sed -e 's/^.*://g' -e 's/ .*//g' -e 's/,.*//g' | sort | uniq`; do \
-		test -f $$v && printf "%s " `basename $$v`; \
-		test -f $$v && $(MAKE) `basename $$v`.db > /dev/null 2>&1; \
-	done
+	@$(foreach v, $(MAPFILES), test -f `basename $v` && $(MAKE) --no-print-directory `basename $v`.db;)
 	$(MAKE) sni-certificates
 	@echo
 
@@ -84,6 +88,10 @@ new-cert-by-dns:
 
 new-cert-by-web:
 	certbot certonly --standalone -d $(MYHOSTNAME) -m $(POSTMASTER)@$(MYDOMAIN) --agree-tos
+
+# -------------------------------------------------------------------------------------------------
+remove-held-queues:
+	@$(foreach v, $(HELDQUEUES), $(POSTSUPER) -d `basename $v`;)
 
 clean:
 	$(RM) *.in *.db.db

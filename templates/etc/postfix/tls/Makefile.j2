@@ -7,12 +7,14 @@
 # -------------------------------------------------------------------------------------------------
 MAILOWNER  = postfix
 MAILGROUP  = postfix
-CONFIGROOT = /etc/postfix
+CONFIGROOT = {{ postfix.configroot }}
 CERTANDKEY = {{ postfix.tlscertdir }}
-
-POSTFIX    = /usr/sbin/postfix
-POSTMAP    = /usr/sbin/postmap
-NEWALIASES = /usr/bin/newaliases
+POSTFIX    = {{ postfix.serverroot }}/sbin/postfix
+POSTMAP    = {{ postfix.serverroot }}/sbin/postmap
+POSTCONF   = {{ postfix.serverroot }}/sbin/postconf
+POSTALIAS  = {{ postfix.serverroot }}/sbin/postalias
+POSTQUEUE  = {{ postfix.serverroot }}/sbin/postqueue
+POSTSUPER  = {{ postfix.serverroot }}/sbin/postsuper
 MKDIR      = mkdir -p
 CHMOD      = chmod -c
 CHOWN      = chown -c
@@ -42,7 +44,7 @@ check:
 	@$(foreach v, $(SNIDOMAINS), printf -- "- $v.key \t"; $(OPENSSLRSA) $v.key -check;)
 
 sni-certificates:
-	@$(foreach v, $(SNIDOMAINS), make $v.key $v.crt $v.cer $v.pem;)
+	@$(foreach v, $(SNIDOMAINS), $(MAKE) --no-print-directory $v.key $v.crt $v.cer $v.pem;)
 
 %.pem: %.key %.crt %.cer
 	$(CP) $< $*.tmp
