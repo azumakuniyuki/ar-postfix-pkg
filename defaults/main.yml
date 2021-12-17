@@ -120,4 +120,22 @@ postfix:
     username: "postmaster"
     password: null
     grants:   "email.*:ALL,GRANT"
+mailman:
+  enabled: false
+  started: false
+  service: "mailman"
+  username: "list"
+  group:    "list"
+  thefirstml: "listmasters"
+  mlpassword: null
+  listmaster: "postmaster@example.jp"
+  configroot: "/etc/mailman"
+  serverroot: "/var/lib/mailman"
+  loggingdir: "/var/log/mailman"
+  scriptsdir: "/usr/lib/cgi-bin/mailman"
+  defaulturl: "www.example.jp"
+  lists:
+    - name:     "ml-debug"
+      owner:    "postmaster@example.jp"
+      password: null
 

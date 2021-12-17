@@ -1,0 +1,39 @@
+# /etc/cron.d/mailman
+SHELL=/bin/bash
+PATH="/usr/lib/mailman/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+LIBMM="/usr/lib/mailman"
+
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name  command to be executed
+
+# At 8AM every day, mail reminders to admins as to pending requests. They are less likely to ignore
+# these reminders if they're mailed early in the morning, but of course, this is local time... ;)
+00  08  *  *  * {{ mailman.username }} [ -x $LIBMM/cron/checkdbs ] && $LIBMM/cron/checkdbs
+#
+# At 9AM, send notifications to disabled members that are due to be reminded to re-enable their ac-
+# counts.
+00  09  *  *  * {{ mailman.username }} [ -x $LIBMM/cron/disabled ] && $LIBMM/cron/disabled
+
+# Noon, mail digests for lists that do periodic as well as threshold delivery.
+00  12  *  *  * {{ mailman.username }} [ -x $LIBMM/cron/senddigests ] && $LIBMM/cron/senddigests
+
+# 5 AM on the first of each month, mail out password reminders.
+00  05 01  *  * {{ mailman.username }} [ -x $LIBMM/cron/mailpasswds ] && $LIBMM/cron/mailpasswds
+
+# Every 5 mins, try to gate news to mail.  You can comment this one out if you don't want to allow
+# gating, or don't have any going on right now, or want to exclusively use a callback strategy in-
+# stead of polling.
+#*/5  *  *  *  * {{ mailman.username }} [ -x $LIBMM/cron/gate_news ] && $LIBMM/cron/gate_news
+
+# At 3:27am every night, regenerate the gzip'd archive file. Only turn this on if the internal ar-
+# chiver is used and GZIP_ARCHIVE_TXT_FILES is false in mm_cfg.py
+27  03  *  *  * {{ mailman.username }} [ -x $LIBMM/cron/nightly_gzip ] && $LIBMM/cron/nightly_gzip
+
+# At 4:30AM daily, cull old entries from the 'bad' and 'shunt' queues.
+30  04  *  *  * {{ mailman.username }} [ -x $LIBMM/cron/cull_bad_shunt ] && $LIBMM/cron/cull_bad_shunt
+

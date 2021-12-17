@@ -1,0 +1,62 @@
+# /etc/mailman/Makefile
+#  __  __       _         __ _ _
+# |  \/  | __ _| | _____ / _(_) | ___
+# | |\/| |/ _` | |/ / _ \ |_| | |/ _ \
+# | |  | | (_| |   <  __/  _| | |  __/
+# |_|  |_|\__,_|_|\_\___|_| |_|_|\___|
+# -------------------------------------------------------------------------------------------------
+LISTOWNER  = {{ mailman.username }}
+LISTGROUP  = {{ mailman.group }}
+CONFIGROOT = {{ mailman.configroot }}
+SERVERROOT = {{ mailman.serverroot }}
+MMSERVICE  = {{ mailman.service }}
+MMALIASES  = $(SERVERROOT)/data/aliases
+
+POSTALIAS  = {{ postfix.serverroot }}/sbin/postalias
+POSTFIX    = {{ postfix.serverroot }}/sbin/postfix
+POSTMAP    = {{ postfix.serverroot }}/sbin/postmap
+NEWALIASES = /usr/bin/newaliases
+
+SYSTEMCTL  = /usr/bin/systemctl
+BASEALIAS  = listmasters.aliases
+
+MKDIR      = mkdir -p
+CHMOD      = chmod -c
+CHOWN      = chown -c
+RM         = rm -f
+MV         = mv
+CP         = cp -p
+UPDATE     = cp -up
+
+SYSTEMDARG = start stop restart check status
+ALLOFLISTS = $(shell {{ mailman.serverroot }}/bin/list_lists | grep ' - ' | awk '{ print $$1 }' | tr '[A-Z]' '[a-z]')
+
+.DEFAULT_GOAL = status
+# -------------------------------------------------------------------------------------------------
+.PHONY: clean
+
+update-aliases: aliases
+aliases:
+	$(CP) ./$(BASEALIAS) $@
+	$(foreach v, $(ALLOFLISTS), test -f $v && cat $v >> $@;)
+	diff -u $@ $(MMALIASES) || $(UPDATE) $@ $(MMALIASES)
+	$(POSTALIAS) $(MMALIASES)
+
+load-config:
+	$(foreach v, $(ALLOFLISTS), test -f $v.cf && $(SERVERROOT)/bin/config_list -i $v.cf $v;)
+
+dump-config:
+	$(foreach v, $(ALLOFLISTS), $(SERVERROOT)/bin/config_list -o $v.cf-dumped $v;)
+
+list-members:
+	@ $(foreach v, $(ALLOFLISTS), echo $v; $(SERVERROOT)/bin/list_members $v | sed 's/^/  - /g'; echo;)
+
+# -------------------------------------------------------------------------------------------------
+$(SYSTEMDARG):
+	$(SYSTEMCTL) $@ $(MMSERVICE)
+
+clean:
+	$(RM) *.cf-dumped
+	$(MKDIR) $(CONFIGROOT)/histories
+	$(MV) ./*~ ./histories/ 2> /dev/null || true
+

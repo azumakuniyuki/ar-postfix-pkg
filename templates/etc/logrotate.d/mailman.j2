@@ -1,0 +1,64 @@
+{{ mailman.loggingdir }}/vette
+{{ mailman.loggingdir }}/error
+{{ mailman.loggingdir }}/bounce {
+    su root list
+    weekly
+    missingok
+    create 0664 list list
+    rotate 4
+    compress
+    delaycompress
+    sharedscripts
+    postrotate
+        [ -f '/var/run/mailman/mailman.pid' ] && /usr/lib/mailman/bin/mailmanctl -q reopen || exit 0
+    endscript
+}
+
+{{ mailman.loggingdir }}/mischief {
+    su root list
+    monthly
+    missingok
+    create 0664 list www-data
+    rotate 4
+    compress
+    delaycompress
+    sharedscripts
+    postrotate
+        [ -f '/var/run/mailman/mailman.pid' ] && /usr/lib/mailman/bin/mailmanctl -q reopen || exit 0
+    endscript
+}
+
+{{ mailman.loggingdir }}/subscribe
+{{ mailman.loggingdir }}/digest
+{{ mailman.loggingdir }}/post {
+    su root list
+    monthly
+    missingok
+    create 0664 list list
+    rotate 12
+    compress
+    delaycompress
+    sharedscripts
+    postrotate
+        [ -f '/var/run/mailman/mailman.pid' ] && /usr/lib/mailman/bin/mailmanctl -q reopen || exit 0
+    endscript
+}
+
+{{ mailman.loggingdir }}/qrunner
+{{ mailman.loggingdir }}/fromusenet
+{{ mailman.loggingdir }}/locks
+{{ mailman.loggingdir }}/smtp
+{{ mailman.loggingdir }}/smtp-failure {
+    su root list
+    daily
+    missingok
+    create 0664 list list
+    rotate 7
+    compress
+    delaycompress
+    sharedscripts
+    postrotate
+        [ -f '/var/run/mailman/mailman.pid' ] && /usr/lib/mailman/bin/mailmanctl -q reopen || exit 0
+    endscript
+}
+

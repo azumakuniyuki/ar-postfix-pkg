@@ -1,0 +1,20 @@
+# {{ mailman.serverroot }}/aliases
+# =================================================================================================
+# % newlist {{ mailman.thefirstml }} {{ mailman.listmaster }} <password>
+# ...
+# To finish creating your mailing list, you must edit your /etc/aliases (or equivalent) file by
+# adding the following lines, and possibly running the `newaliases' program:
+
+# {{ mailman.thefirstml }} mailing list
+# -------------------------------------------------------------------------------------------------
+{{ mailman.thefirstml }}:              "|{{ mailman.serverroot }}/mail/mailman post {{ mailman.thefirstml }}"
+{{ mailman.thefirstml }}-admin:        "|{{ mailman.serverroot }}/mail/mailman admin {{ mailman.thefirstml }}"
+{{ mailman.thefirstml }}-bounces:      "|{{ mailman.serverroot }}/mail/mailman bounces {{ mailman.thefirstml }}"
+{{ mailman.thefirstml }}-confirm:      "|{{ mailman.serverroot }}/mail/mailman confirm {{ mailman.thefirstml }}"
+{{ mailman.thefirstml }}-join:         "|{{ mailman.serverroot }}/mail/mailman join {{ mailman.thefirstml }}"
+{{ mailman.thefirstml }}-leave:        "|{{ mailman.serverroot }}/mail/mailman leave {{ mailman.thefirstml }}"
+{{ mailman.thefirstml }}-owner:        "|{{ mailman.serverroot }}/mail/mailman owner {{ mailman.thefirstml }}"
+{{ mailman.thefirstml }}-request:      "|{{ mailman.serverroot }}/mail/mailman request {{ mailman.thefirstml }}"
+{{ mailman.thefirstml }}-subscribe:    "|{{ mailman.serverroot }}/mail/mailman subscribe {{ mailman.thefirstml }}"
+{{ mailman.thefirstml }}-unsubscribe:  "|{{ mailman.serverroot }}/mail/mailman unsubscribe {{ mailman.thefirstml }}"
+

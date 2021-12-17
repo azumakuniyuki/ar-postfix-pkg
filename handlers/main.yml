@@ -26,6 +26,17 @@
     name:  "{{ postfix.checkvirus.service }}"
     state: "restarted"
 
+- name: Restart mailman
+  service:
+    name:  "{{ mailman.service }}"
+    state: "restarted"
+
+- name: Reload mailman
+  service:
+    daemon_reload: "yes"
+    name:  "{{ mailman.service }}"
+    state: "restarted"
+
 - name: Reload systemd
   systemd:
     daemon_reload: "yes"

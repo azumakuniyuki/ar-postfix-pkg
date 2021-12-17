@@ -21,6 +21,8 @@
   when: postfix.postfixadmin.enabled == true
   include: check-dmarc.yml
   when: postfix.dkimmilter.enabled == true
+- include: mailman-pkg.yml
+  when: mailman.enabled == true
 
 - name: main | postfix should be included in other groups
   user:

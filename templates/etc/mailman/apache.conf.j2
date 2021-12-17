@@ -1,0 +1,74 @@
+# {{ mailman.configroot }}/apache.conf
+#                  _ _                       
+#  _ __ ___   __ _(_) |_ __ ___   __ _ _ __  
+# | '_ ` _ \ / _` | | | '_ ` _ \ / _` | '_ \ 
+# | | | | | | (_| | | | | | | | | (_| | | | |
+# |_| |_| |_|\__,_|_|_|_| |_| |_|\__,_|_| |_|
+#                                            
+# We can find mailman here:
+ScriptAlias /cgi-bin/mailman/   {{ mailman.scriptsdir }}/
+Alias       /pipermail/         /var/lib/mailman/archives/public/
+Alias       /images/mailman/    /usr/share/images/mailman/
+
+# Use this if you don't want the "cgi-bin" component in your URL: In case you want to access mail-
+# man through a shorter URL you should enable this:
+#ScriptAlias /mailman/ {{ mailman.scriptsdir }}/
+
+# In this case you need to set the DEFAULT_URL_PATTERN in /etc/mailman/mm_cfg.py to 
+# http://%s/mailman/ for the cookie authentication code to work.  Note that you need to change
+# the base URL for all the already-created lists as well.
+
+<Directory {{ mailman.scriptsdir }}/>
+    AllowOverride None
+    Options ExecCGI
+    AddHandler cgi-script .cgi
+    Require all granted
+</Directory>
+
+<Directory {{ mailman.serverroot }}/archives/public/>
+    Options FollowSymlinks
+    AllowOverride None
+    Require all granted
+</Directory>
+
+<Directory /usr/share/images/mailman/>
+    AllowOverride None
+    Require all granted
+</Directory>
+
+# The following describes how to configure mailman on a dedicated virtual host, courtesy Marco
+# d'Itri.
+
+# Add these lines in {{ mailman.configroot }}/mm_cfg.py:
+#DEFAULT_EMAIL_HOST = '{{ postfix.mailconfig.myhostname }}'
+#DEFAULT_URL_HOST   = '{{ mailman.defaulturl }}'
+#DEFAULT_URL_PATTERN = 'http://%s/'
+
+#<VirtualHost *>
+#   ServerName      {{ mailman.defaulturl }}
+#   DocumentRoot    /var/www/lists
+#   ErrorLog        /var/log/apache2/lists-error.log
+#   CustomLog       /var/log/apache2/lists-access.log combined
+#
+#   <Directory {{ mailman.serverroot }}/archives/>
+#       Options FollowSymLinks
+#       AllowOverride None
+#   </Directory>
+#
+#   Alias /pipermail/       {{ mailman.serverroot }}/archives/public/
+#   Alias /images/mailman/  /usr/share/images/mailman/
+
+#   ScriptAlias /admin      {{ mailman.scriptsdir }}/admin
+#   ScriptAlias /admindb    {{ mailman.scriptsdir }}/admindb
+#   ScriptAlias /confirm    {{ mailman.scriptsdir }}/confirm
+#   ScriptAlias /create     {{ mailman.scriptsdir }}/create
+#   ScriptAlias /edithtml   {{ mailman.scriptsdir }}/edithtml
+#   ScriptAlias /listinfo   {{ mailman.scriptsdir }}/listinfo
+#   ScriptAlias /options    {{ mailman.scriptsdir }}/options
+#   ScriptAlias /private    {{ mailman.scriptsdir }}/private
+#   ScriptAlias /rmlist     {{ mailman.scriptsdir }}/rmlist
+#   ScriptAlias /roster     {{ mailman.scriptsdir }}/roster
+#   ScriptAlias /subscribe  {{ mailman.scriptsdir }}/subscribe
+#   ScriptAlias /mailman/   {{ mailman.scriptsdir }}/
+#</VirtualHost>
+
