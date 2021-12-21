@@ -49,12 +49,12 @@ sni-certificates:
 %.pem: %.key %.crt %.cer
 	$(CP) $< $*.tmp
 	bash -c 'diff -u <($(OPENSSLCER) $*.crt -modulus | openssl md5) <($(OPENSSLRSA) $*.key -modulus | openssl md5)'
-	cat $*.crt $*.cer >> $*.tmp
+	cat $*.cer >> $*.tmp
 	touch $@
 	diff $*.tmp $@ > /dev/null 2>&1 || $(CP) $*.tmp $@
 	$(CHMOD) 0600 $@
 	$(CHOWN) root:root $@
-	$(RM) $*.tmp
+	$(MAKE) clean
 
 %.key:
 	$(UPDATE) $(realpath $(CERTANDKEY)/$*/privkey.pem) $@
@@ -65,7 +65,7 @@ sni-certificates:
 	$(OPENSSLCER) $@ -checkend 300 > /dev/null 2>&1
 
 %.cer:
-	$(UPDATE) $(realpath $(CERTANDKEY)/$*/chain.pem) $@
+	$(UPDATE) $(realpath $(CERTANDKEY)/$*/fullchain.pem) $@
 	$(OPENSSLCER) $@ -checkend 300 > /dev/null 2>&1
 
 # -------------------------------------------------------------------------------------------------
