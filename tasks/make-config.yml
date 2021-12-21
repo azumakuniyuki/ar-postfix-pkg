@@ -88,8 +88,7 @@
 
 - name: make-config | Each map file should be converted to db
   when: mapfile.changed
-  shell: >
-    /usr/sbin/postmap {{ item }}
+  shell: make {{ item }}
   args:
     chdir:   "{{ postfix.configroot }}"
   with_items: "{{ postfix.dbmapfiles }}"
