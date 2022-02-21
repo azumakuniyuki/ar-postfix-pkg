@@ -131,6 +131,14 @@
     chdir:   "{{ postfix.configroot }}"
     creates: "{{ postfix.configroot }}/dh2048.pem"
 
+- name: make-config | tls/ directory should be created
+  file:
+    path:   "{{ postfix.snicertdir }}"
+    mode:   "0750"
+    owner:  "root"
+    group:  "postfix"
+    state:  "directory"
+
 - name: make-config | tls/Makefile should be deployed
   template:
     src:    "etc/postfix/tls/Makefile.j2"
