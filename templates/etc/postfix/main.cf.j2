@@ -450,7 +450,7 @@ smtp_connection_cache_destinations = hash:/etc/postfix/conncache
 #   sive shell command in a ".forward" file or in an alias(e.g., a mailing list manager). You don't
 #   want to run lots of those at the same time.
 local_destination_concurrency_limit = 2
- 
+
 # default_destination_concurrency_limit (default: 20)
 #   Each message delivery transport has its "XXX_destination_concurrency_limit" parameter.  The de-
 #   fault is $default_destination_concurrency_limit for most delivery transports. For the local de-
