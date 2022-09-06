@@ -137,8 +137,7 @@ smtp      inet  n       -       n       -       -       smtpd
 #smtpd     pass  -       -       n       -       -       smtpd
 #dnsblog   unix  -       -       n       -       0       dnsblog
 #tlsproxy  unix  -       -       n       -       0       tlsproxy
-submission inet n       -       n       -       -       smtpd
-  -o syslog_name=postfix/submission
+submission inet n       -       n       -       -       smtpd -o syslog_name=postfix/submission
   -o smtpd_tls_security_level=may
   -o smtpd_sasl_auth_enable=yes
   -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
@@ -483,46 +482,20 @@ clamsmtp  unix  -       -       n       -       16      smtp
 # service type  private unpriv  chroot  wakeup  maxproc command + args
 #               (yes)   (yes)   (yes)   (never) (100)
 # -------------------------------------------------------------------------------------------------
-google-smtp unix -     -       n       -       1       smtp
-  -o anvil_rate_time_unit=60s
-  -o smtp_destination_concurrency_limit=2
-  -o smtp_destination_recipient_limit=10
-  -o smtp_destination_concurrency_failed_cohort_limit=10
-  -o syslog_name=postfix/google
-
-yahoo-smtp unix -      -       n       -       1       smtp
-  -o anvil_rate_time_unit=60s
-  -o smtp_initial_destination_concurrency=1
-  -o smtp_destination_concurrency_limit=4
-  -o smtp_destination_recipient_limit=2
-  -o smtp_destination_rate_delay=1s
-  -o syslog_name=postfix/yahoo
+slower    unix  -       -       n       -       1       smtp -o syslog_name=postfix/slower
+google    unix  -       -       n       -       8       smtp -o syslog_name=postfix/google
+apple     unix  -       -       n       -       4       smtp -o syslog_name=postfix/apple
+yahoo     unix  -       -       n       -       8       smtp -o syslog_name=postfix/yahoo
 
 # https://www.nttdocomo.co.jp/service/imode_mail/notice/mass_send/
-nttdocomo-smtp unix -  -       n       -       1       smtp
-  -o anvil_rate_time_unit=5s
-  -o smtp_destination_concurrency_limit=1
-  -o smtp_destination_recipient_limit=1
-  -o syslog_name=postfix/nttdocomo
+nttdocomo unix  -       -       n       -       1       smtp -o syslog_name=postfix/nttdocomo
 
 # https://www.au.com/mobile/service/attention/specification/
-aubykddi-smtp unix -   -       n       -       1       smtp
-  -o anvil_rate_time_unit=60s
-  -o smtp_destination_concurrency_limit=1
-  -o smtp_destination_recipient_limit=1
-  -o syslog_name=postfix/aubykddi
+aubykddi  unix  -       -       n       -       1       smtp -o syslog_name=postfix/aubykddi
 
 # https://www.softbank.jp/mobile/support/mail/antispam/howto/wrestle/
-softbank-smtp unix -   -       n       -       1       smtp
-  -o anvil_rate_time_unit=60s
-  -o smtp_destination_concurrency_limit=1
-  -o smtp_destination_recipient_limit=1
-  -o syslog_name=postfix/softbank
+softbank  unix  -       -       n       -       1       smtp -o syslog_name=postfix/softbank
 
 # https://www.ymobile.jp/service/others/spam/
-ymobile-smtp unix -    -       n       -       1       smtp
-  -o anvil_rate_time_unit=60s
-  -o smtp_destination_concurrency_limit=1
-  -o smtp_destination_recipient_limit=1
-  -o syslog_name=postfix/ymobile
+ymobile   unix  -       -       n       -       1       smtp -o syslog_name=postfix/ymobile
 

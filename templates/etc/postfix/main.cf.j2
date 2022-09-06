@@ -139,9 +139,31 @@ minimal_backoff_time = 300s
 #   value of "$minimal_backoff_time". See also $queue_run_delay.
 maximal_backoff_time = 4000s
 
+# qmgr_daemon_timeout (default: 1000s)
+#   How much time a Postfix queue manager process may take to handle a request before it is termi-
+#   nated by a built-in watchdog timer.
+#   Specify a non-zero time value (an integral value plus an optional one-letter suffix that speci-
+#   fies the time unit). Time units: s (seconds), m (minutes), h (hours), d (days), w (weeks). The
+#   default time unit is s (seconds). This feature is available in Postfix 2.8 and later.
+qmgr_daemon_timeout = 1000s
+
+# qmgr_ipc_timeout (default: 60s)
+#   The time limit for the queue manager to send or receive information over an internal communica-
+#   tion channel. The purpose is to break out of deadlock situations. If the time limit is exceeded
+#   the software either retries or aborts the operation. Specify a non-zero time value (an integral
+#   value plus an optional one-letter suffix that specifies the time unit).
+#   Time units: s (seconds), m (minutes), h (hours), d (days), w (weeks). The default time unit is
+#   s (seconds). This feature is available in Postfix 2.8 and later.
+#qmgr_icp_timeout = 180s
+
 # qmgr_message_active_limit (default: 20000)
 #   The maximal number of messages in the active queue.
 qmgr_message_active_limit = 20000
+
+# qmgr_message_recipient_limit (default: 20000)
+#   The maximal number of recipients held in memory by the Postfix queue manager, and the maximal
+#   size of the short-term, in-memory "dead" destination status cache.
+qmgr_message_recipient_limit = 20000
 
 # queue_minfree (default: 0)
 #   The minimal amount of  free space  in bytes in the queue file system  that is needed to receive
@@ -158,6 +180,38 @@ queue_minfree = 0
 #   prior to Postfix 2.4 the default value was 1000s. This parameter should be set less than or e-
 #   qual to $minimal_backoff_time. See also $maximal_backoff_time.
 queue_run_delay = 300s
+
+
+# ADDRESS VERIFYING
+# -------------------------------------------------------------------------------------------------
+# address_verify_negative_cache (default: yes)
+#   Enable caching of failed address verification probe results. When this feature is enabled, the
+#   cache may pollute quickly with garbage. When this feature is disabled, Postfix will generate an
+#   address probe for every lookup. This feature is available in Postfix 2.1 and later.
+#address_verify_negative_cache = no
+
+# address_verify_negative_expire_time (default: 3d)
+#   The time after which a failed probe expires from the address verification cache. Specify a non-
+#   zero time value (an integral value plus an optional one-letter suffix that specifies the time
+#   unit). Time units: s (seconds), m (minutes), h (hours), d (days), w (weeks). The default time
+#   unit is d (days). This feature is available in Postfix 2.1 and later.
+#address_verify_negative_expire_time = 1d
+
+# address_verify_negative_refresh_time (default: 3h)
+#   The time after which a failed address verification probe needs to be refreshed. Specify a non-
+#   zero time value (an integral value plus an optional one-letter suffix that specifies the time
+#   unit). Time units: s (seconds), m (minutes), h (hours), d (days), w (weeks). The default time
+#   unit is h (hours). This feature is available in Postfix 2.1 and later.
+#address_verify_negative_refresh_time = 1h
+
+# address_verify_pending_request_limit (default: see "postconf -d" output)
+#   A safety limit that prevents address verification requests from overwhelming the Postfix queue.
+#   By default, the number of pending requests is limited to 1/4 of the active queue maximum size
+#   (qmgr_message_active_limit). The queue manager enforces the limit by tempfailing requests that
+#   exceed the limit. This affects only unknown addresses and inactive addresses that have expired,
+#   because the verify(8) daemon automatically refreshes an active address before it expires. This
+#   feature is available in Postfix 3.1 and later.
+#address_verify_pending_request_limit = 10000
 
 
 # INTERNET HOST AND DOMAIN NAMES
@@ -1712,7 +1766,7 @@ smtpd_tls_session_cache_database =
 #   the message  arrival rate exceeds the  message delivery rate. With the default 100 SMTP server
 #   process limit,  this limits the mail inflow to 100 messages a second  more than the number of
 #   messages delivered per second. Specify 0 to disable the feature. Valid delays are 0..10.
-in_flow_delay = 0s
+in_flow_delay = 1s
 
 # smtpd_client_connection_count_limit (default: 50)
 #   How many simultaneous connections any client is allowed to make to this service. By default, 
@@ -2868,4 +2922,30 @@ html_directory = no
 # readme_directory (default: see "postconf -d" output)
 #   readme_directory: The location of the Postfix README files.
 #readme_directory = /usr/share/doc/postfix/README_FILES
+
+# DESTINATION SPECIFIED PARAMETERS
+# -------------------------------------------------------------------------------------------------
+# See master.cf and transport
+slower_destination_concurrency_limit = 1
+slower_destination_recipient_limit   = 1
+
+# ESPs
+google_destination_concurrency_limit    = 8
+google_destination_recipient_limit      = 100
+apple_destination_concurrency_limit     = 4
+apple_destination_recipient_limit       = 100
+yahoo_destination_concurrency_limit     = 8
+yahoo_destination_recipient_limit       = 100
+microsoft_destination_concurrency_limit = 2
+microsoft_destination_recipient_limit   = 50
+
+# Cellular phone companies in Japan
+#nttdocomo_destination_concurrency_limit = 1
+#nttdocomo_destination_recipient_limit   = 1
+#aubykddi_destination_concurrency_limit  = 1
+#aubykddi_destination_recipient_limit    = 1
+#softbank_destination_concurrency_limit  = 1
+#softbank_destination_recipient_limit    = 1
+#ymobile_destination_concurrency_limit   = 1
+#ymobile_destination_recipient_limit     = 1
 
