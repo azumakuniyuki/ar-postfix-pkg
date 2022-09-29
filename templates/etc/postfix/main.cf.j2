@@ -181,6 +181,28 @@ queue_minfree = 0
 #   qual to $minimal_backoff_time. See also $maximal_backoff_time.
 queue_run_delay = 300s
 
+# fast_flush_domains (default: $relay_domains)
+#   ptional list of destinations that are eligible for per-destination logfiles with mail that is
+#   queued to those destinations. By default, Postfix maintains "fast flush" logfiles only for des-
+#   tinations that the Postfix SMTP server is willing to relay to (i.e. the default is: "fast_flush
+#   _domains = $relay_domains"; see the relay_domains parameter in the postconf(5) manual). Specify
+#   a list of hosts or domains, "/file/name" patterns or "type:table" lookup tables, separated by
+#   commas and/or whitespace. Continue long lines by starting the next line with whitespace.
+#   A "/file/name" pattern is replaced by its contents; a "type:table" lookup table is matched when
+#   the domain or its parent domain appears as lookup key.
+#   Specify "fast_flush_domains =" (i.e., empty) to disable the feature altogether.
+#fast_flush_domains = {{ postfix.configroot }}/flushdomains
+
+# fast_flush_purge_time (default: 7d)
+#   The time after which an empty per-destination "fast flush" logfile is deleted.
+#fast_flush_purge_time = 7d
+
+# fast_flush_refresh_time (default: 12h)
+#   The time after which a non-empty but unread per-destination "fast flush" logfile needs to be
+#   refreshed. The contents of a logfile are refreshed by requesting delivery of all messages list-
+#   ed in the logfile. 
+#fast_flush_refresh_time = 12h
+
 
 # ADDRESS VERIFYING
 # -------------------------------------------------------------------------------------------------
