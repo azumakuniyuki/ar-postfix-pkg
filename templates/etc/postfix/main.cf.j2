@@ -498,6 +498,12 @@ connection_cache_protocol_timeout = 5s
 #   gainst careless people. The cache TTL is already bounded by $max_idle.
 connection_cache_ttl_limit = 2s
 
+# smtp_connection_cache_time_limit (default: 2s)
+#   When SMTP connection caching is enabled, the amount of time that an unused SMTP client socket
+#   is kept open before it is closed. Do not specify larger values without permission from the re-
+#   mote sites. This feature is available in Postfix 2.2 and later.
+#smtp_connection_cache_time_limit = 2s
+
 # smtp_connection_cache_destinations (default: empty)
 #   Permanently enable SMTP connection caching for the specified destinations. With SMTP connection
 #   caching,a connection is not closed immediately after completion of a mail transaction. Instead,
