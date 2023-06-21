@@ -1,0 +1,14 @@
+# SMTPD EXCEPTIONS
+# =================================================================================================
+# smtpd_client_event_limit_exceptions (default: $mynetworks)
+#   Clients that are excluded from "smtpd_client_*_count / rate_limit" restrictions.
+#   See the "mynetworks" configuration parameter description for the parameter value syntax. By de-
+#   fault, clients in trusted networks are excluded. Specify a list of network blocks, hostnames or
+#   ".domain" names (the initial dot causes the domain to match any name below it).
+#
+#   Pattern matching of domain names  is controlled by the presence  or absence of
+#   "smtpd_client_event_limit_exceptions" parameter in the parent_domain_matches_subdomains parame-
+#   ter value (postfix 3.0 and later).
+# -------------------------------------------------------------------------------------------------
+172.99.67.55/32     OK  # https://www.hardenize.com/ outbound.hardenize.com[172.99.67.55]
+

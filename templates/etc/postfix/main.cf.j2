@@ -1818,7 +1818,7 @@ smtpd_client_connection_rate_limit = 16
 #   Pattern matching of domain names  is controlled by the presence  or absence of
 #   "smtpd_client_event_limit_exceptions" parameter in the parent_domain_matches_subdomains parame-
 #   ter value (postfix 3.0 and later).
-# smtpd_client_event_limit_exceptions = ${smtpd_client_connection_limit_exceptions:$mynetworks}
+smtpd_client_event_limit_exceptions = hash:{{ postfix.configroot }}/exceptions
 
 # smtpd_client_message_rate_limit (default: 0)
 #   The smtpd_client_message_rate_limit is the maximal number of message delivery requests that any
