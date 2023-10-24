@@ -26,6 +26,11 @@
     name:  "{{ postfix.checkvirus.service }}"
     state: "restarted"
 
+- name: Restart PostSRSd
+  service:
+    name:  "{{ postfix.rewriteesa.service }}"
+    state: "restarted"
+
 - name: Restart mailman
   service:
     name:  "{{ mailman.service }}"

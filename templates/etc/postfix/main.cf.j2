@@ -2319,6 +2319,37 @@ canonical_classes = envelope_sender, envelope_recipient, header_sender, header_r
 #       specifies a non-empty value.
 #canonical_maps = hash:/etc/postfix/canonical
 
+# sender_canonical_classes (default: envelope_sender, header_sender)
+#   What addresses are subject to sender_canonical_maps address mapping. By default,
+#   sender_canonical_maps address mapping is applied to envelope sender addresses, and to header
+#   sender addresses. Specify one or more of: envelope_sender, header_sender
+#   This feature is available in Postfix 2.2 and later.
+#sender_canonical_classes = envelope_sender, header_sender
+
+# sender_canonical_maps (default: empty)
+#   Optional address mapping lookup tables for envelope and header sender addresses. The table for-
+#   mat and lookups are documented in canonical(5).
+#   Example: you want to rewrite the SENDER address "user@ugly.example" to "user@pretty.example",
+#            while still being able to send mail to the RECIPIENT address "user@ugly.example".
+#
+#   Note: $sender_canonical_maps is processed before $canonical_maps.
+#sender_canonical_maps = hash:/etc/postfix/canonical
+#sender_canonical_maps = tcp:127.0.0.1:{{ postfix.rewriteesa.forward }}
+
+# recipient_canonical_classes (default: envelope_recipient, header_recipient)
+#   What addresses are subject to recipient_canonical_maps address mapping. By default, recipient_
+#   canonical_maps address mapping is applied to envelope recipient addresses, and to header recip-
+#   ient addresses.  Specify one or more of: envelope_recipient, header_recipient
+#   This feature is available in Postfix 2.2 and later.
+#recipient_canonical_classes = envelope_recipient, header_recipient
+
+# recipient_canonical_maps (default: empty)
+#   Optional address mapping lookup tables for envelope and header recipient addresses. The table
+#   format and lookups are documented in canonical(5).
+#   Note: $recipient_canonical_maps is processed before $canonical_maps.
+#recipient_canonical_maps = hash:/etc/postfix/canonicalr
+#recipient_canonical_maps = tcp:127.0.0.1:{{ postfix.rewriteesa.reverse }}
+
 # smtp_generic_maps (default: empty)
 #   Optional lookup tables that perform email address rewriting in the Postfix SMTP client, typi-
 #   cally to transform a locally valid address into a globally valid email address when sending

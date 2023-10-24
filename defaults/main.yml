@@ -101,6 +101,13 @@ postfix:
     srcport: 6251
   spamfilter:
     enabled: false
+  rewriteesa:
+    enabled: true
+    started: true
+    service: "postsrsd"
+    rewrite: "re.nyaan.example.jp"
+    forward: 10001
+    reverse: 10002
   postfixadmin:
     enabled: false
     pfaroot: "/user/sahre/postfixadmin"
