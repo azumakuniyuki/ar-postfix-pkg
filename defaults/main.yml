@@ -87,6 +87,21 @@ postfix:
     ctlsock: "/var/run/dmarc/opendmarc.sock"
     address: "127.0.0.1"
     srcport: "8893"
+   openarc:
+     enabled: false
+     started: false
+     service: "openarc"
+     confdir: "/etc/arc"
+     rootdir: "/var/spool/arc"
+     runtime: "/var/run/arc"
+     pidfile: "/var/run/arc/openarc.pid"
+     ctlsock: "/var/run/arc/openarc.sock"
+     address: "127.0.0.1"
+     srcport: "8894"
+     default: "default"
+     signkey:
+       - "selector"
+       - "nyaan.example.jp-selector.key"
   checkvirus:
     # clamd should be installed and running as root
     enabled: false
