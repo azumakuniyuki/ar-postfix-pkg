@@ -2199,7 +2199,8 @@ body_checks = pcre:/etc/postfix/re_messagebody
 #   server. Specify space or comma as separator. See the "MILTER_README" document for details.
 #smtpd_milters =
 #   unix:{{ postfix.dkimmilter.ctlsock }},
-#   unix:{{ postfix.opendmarc.ctlsock }}
+#   unix:{{ postfix.opendmarc.ctlsock }},
+#   inet:{{ postfix.openarc.address }}:{{ postfix.openarc.srcport }}
 
 # non_smtpd_milters (default: empty)
 #   A list of Milter (mail filter) applications for new mail that does not arrive via the Postfix
