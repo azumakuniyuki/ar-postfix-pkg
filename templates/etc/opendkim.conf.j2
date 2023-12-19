@@ -376,7 +376,7 @@ SendReports yes
 ##    Specifies the list of headers which should be included when generating signatures. The string
 ##    should be a comma-separated list of header names. See the opendkim.conf(5) man page for more
 ##    information.
-#SignHeaders header1,header2,...
+SignHeaders From,To,Subject,Reply-To,Message-Id,Date,X-Mailer,List-Unsubscribe,List-Unsubscribe-Post
 
 ##  SigningTable dataset +| default (none)
 ##    Defines a dataset that will be queried for the message sender's address to determine which
