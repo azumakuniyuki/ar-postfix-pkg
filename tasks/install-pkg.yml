@@ -22,6 +22,9 @@
           - "libopendkim"
           - "libopendkim-devel"
           - "opendkim"
+          - "libopenarc"
+          - "libopenarc-devel"
+          - "openarc"
           - "pypolicyd-spf"
           - "smtpping"
           - "swaks"
@@ -79,6 +82,7 @@
           - "libspf2-2"
           - "libspf2-dev"
           - "opendkim"
+          - "openarc"
           - "smtpping"
           - "swaks"
 
