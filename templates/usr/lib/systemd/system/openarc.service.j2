@@ -1,0 +1,17 @@
+[Unit]
+Description=Authenticated Receive Chain (ARC) Milter
+Documentation=man:openarc(8) man:openarc.conf(5) http://www.trusteddomain.org/openarc/
+After=network.target nss-lookup.target syslog.target
+
+[Service]
+Type=forking
+PIDFile={{ postfix.openarc.pidfile }}
+EnvironmentFile=-/etc/sysconfig/openarc
+ExecStart=/usr/sbin/openarc $OPTIONS
+ExecReload=/bin/kill -USR1 $MAINPID
+User=openarc
+Group=openarc
+
+[Install]
+WantedBy=multi-user.target
+
