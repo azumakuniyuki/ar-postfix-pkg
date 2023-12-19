@@ -50,6 +50,7 @@ postfix:
       - "virtmail"
       - "opendkim"
       - "opendmarc"
+      - "openarc"
     mailbox:
       # Values should be same as the following roles
       # - ar-dovecot-pkg.dovecot.mailconfig.mailbox
