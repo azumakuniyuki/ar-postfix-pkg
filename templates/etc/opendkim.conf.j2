@@ -405,8 +405,8 @@ SigningTable refile:{{ postfix.dkimmilter.confdir }}/signing-table
 ##    - inet:port@address     to listen on a specific interface
 ##    - inet:port             to listen on all interfaces
 ##    - local:/path/to/socket to listen on a UNIX domain socket
-#Socket inet:{{ postfix.dkimmilter.srcport }}@{{ postfix.dkimmilter.address }}
-Socket local:{{ postfix.dkimmilter.ctlsock }}
+#Socket local:{{ postfix.dkimmilter.ctlsock }}
+Socket inet:{{ postfix.dkimmilter.srcport }}@{{ postfix.dkimmilter.address }}
 
 ##  SoftwareHeader { yes | no } | default "no"
 ##    Add a DKIM-Filter header field to messages passing through this filter to identify messages
