@@ -2465,7 +2465,7 @@ masquerade_exceptions = root, mailer-daemon, postmaster
 #
 #       local_header_rewrite_clients = permit_mynetworks, permit_sasl_authenticated,
 #           permit_tls_clientcerts, check_address_map hash:/etc/postfix/pop-before-smtp
-#local_header_rewrite_clients = static:all
+local_header_rewrite_clients = permit_mynetworks, permit_sasl_authenticated
 
 
 # VIRTUAL DOMAIN
