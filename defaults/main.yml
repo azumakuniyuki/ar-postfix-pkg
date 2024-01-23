@@ -118,8 +118,8 @@ postfix:
   spamfilter:
     enabled: false
   rewriteesa:
-    enabled: true
-    started: true
+    enabled: false
+    started: false
     service: "postsrsd"
     rewrite: "re.nyaan.example.jp"
     forward: 10001
