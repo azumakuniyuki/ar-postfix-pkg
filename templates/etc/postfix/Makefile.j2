@@ -34,6 +34,8 @@ MYHOSTNAME = $(shell $(POSTCONF) -h myhostname)
 MYDOMAIN   = $(shell $(POSTCONF) -h mydomain)
 MAPFILES   = $(shell $(POSTCONF) | tr ',' '\n' | grep -E '(hash|cidr|pcre):{{ postfix.configroot }}' | sed 's/^.*://g' | sort -u)
 HELDQUEUES = $(shell find $(QUEUEDIR)/hold -type f -ctime +$(EXPIRES))
+TRANSPORTS = $(shell grep -E '^[0-9a-zA-Z]' transport | awk '{ print $$2 }' | cut -d: -f1 | sort | uniq | sort)
+DUPLICATED = $(shell grep -E '^[0-9A-Za-z]' transport | cut -d' ' -f1 | sort | uniq -d)
 POSTMASTER = postmaster
 
 .DEFAULT_GOAL = status
@@ -63,6 +65,15 @@ serversni.db: serversni
 smtpauth.db: smtpauth
 	test -f $< && $(POSTMAP) $<
 	test -f $@ && $(CHOWN) root.$(MAILGROUP) $@
+
+transport.db: check-transport transport.in
+	test -f transport.in
+	$(POSTMAP) transport.in && $(MV) transport.in.db $@ && $(RM) transport.in
+
+check-transport:
+	@$(foreach v, $(TRANSPORTS), grep '^$v' ./master.cf || exit 2;)
+	@echo $(DUPLICATED)
+	@test -z "$(DUPLICATED)"
 
 sni-certificates:
 	cd ./tls && $(MAKE) $@
