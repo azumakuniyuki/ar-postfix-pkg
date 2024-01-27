@@ -114,7 +114,7 @@ Mode sv
 ##      Names a file that contains a list of IP addresses, CIDR blocks, hostnames or domain names
 ##      whose mail should be neither signed nor verified by this filter.  See man page for file
 ##      format.
-#PeerList filename
+PeerList {{ postfix.openarc.confdir }}/ignored-hosts
 
 ##  PidFile filename | default (none)
 ##      Name of the file where the filter should write its pid before beginning normal operations.
@@ -140,6 +140,7 @@ SignatureAlgorithm rsa-sha256
 ##          inet:port@address       to listen on a specific interface
 ##          inet:port               to listen on all interfaces
 ##          local:/path/to/socket   to listen on a UNIX domain socket
+#Socket local:{{ postfix.openarc.ctrsock }}
 Socket inet:{{ postfix.openarc.srcport}}@{{ postfix.openarc.address }}
 
 ##  SoftwareHeader { yes | no } | default "no"
