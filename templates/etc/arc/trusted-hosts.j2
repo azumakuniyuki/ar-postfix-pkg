@@ -1,8 +1,10 @@
-## {{ postfix.openarc.confdir }}/trusted-hosts
-##  InternalHosts file | default (none)
-##      Names a file that contains a list of IP addresses, CIDR blocks, hostnames or domain names
-##      whose mail should be considered to have come from an internal trusted source, and thus
-##      authentication details found in the message will be used as-is.
-##      See man page for file format.
-## ================================================================================================
+# {{ postfix.openarc.confdir }}/trusted-hosts
+# InternalHosts (dataset)
+#       Identifies a set of hosts that identifies clients whose connections should be treated as
+#       "internal" by this filter. Messages received from such sources will not be verified and are
+#       instead trusted as-is; in particular, their Authentication-Results fields are trusted to be
+#       correct and authentic, meaning they will be assumed to contain the correct chain status
+#       when generating an outgoing seal. See the description of "PeerList" for a description of
+#       the supported format.  If no set is provided, "127.0.0.1" is added to the list by default.
+# -------------------------------------------------------------------------------------------------
 127.0.0.1
