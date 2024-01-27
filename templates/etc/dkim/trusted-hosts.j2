@@ -1,6 +1,10 @@
-## {{ postfix.dkimmilter.confdir }}/trusted-hosts
-##  InternalHosts dataset | default "127.0.0.1"
-##    Names a file from which a list of internal hosts is read. These are hosts from which mail
-##    should be signed rather than verified. Automatically contains 127.0.0.1.
-## ================================================================================================
+# {{ postfix.dkimmilter.confdir }}/trusted-hosts
+# InternalHosts (dataset)
+#   Identifies a set internal hosts whose mail should be signed rather than verified.
+#
+#   Entries in this data set follow the same form as those of the "PeerList" option. If not speci-
+#   fied, the default of "127.0.0.1" is applied. Naturally, providing a value here overrides the
+#   default, so if mail from 127.0.0.1 should be signed, the list provided here should include that
+#   address explicitly.
+# -------------------------------------------------------------------------------------------------
 127.0.0.1

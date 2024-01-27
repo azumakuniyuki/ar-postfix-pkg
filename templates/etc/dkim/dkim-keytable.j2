@@ -1,9 +1,20 @@
-## {{ postfix.dkimmilter.confdir }}/dkim-keytable
-##  KeyTable dataset | default (none)
-##    Defines a table that will be queried to convert key names to sets of data of the form (sign-
-##    ing domain, signing selector, private key). The private key can either contain a PEM-format-
-##    ted private key, a base64-encoded DER format private key, or a path to a file containing one
-##    of those.
-## ================================================================================================
+# {{ postfix.dkimmilter.confdir }}/dkim-keytable
+# KeyTable (dataset)
+#   Gives the location of a file mapping key names to signing keys. If present, overrides any
+#   "KeyFile" setting in the configuration file. 
+#
+#   The data set named here maps each key name to three values:
+#       (a) the name of the domain to use in the signature's "d=" value;
+#       (b) the name of the selector to use in the signature's "s=" value;
+#       (c) either a private key or a path to a file containing a private key.
+#
+#   If the first value consists solely of a percent sign("%") character, it will be replaced by the
+#   apparent domain of the sender when generating a signature. If the third value starts with a "/"
+#   character, or "./" or "../", then it is presumed to refer to a file from which the private key
+#   should be read, otherwise it is itself a PEM-encoded private key or a base64-encoded DER pri-
+#   vate key; a "%" in the third value in this case will be replaced by the apparent domain name of
+#   the sender. The SigningTable is used to select records from this table to be used to add signa-
+#   tures based on the message sender.
+# -------------------------------------------------------------------------------------------------
 #selector._domainkey.example.jp example.jp:selector:{{ postfix.dkimmilter.confdir }}/keys/selector.key
 
