@@ -81,8 +81,9 @@
         name:
           - "libspf2-2"
           - "libspf2-dev"
+          - "libmilter-dev"
+          - "libopendkim-dev"
           - "opendkim"
-          - "openarc"
           - "smtpping"
           - "swaks"
 
