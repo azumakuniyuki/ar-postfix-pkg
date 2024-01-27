@@ -66,12 +66,22 @@
     owner: "root"
     group: "root"
 
-- name: check-dmarc | /etc/sysconfig/opendmarc should be deployed
+- name: check-dmarc | RedHat | /etc/sysconfig/opendmarc should be deployed
   when: ansible_os_family == "RedHat"
   notify: Restart OpenDMARC
   template:
     src:   "etc/sysconfig/opendmarc.j2"
     dest:  "/etc/sysconfig/opendmarc"
+    mode:  "0644"
+    owner: "root"
+    group: "root"
+
+- name: check-dmarc | Debian | /etc/default/opendmarc should be deployed
+  when: ansible_os_family == "Debian"
+  notify: Restart OpenDMARC
+  template:
+    src:   "etc/default/opendmarc.j2"
+    dest:  "/etc/default/opendmarc"
     mode:  "0644"
     owner: "root"
     group: "root"
@@ -85,7 +95,7 @@
     owner: "opendmarc"
     group: "opendmarc"
   loop:
-    - "trusted-hosts"
+    - "trusted-names"
     - "ignored-hosts"
 
 - name: check-dmarc | Unit file should be deployed
