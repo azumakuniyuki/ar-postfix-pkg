@@ -2198,6 +2198,9 @@ body_checks = pcre:/etc/postfix/re_messagebody
 #   A list of Milter (mail filter) applications for new mail that arrives via the Postfix smtpd(8)
 #   server. Specify space or comma as separator. See the "MILTER_README" document for details.
 #smtpd_milters =
+#   unix:{{ postfix.dkimmilter.ctlsock }},
+#   unix:{{ postfix.opendmarc.ctlsock }},
+#   unix:{{ postfix.openarc.ctlsock }}, # Permission denied
 #   inet:{{ postfix.dkimmilter.address }}:{{ postfix.dkimmilter.srcport }},
 #   inet:{{ postfix.opendmarc.address }}:{{ postfix.opendmarc.srcport }},
 #   inet:{{ postfix.openarc.address }}:{{ postfix.openarc.srcport }}
