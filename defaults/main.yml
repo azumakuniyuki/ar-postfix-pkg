@@ -15,6 +15,7 @@ postfix:
   workingdir: "/usr/local/src"
   snicertdir: "/etc/postfix/tls"
   tlscertdir: "/etc/letsencrypt/live"
+  sysconfdir: "/etc/sysconfig"
   dbmapfiles:
     - "canonical"
     - "connaccess"
@@ -91,8 +92,10 @@ postfix:
    openarc:
      enabled: false
      started: false
+     version: "rel-openarc-1-0-0-Beta3"
      service: "openarc"
      confdir: "/etc/arc"
+     sbindir: "/usr/sbin"
      rootdir: "/var/spool/arc"
      runtime: "/var/run/arc"
      pidfile: "/var/run/arc/openarc.pid"
