@@ -80,7 +80,7 @@ BaseDirectory {{ postfix.opendmarc.runtime }}
 ##    determined by evaluating entries in the "arc.chain" field found in a locally generated
 ##    Authentication-Results header.
 ##    This list will be concatenated with DomainWhitelist (if provided).
-DomainWhitelistFile {{ postfix.opendmarc.confdir }}/trusted-hosts
+DomainWhitelistFile {{ postfix.opendmarc.confdir }}/trusted-names
 
 ##  DomainWhitelistSize | default 3000
 ##    The maximum number of entries in the DomainWhitelist including both entries in the Domain-
@@ -214,8 +214,8 @@ RequiredHeaders true
 ##    host is not given as either a hostname or an IP address, the socket will be listening on all
 ##    interfaces. This option is mandatory either in the configuration file or on the command line.
 ##    If an IP address is used, it must be enclosed in square brackets.
-#Socket local:{{ postfix.opendmarc.ctlsock }}
-Socket inet:{{ postfix.opendmarc.srcport }}@{{ postfix.opendmarc.address }}
+#Socket inet:{{ postfix.opendmarc.srcport }}@{{ postfix.opendmarc.address }}
+Socket local:{{ postfix.opendmarc.ctlsock }}
 
 ##  SoftwareHeader { true | false } | default "false"
 ##    Causes the filter to add a "DMARC-Filter" header field indicating the presence of this filter
