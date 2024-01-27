@@ -1,7 +1,9 @@
-##  IgnoreHosts path | default (internal)
-##    Specifies the path to a file that contains a list of hostnames, IP addresses, and/or CIDR ex-
-##    pressions identifying hosts whose SMTP connections are to be ignored by the filter.
-##    If not specified, defaults to "127.0.0.1" only.
+# {{ postfix.opendmarc.confdir }}/ignored-hosts
+# IgnoreHosts (string)
+#   Specifies the path to a file that contains a list of hostnames, IP addresses, and/or CIDR ex-
+#   pressions identifying hosts whose SMTP connections are to be ignored by the filter.
+#   If not specified, defaults to "127.0.0.1" only.
+# -------------------------------------------------------------------------------------------------
 localhost
 127.0.0.1
 ::1

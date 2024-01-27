@@ -80,7 +80,7 @@ BaseDirectory {{ postfix.opendmarc.runtime }}
 ##    determined by evaluating entries in the "arc.chain" field found in a locally generated
 ##    Authentication-Results header.
 ##    This list will be concatenated with DomainWhitelist (if provided).
-DomainWhitelistFile {{ postfix.opendmarc.confdir }}/trusted-hosts
+DomainWhitelistFile {{ postfix.opendmarc.confdir }}/trusted-names
 
 ##  DomainWhitelistSize | default 3000
 ##    The maximum number of entries in the DomainWhitelist including both entries in the Domain-

@@ -1,9 +1,7 @@
-## {{ postfix.dkimmilter.confdir }}/ignored-hosts
-##  ExternalIgnoreList filename
-##    Names a file from which a list of externally-trusted hosts is read. These are hosts which are
-##    allowed to send mail through you for signing. Automatically contains 127.0.0.1. See man page
-##    for file format.
-## ================================================================================================
-localhost
-127.0.0.1
-::1
+# {{ postfix.dkimmilter.confdir }}/ignored-hosts
+# ExternalIgnoreList (dataset)
+#   Identifies a set of "external" hosts that may send mail through the server as one of the sign-
+#   ing domains without credentials as such. This has the effect of suppressing the "external host
+#   (hostname) tried to send mail as (domain)" log messages. Entries in the data set should be of
+#   the same form as those of the PeerList option below.  The set is empty by default.
+# -------------------------------------------------------------------------------------------------
