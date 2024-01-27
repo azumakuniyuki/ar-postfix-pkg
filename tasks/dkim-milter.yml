@@ -58,12 +58,22 @@
     owner: "root"
     group: "root"
 
-- name: dkim-milter | /etc/sysconfig/opendkim should be deployed
+- name: dkim-milter | RedHat | /etc/sysconfig/opendkim should be deployed
   when: ansible_os_family == "RedHat"
   notify: Restart OpenDKIM
   template:
     src:   "etc/sysconfig/opendkim.j2"
     dest:  "/etc/sysconfig/opendkim"
+    mode:  "0644"
+    owner: "root"
+    group: "root"
+
+- name: dkim-milter | Debian | /etc/default/opendkim should be deployed
+  when: ansible_os_family == "Debina"
+  notify: Restart OpenDKIM
+  template:
+    src:   "etc/default/opendkim.j2"
+    dest:  "/etc/default/opendkim"
     mode:  "0644"
     owner: "root"
     group: "root"
