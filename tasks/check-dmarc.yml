@@ -44,7 +44,7 @@
 - name: check-dmarc | runtime directory should be 755
   file:
     path:  "{{ postfix.opendmarc.runtime }}"
-    mode:  "0770"
+    mode:  "0750"
     owner: "opendmarc"
     group: "mail"
     state: "directory"
