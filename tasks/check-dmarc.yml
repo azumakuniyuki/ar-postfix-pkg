@@ -41,12 +41,12 @@
     home:       "{{ postfix.opendmarc.runtime }}"
     state:      "present"
 
-- name: check-dmarc | runtime directory should be 755
+- name: check-dmarc | runtime directory should be 750
   file:
     path:  "{{ postfix.opendmarc.runtime }}"
     mode:  "0750"
     owner: "opendmarc"
-    group: "mail"
+    group: "opendmarc"
     state: "directory"
 
 - name: check-dmarc | /etc/dmarc directory should be created
