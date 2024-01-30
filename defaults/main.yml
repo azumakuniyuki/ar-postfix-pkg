@@ -16,6 +16,10 @@ postfix:
   snicertdir: "/etc/postfix/tls"
   tlscertdir: "/etc/letsencrypt/live"
   sysconfdir: "/etc/sysconfig"
+  fallbackto: "[192.0.2.22]:25"
+  relayhosts:
+    - ""
+    - ""
   dbmapfiles:
     - "canonical"
     - "connaccess"

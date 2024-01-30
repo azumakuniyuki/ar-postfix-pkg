@@ -299,7 +299,7 @@ best_mx_transport =
 #   destinations, Postfix will try them in the specified order.  To prevent mailer loops between MX
 #   hosts and fall-back hosts,  Postfix 2.2 and later will not use the fallback relays for destina-
 #   tions that it is MX host for (assuming DNS lookup is turned on).
-smtp_fallback_relay =
+#smtp_fallback_relay = {{ postfix.fallbackto }}
 
 # smtp_mx_session_limit (default: 2)
 #   The maximal number of  SMTP sessions per delivery request  before the Postfix SMTP client gives
@@ -1917,6 +1917,7 @@ relay_domains =
 #relayhost = [mailserver.isp.tld]
 #relayhost = uucphost
 #relayhost = [an.ip.add.ress]
+#relayhost = {{ postfix.relayhosts.0 }}
 
 
 # REJECTING
